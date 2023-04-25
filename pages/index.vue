@@ -9,5 +9,6 @@ export default {
     if (!$auth.loggedIn) return redirect("/login");
     else redirect("/" + $auth.user.job);
   },
+  head: () => ({ title: "trueEmit" }),
 };
 </script>

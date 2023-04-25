@@ -19,6 +19,20 @@
           ارقام المحل</label
         >
       </div>
+      <div class="form-input">
+        <input id="cr" v-model="cr" />
+        <label for="cr">
+          <font-awesome-icon :icon="['fas', 'building-shield']" />
+          سجل تجاري</label
+        >
+      </div>
+      <div class="form-input">
+        <input id="address" v-model="address" />
+        <label for="address">
+          <font-awesome-icon :icon="['fass', 'map-location-dot']" />
+          العنوان</label
+        >
+      </div>
       <div class="form-input" for="logo">
         <input id="logo" type="file" @change="setPreview" ref="logo" />
         <img :src="preview" class="preview" v-if="preview" />
@@ -48,6 +62,8 @@ export default {
       logo: "",
       name: "",
       phone: "",
+      cr: "",
+      address: "",
     };
   },
   components: {
@@ -87,8 +103,7 @@ export default {
   },
   watch: {
     logo() {
-      const { name, phone, logo } = this;
-      this.$emit("submit", { name, phone, logo });
+      this.$emit("submit", this);
     },
   },
 };

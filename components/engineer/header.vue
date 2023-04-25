@@ -37,7 +37,7 @@
       </div>
       <div class="logo">
         <div><img :src="$shop.logo" /></div>
-        <div class="text-center">س.ت: 1010785764</div>
+        <div class="text-center" v-if="$shop.cr">س.ت: {{ $shop.cr }}</div>
       </div>
 
       <div class="third">

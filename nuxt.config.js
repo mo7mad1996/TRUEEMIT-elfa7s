@@ -10,7 +10,7 @@ module.exports = {
     port,
     host: IP,
   },
-  dev: true,
+  dev: false,
   telemetry: false,
   router: {
     middleware: ["valdation", "auth"],
@@ -18,7 +18,7 @@ module.exports = {
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: "%s - التقرير الشامل لفحص السيارات",
+    titleTemplate: "%s",
     htmlAttrs: {
       lang: "en",
     },

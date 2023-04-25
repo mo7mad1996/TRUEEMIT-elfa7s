@@ -53,6 +53,7 @@ export default {
 
     return { car, saved, loading };
   },
+  head: () => ({ title: "تفاصيل السياره" }),
   components: { EngineerHeader, FristPage, SecoundPage },
   methods: {
     ...mapActions({

@@ -64,6 +64,7 @@ export default {
   },
   props: ["socket"],
   middleware: "manager",
+  head: () => ({ title: "السيارات" }),
   data() {
     return {
       limit: 20,

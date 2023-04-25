@@ -25,6 +25,8 @@ export default {
       name: "",
       logo: "",
       phone: "",
+      cr: "",
+      address: "",
     };
   },
   mounted() {
@@ -41,12 +43,14 @@ export default {
     setExpired(value) {
       this.expired = value;
     },
-    submit({ name, logo, phone }) {
+    submit({ name, logo, phone, cr, address }) {
       this.$axios
         .$post("/trueemit/save_client", {
           name,
           logo,
           phone,
+          cr,
+          address,
           password: this.password,
           expired: this.expired,
         })

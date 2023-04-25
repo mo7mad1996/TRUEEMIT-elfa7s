@@ -2,8 +2,8 @@
   <div class="bg">
     <nuxt />
     <img class="logo-print" :src="$shop.logo" alt="" />
-    <div class="address text-center">
-      الموقع: الرياض - معارض القادسيه - شارع وادي الدواسر
+    <div class="address text-center" v-if="$shop.address">
+      الموقع: {{ $shop.address }}
     </div>
   </div>
 </template>

@@ -70,6 +70,20 @@
           </label>
           <input v-model="shop.phone" />
         </div>
+        <div class="form-input">
+          <label>
+            <font-awesome-icon :icon="['fas', 'building-shield']" />
+            سجل تجاري
+          </label>
+          <input v-model="shop.cr" />
+        </div>
+        <div class="form-input">
+          <label>
+            <font-awesome-icon :icon="['fass', 'map-location-dot']" />
+            العنوان
+          </label>
+          <input v-model="shop.address" />
+        </div>
 
         <button type="submit" class="btn" :disabled="shop.loading">
           <Loader v-if="shop.loading" />

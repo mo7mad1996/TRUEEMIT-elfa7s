@@ -7,6 +7,8 @@ const Shop = new Schema({
   logo: String,
   phone: String,
   password: String,
+  cr: String,
+  address: String,
   types: [{ type: String }],
 });
 
