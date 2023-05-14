@@ -170,11 +170,6 @@ footer {
   display: grid;
   gap: 10px;
 
-  > * > h4 {
-    color: rgb(26, 16, 96);
-    margin: 0.1em 0;
-  }
-
   p {
     width: 100%;
     margin: 0;

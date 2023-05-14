@@ -1,3 +1,5 @@
+console.clear()
+
 // ..:: packages ::..
 const express = require("express");
 
