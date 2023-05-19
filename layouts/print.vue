@@ -3,7 +3,14 @@
     <nuxt />
     <img class="logo-print" :src="$shop.logo" alt="" />
     <div class="address text-center" v-if="$shop.address">
-      الموقع: {{ $shop.address }}
+      <span>
+        <font-awesome-icon :icon="['fass', 'map-location-dot']" />
+        {{ $shop.address }}
+      </span>
+      <span v-if="$shop.phone">
+        <font-awesome-icon :icon="['fas', 'mobile-screen-button']" />
+        {{ $shop.phone }}
+      </span>
     </div>
   </div>
 </template>
@@ -51,9 +58,14 @@ export default {
   color: #777;
   box-sizing: border-box;
   width: 100%;
-  padding-top: 0.7em;
   border-top: 1px solid #333;
   display: none;
+
+  span {
+    padding-top: 0.2em;
+    margin: 0.1em 0;
+    display: block;
+  }
 
   @media print {
     display: block;

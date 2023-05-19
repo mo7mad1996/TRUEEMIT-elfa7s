@@ -10,7 +10,7 @@ module.exports = {
     port,
     host: IP,
   },
-  dev: false,
+  dev: true,
   telemetry: false,
   router: {
     middleware: ["valdation", "auth"],

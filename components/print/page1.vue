@@ -51,6 +51,10 @@
         </fieldset>
       </main>
       <aside>
+        <h4>
+          الرسم التوضيحي
+          <font-awesome-icon :icon="['fas', 'compass-drafting']" />
+        </h4>
         <Images :car="car" />
       </aside>
       <footer>

@@ -34,11 +34,6 @@
     <div class="center">
       <img :src="$shop.logo" class="logo" />
       <span v-if="$shop.cr">س.ت: {{ $shop.cr }}</span>
-      <span v-if="$shop.phone">
-        <font-awesome-icon :icon="['fas', 'mobile-screen-button']" /> -
-        {{ $shop.phone }}
-        -
-      </span>
     </div>
 
     <div class="left">

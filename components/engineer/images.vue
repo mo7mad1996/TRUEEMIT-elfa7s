@@ -1,10 +1,5 @@
 <template>
   <section>
-    <h4>
-      الرسم التوضيحي
-      <font-awesome-icon :icon="['fas', 'compass-drafting']" />
-    </h4>
-
     <div class="d-grid">
       <div :class="`img-${n} img-container`" v-for="n in 5" :key="n">
         <img class="main-car" :src="`/cars/${n}.png`" />
