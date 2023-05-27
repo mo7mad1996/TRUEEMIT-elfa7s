@@ -16,6 +16,7 @@
 
 <script>
 import Alert from "@/components/layout/alert";
+import imagesVue from "../components/engineer/images.vue";
 
 export default {
   components: { Alert },
@@ -47,22 +48,35 @@ export default {
       this.socket.emit("leave room", id);
       this.update();
     },
+
+    connect() {
+      this.socket = this.$nuxtSocket({
+        name: "home",
+        channel: "/",
+        reconnection: true,
+      });
+
+      if (this.socket) {
+        this.socket.on("update cars", (cars) => (this.cars = cars));
+        this.socket.on("disconnect", () => {
+          window.location.reload();
+        });
+      }
+    },
+
+    focus() {
+      if (!this.socket?.connected) window.location.reload();
+    },
   },
   mounted() {
     addEventListener("keydown", this.handelKey);
+    addEventListener("focus", this.focus);
 
-    this.socket = this.$nuxtSocket({
-      name: "home",
-      channel: "/",
-      reconnection: true,
-    });
-
-    if (this.socket) {
-      this.socket.on("update cars", (cars) => (this.cars = cars));
-    }
+    this.connect();
   },
   beforeDestroy() {
     removeEventListener("keydown", this.handelKey);
+    removeEventListener("focus", this.focus);
   },
 };
 </script>

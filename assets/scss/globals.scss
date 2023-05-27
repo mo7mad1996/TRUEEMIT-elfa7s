@@ -420,5 +420,24 @@ span.key {
 
 .page1 > * > h4 {
   color: rgb(26, 16, 96);
-  margin: 0.1em 0;
+  gap: 0.4em;
+  display: flex;
+  align-items: center;
+  margin: 0.3em 0 0;
+}
+
+.page1,
+.page2 {
+  p {
+    width: 100%;
+    border: 1px solid black;
+    padding: 0;
+
+    > hr {
+      margin: 2px 0;
+      height: 1px;
+      border: none;
+      border-top: 1px solid black;
+    }
+  }
 }

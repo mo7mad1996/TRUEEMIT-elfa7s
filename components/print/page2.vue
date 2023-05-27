@@ -7,22 +7,25 @@
         <h4>
           فحص الكمبيوتر
           <font-awesome-icon :icon="['fas', 'computer']" />
+          <span class="squire"></span>
         </h4>
-        <p v-html="$nltobr(car.computer)"></p>
+        <p v-html="$nltobr(car.computer)" v-if="car.computer"></p>
       </div>
       <div class="section two">
         <h4>
           فحص ميكانيكا
           <font-awesome-icon :icon="['fas', 'wrench']" />
+          <span class="squire"></span>
         </h4>
-        <p v-html="$nltobr(car.mechanical)"></p>
+        <p v-html="$nltobr(car.mechanical)" v-if="car.mechanical"></p>
       </div>
       <div class="section three">
         <h4>
           الفحص الميداني
           <font-awesome-icon :icon="['fas', 'gears']" />
+          <span class="squire"></span>
         </h4>
-        <p v-html="$nltobr(car.ground)"></p>
+        <p v-if="car.ground" v-html="$nltobr(car.ground)"></p>
       </div>
     </div>
   </div>
@@ -53,11 +56,19 @@ export default {
 
   h4 {
     color: rgb(26, 16, 96);
-    margin: 0 0 1em;
-  }
+    gap: 0.4em;
+    display: flex;
+    align-items: center;
+    margin: 0.3em 0 0;
 
-  p {
-    width: 100%;
+    .squire {
+      border: 2px solid rgb(26, 16, 96);
+      display: inline-block;
+      height: 1.5em;
+      aspect-ratio: 1 / 1;
+      margin-right: auto;
+      border-radius: 4px;
+    }
   }
 
   .one {

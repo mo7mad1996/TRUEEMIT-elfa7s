@@ -39,7 +39,7 @@
             </tr>
           </tbody>
         </table>
-
+        <h6>الفايبر + الصدمات خارج الفحص</h6>
         <fieldset v-if="car.body.note">
           <legend>
             <font-awesome-icon :icon="['fas', 'clipboard']" />
@@ -63,7 +63,7 @@
           <font-awesome-icon :icon="['fas', 'toolbox']" />
         </h4>
 
-        <p v-html="$nltobr(car.chassis)"></p>
+        <p v-html="$nltobr(car.chassis)" v-if="car.chassis"></p>
       </footer>
     </div>
   </div>
@@ -119,6 +119,10 @@ main {
       }
     }
   }
+  h6 {
+    margin: 0;
+    text-align: center;
+  }
   fieldset {
     border-radius: 5px;
     font-size: 0.7em;
@@ -173,10 +177,5 @@ footer {
 
   display: grid;
   gap: 10px;
-
-  p {
-    width: 100%;
-    margin: 0;
-  }
 }
 </style>

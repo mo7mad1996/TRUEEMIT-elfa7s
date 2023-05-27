@@ -2,15 +2,28 @@
   <div class="bg">
     <nuxt />
     <img class="logo-print" :src="$shop.logo" alt="" />
-    <div class="address text-center" v-if="$shop.address">
-      <span>
-        <font-awesome-icon :icon="['fass', 'map-location-dot']" />
-        {{ $shop.address }}
-      </span>
-      <span v-if="$shop.phone">
-        <font-awesome-icon :icon="['fas', 'mobile-screen-button']" />
-        {{ $shop.phone }}
-      </span>
+    <div class="footer text-center" v-if="$shop.address">
+      <div class="right">
+        <span>
+          <font-awesome-icon :icon="['fass', 'map-location-dot']" />
+          {{ $shop.address }}
+        </span>
+        <span v-if="$shop.phone">
+          <font-awesome-icon :icon="['fas', 'mobile-screen-button']" />
+          {{ $shop.phone }}
+        </span>
+      </div>
+
+      <div class="left">
+        <span>
+          <font-awesome-icon :icon="['fab', 'twitter']" />
+          tashamlsa
+        </span>
+        <span>
+          <font-awesome-icon :icon="['fab', 'tiktok']" />
+          tashamlsa
+        </span>
+      </div>
     </div>
   </div>
 </template>
@@ -53,25 +66,43 @@ export default {
   }
 }
 
-.address {
+.footer {
   font-size: 0.7em;
   color: #777;
   box-sizing: border-box;
   width: 100%;
   border-top: 1px solid #333;
+  position: fixed;
+  bottom: 0;
+  left: 0;
   display: none;
 
-  span {
-    padding-top: 0.2em;
-    margin: 0.1em 0;
-    display: block;
+  > div {
+    flex: 1;
+
+    span {
+      display: flex;
+      gap: 1em;
+      margin: 0.3em 0;
+
+      svg {
+        display: block;
+        width: 1em;
+      }
+    }
+  }
+
+  .left {
+    text-align: left;
+    direction: ltr;
+  }
+  .right {
+    text-align: right;
+    direction: rtl;
   }
 
   @media print {
-    display: block;
-    position: fixed;
-    bottom: 0;
-    left: 0;
+    display: flex;
   }
 }
 
