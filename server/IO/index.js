@@ -20,6 +20,8 @@ module.exports = (IO) => {
 
     socket.on("update car", (car) => {
       socket.broadcast.to(car._id).emit("update car", car);
+
+      cars = cars.map((c) => (c._id == car._id ? car : c));
     });
 
     socket.on("update database", () => IO.emit("update database"));

@@ -37,6 +37,7 @@
     </div>
 
     <div class="left">
+      <!-- uncomment this -->
       <!-- <BarCode :code="car._id" /> -->
       <div class="date_time">
         <span class="time">

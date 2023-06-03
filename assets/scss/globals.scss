@@ -148,6 +148,9 @@
         outline: none;
       }
     }
+    textarea {
+      height: 10em;
+    }
 
     > * {
       display: block;
@@ -430,6 +433,7 @@ span.key {
 .page2 {
   p {
     width: 100%;
+    // comment this border         <!-- uncomment this -->
     border: 1px solid black;
     padding: 0;
 

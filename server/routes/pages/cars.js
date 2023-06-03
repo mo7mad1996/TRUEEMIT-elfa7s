@@ -3,12 +3,10 @@ const Car = mongoose.model("Car");
 
 module.exports = (router) => {
   router.get("/add_new_one", (req, res) => {
-    const car = new Car();
+    const car = new Car(),
+      newcar = new Object({ ...car._doc, saved: false, updated: false });
 
-    car.saved = false;
-    car.updated = false;
-
-    res.json(car);
+    res.json(newcar);
   });
 
   router.post("/save", (req, res) => {

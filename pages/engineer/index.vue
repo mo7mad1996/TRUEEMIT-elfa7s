@@ -11,10 +11,12 @@
             >{{ car.car_id || "لم يتم تحديد رقم اللوحه بعد" }}
           </span>
         </nuxt-link>
-
-        <button @click="remove(car._id)" class="remove">
+        <!-- uncomment this -->
+        <!-- 
+          <button @click="remove(car._id)" class="remove">
           <font-awesome-icon :icon="['fas', 'xmark']" />
         </button>
+       -->
       </li>
 
       <li>

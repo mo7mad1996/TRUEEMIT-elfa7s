@@ -64,6 +64,10 @@ export default {
             this.car.updated = false;
 
             this.socket.emit("update car", this.car);
+            this.socket.emit(
+              "update cars",
+              this.cars.map((car) => (this.car._id == car._id ? this.car : car))
+            );
             this.socket.emit("update database");
           })
           .finally(() => (this.loading = false));
@@ -77,6 +81,7 @@ export default {
             this.car = this.car;
 
             this.socket.emit("update car", this.car);
+            this.cars.map((car) => (this.car._id == car._id ? this.car : car));
           });
         } else {
           open("/print/" + this.$route.params.id);

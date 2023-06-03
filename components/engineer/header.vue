@@ -41,6 +41,7 @@
       </div>
 
       <div class="third">
+        <!-- uncomment this -->
         <!-- <BarCode :code="car._id" /> -->
         <div class="time">
           <span>
