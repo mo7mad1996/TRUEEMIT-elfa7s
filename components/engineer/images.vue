@@ -2,12 +2,16 @@
   <section>
     <div class="d-grid">
       <div :class="`img-${n} img-container`" v-for="n in 5" :key="n">
-        <img class="main-car" :src="`/cars/${n}.png`" />
+        <img class="main-car" :src="require(`~/assets/cars/${n}.png`)" />
 
         <div class="problem" v-for="input in $inputs" :key="`${n}_${input.en}`">
           <img
             v-if="car.body[input.en]"
-            :src="`/cars/${n}-${input.en}-${car.body[input.en]}.png`"
+            :src="
+              require(`~/assets/cars/${n}-${input.en}-${
+                car.body[input.en]
+              }.png`)
+            "
           />
         </div>
       </div>

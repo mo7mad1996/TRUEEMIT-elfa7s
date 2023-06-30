@@ -22,6 +22,7 @@
       <table>
         <thead>
           <tr>
+            <th>كود</th>
             <th>رقم اللوحه</th>
             <th>نوع السياره</th>
           </tr>
@@ -33,6 +34,7 @@
               :key="car._id"
               @click="$router.push('/manager/cars/' + car._id)"
             >
+              <td>{{ car._id }}</td>
               <td>{{ car.car_id }}</td>
               <td>{{ car.type }}</td>
             </tr>
@@ -76,17 +78,23 @@ export default {
 
   methods: {
     setCars() {
-      this.middleware_cars = this.$filter(this.DB_cars, this.filters, [
-        // blocked
-        "body",
-        "chassis",
-        "computer",
-        "date",
-        "ground",
-        "mechanical",
-        "odometer",
-        "service",
-      ]);
+      this.middleware_cars = this.$filter(
+        this.DB_cars,
+        this.filters,
+        [
+          // blocked
+          "body",
+          "chassis",
+          "computer",
+          "date",
+          "ground",
+          "mechanical",
+          "odometer",
+          "service",
+        ],
+        // skip id
+        false
+      );
     },
   },
   computed: {
@@ -110,6 +118,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+thead tr th {
+  width: calc(100% / 3);
+}
+
 .buttons {
   display: flex;
   gap: 2em;

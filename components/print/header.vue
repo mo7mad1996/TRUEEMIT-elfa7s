@@ -38,7 +38,7 @@
 
     <div class="left">
       <!-- uncomment this -->
-      <!-- <BarCode :code="car._id" /> -->
+      <BarCode :code="car._id" />
       <div class="date_time">
         <span class="time">
           {{ $moment(new Date(car.date)).locale("En").format("h:mma") }}

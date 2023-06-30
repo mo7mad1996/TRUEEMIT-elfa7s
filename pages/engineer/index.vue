@@ -12,11 +12,10 @@
           </span>
         </nuxt-link>
         <!-- uncomment this -->
-        <!-- 
-          <button @click="remove(car._id)" class="remove">
+
+        <button @click="remove(car._id)" class="remove">
           <font-awesome-icon :icon="['fas', 'xmark']" />
         </button>
-       -->
       </li>
 
       <li>
