@@ -11,6 +11,16 @@
         </h4>
         <p v-html="$nltobr(car.computer)" v-if="car.computer"></p>
       </div>
+
+      <div class="section five">
+        <h4>
+          فحص الاكسسورات
+          <font-awesome-icon :icon="['fas', 'gears']" />
+          <span class="squire"></span>
+        </h4>
+        <p v-html="$nltobr(car.accessories)" v-if="car.computer"></p>
+      </div>
+
       <div class="section two">
         <h4>
           فحص ميكانيكا
@@ -22,7 +32,7 @@
       <div class="section three">
         <h4>
           الفحص الميداني
-          <font-awesome-icon :icon="['fas', 'gears']" />
+          <font-awesome-icon :icon="['fas', 'car']" />
           <span class="squire"></span>
         </h4>
         <p v-if="car.ground" v-html="$nltobr(car.ground)"></p>
@@ -48,7 +58,7 @@ export default {
 }
 .page2 {
   display: grid;
-  grid-template-rows: repeat(3, 1fr) 2em;
+  grid-template-rows: 1fr auto 1fr;
   grid-template-columns: repeat(2, 1fr);
   flex: 1;
   display: grid;
@@ -75,6 +85,12 @@ export default {
     grid-column-start: 1;
     grid-column-end: 2;
     grid-row-start: 1;
+    grid-row-end: 2;
+  }
+  .five {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 2;
     grid-row-end: 3;
   }
   .two {
@@ -87,11 +103,13 @@ export default {
 
     &::after {
       content: "";
-      border-left: 1px solid #000;
+      width: 1px;
+      background: linear-gradient(to top, transparent, #000, transparent);
       position: absolute;
-      height: 100%;
+      height: 70%;
       right: -5px;
-      top: 0;
+      top: 50%;
+      transform: translateY(-50%);
     }
   }
   .three {

@@ -1,5 +1,5 @@
 <template>
-  <div class="bg">
+  <div class="bg" ref="p">
     <nuxt />
     <img class="logo-print" :src="$shop.logo" alt="" />
     <div class="footer text-center" v-if="$shop.address">
@@ -68,7 +68,7 @@ export default {
 
 .footer {
   font-size: 0.7em;
-  color: #777;
+  color: var(--color-blue-5);
   box-sizing: border-box;
   width: 100%;
   border-top: 1px solid #333;

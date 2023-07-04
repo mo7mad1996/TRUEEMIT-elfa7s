@@ -22,7 +22,7 @@
       <table>
         <thead>
           <tr>
-            <th>كود</th>
+            <!-- <th>كود</th> -->
             <th>رقم اللوحه</th>
             <th>نوع السياره</th>
           </tr>
@@ -34,7 +34,7 @@
               :key="car._id"
               @click="$router.push('/manager/cars/' + car._id)"
             >
-              <td>{{ car._id }}</td>
+              <!-- <td>{{ car._id }}</td> -->
               <td>{{ car.car_id }}</td>
               <td>{{ car.type }}</td>
             </tr>
@@ -93,7 +93,7 @@ export default {
           "service",
         ],
         // skip id
-        false
+        true
       );
     },
   },

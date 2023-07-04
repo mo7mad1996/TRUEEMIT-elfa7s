@@ -11,35 +11,21 @@
         <table>
           <thead>
             <th></th>
-            <th>سليم</th>
-            <th>معدل</th>
-            <th>مرشوش</th>
+            <th v-for="val in values" :key="val">{{ val }}</th>
           </thead>
           <tbody>
             <tr v-for="input in $inputs" :key="input.en">
-              <td>{{ input.ar }}</td>
-              <td class="text-center">
+              <td class="blue">{{ input.ar }}</td>
+              <td class="text-center" v-for="(_, val) in values" :key="val">
                 <font-awesome-icon
                   :icon="['fas', 'check']"
-                  v-if="car.body[input.en] == 0"
-                />
-              </td>
-              <td class="text-center">
-                <font-awesome-icon
-                  :icon="['fas', 'check']"
-                  v-if="car.body[input.en] == 1"
-                />
-              </td>
-              <td class="text-center">
-                <font-awesome-icon
-                  :icon="['fas', 'check']"
-                  v-if="car.body[input.en] == 2"
+                  v-if="car.body[input.en] == val"
                 />
               </td>
             </tr>
           </tbody>
         </table>
-        <h6>الفايبر + الصدمات خارج الفحص</h6>
+        <h6>الفايبر + الصدامات خارج الفحص</h6>
         <fieldset v-if="car.body.note">
           <legend>
             <font-awesome-icon :icon="['fas', 'clipboard']" />
@@ -76,6 +62,11 @@ import PrintHeader from "@/components/print/header";
 export default {
   name: "Page1",
   props: ["car"],
+  data() {
+    return {
+      values: ["سليم", "معدل", "مرشوش", "رش ومعجون", "مغير ومرشوش"],
+    };
+  },
   components: { PrintHeader, Images },
 };
 </script>
@@ -91,15 +82,23 @@ main {
   flex-direction: column;
 
   table {
+    margin-top: -1em;
     thead {
       border-bottom: 1px solid #333;
     }
     th {
       padding: 0.2em 0.5em;
+      writing-mode: vertical-rl;
+      font-size: 0.8em;
+      color: var(--color-blue-5);
     }
 
     td {
       position: relative;
+
+      &.blue {
+        color: var(--color-blue-5);
+      }
 
       &:first-of-type {
         white-space: nowrap;
@@ -134,6 +133,10 @@ main {
       padding: 0 0.5em;
       font-size: 1.3em;
       color: #25143d;
+    }
+
+    p {
+      margin: 0;
     }
   }
 }
@@ -172,7 +175,7 @@ footer {
 
 .page1 {
   display: grid;
-  grid-template-rows: 4fr 1fr;
+  grid-template-rows: 1fr auto;
   grid-template-columns: repeat(2, 1fr);
 
   display: grid;

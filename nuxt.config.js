@@ -47,6 +47,7 @@ module.exports = {
     { src: "~/plugins/barcode.js", mode: "client" },
     { src: "~/plugins/fontawesome.js" },
     { src: "~/plugins/filter.js" },
+    { src: "~/plugins/check_max_lines.js" },
     { src: "~/plugins/shop.js" },
     { src: "~/plugins/inputs.js" },
     { src: "~/plugins/nltobr.js" },

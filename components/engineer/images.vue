@@ -17,7 +17,10 @@
       </div>
     </div>
 
-    <div class="text-center">ملاحظة : علامة M تعني مرشوش و T تعني تعديل</div>
+    <div class="text-center">
+      ملاحظة : علامة M تعني مرشوش و T تعني تعديل وعلامة MM تعني مرشوش و معجون
+      وعلامة MB تعني مغير ومرشوش
+    </div>
   </section>
 </template>
 

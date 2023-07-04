@@ -25,7 +25,11 @@
             <font-awesome-icon :icon="['fas', 'clipboard']" />
             ملاحظات
           </label>
-          <textarea v-model="car.body.note"></textarea>
+          <textarea
+            v-model="car.body.note"
+            data-max="3"
+            @keydown="$check_max_lines"
+          ></textarea>
         </div>
       </fieldset>
       <div class="images">
@@ -37,7 +41,11 @@
         <font-awesome-icon :icon="['fas', 'toolbox']" />
         فحص الشاصى
       </label>
-      <textarea v-model="car.chassis"></textarea>
+      <textarea
+        v-model="car.chassis"
+        data-max="5"
+        @keydown="$check_max_lines"
+      ></textarea>
     </div>
   </div>
 </template>
@@ -50,7 +58,7 @@ export default {
   props: ["car"],
   data() {
     return {
-      values: ["سليم", "معدل", "مرشوش"],
+      values: ["سليم", "معدل", "مرشوش", "رش ومعجون", "مغير ومرشوش"],
     };
   },
   components: {
@@ -58,6 +66,7 @@ export default {
   },
 };
 </script>
+
 <style lang="scss" scoped>
 fieldset {
   margin: 1em 0;

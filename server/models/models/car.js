@@ -5,6 +5,7 @@ const car = new Schema({
   date: { type: Date, default: Date.now },
   type: { type: String, default: "" },
   car_id: { type: String, default: "" },
+  vin_no: { type: String, default: "" },
   service: { type: String, default: "" },
   odometer: { type: String, default: "" },
   mechanical: { type: String, default: "" },
@@ -25,12 +26,15 @@ const car = new Schema({
     stand_r: { type: Number, default: 0 },
     stand_l: { type: Number, default: 0 },
     trunk: { type: Number, default: 0 },
-    trunk_door: { type: Number, default: 0 },
+    // trunk_door: { type: Number, default: 0 },
+    pillar_r: { type: Number, default: 0 },
+    pillar_l: { type: Number, default: 0 },
     truck_door: { type: Number, default: 0 },
     roof: { type: Number, default: 0 },
     note: { type: String, default: "" },
   },
   chassis: { type: String, default: "" },
+  accessories: { type: String, default: "" },
 });
 
 mongoose.model("Car", car);
