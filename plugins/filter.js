@@ -1,7 +1,5 @@
 export default async (_, inject) => {
-  function init(data, filters, blocked = [], skip_id = true) {
-    if (skip_id) blocked.push("_id");
-
+  function init(data, filters, blocked = []) {
     let results = data;
 
     filters.forEach((search) => {

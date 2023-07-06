@@ -26,7 +26,7 @@
         <div class="form-input">
           <label>
             <font-awesome-icon :icon="['fas', 'gauge-high']" />
-            قرأت العداد
+            قراءة العداد
           </label>
           <input v-model="car.odometer" />
         </div>

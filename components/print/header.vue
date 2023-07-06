@@ -38,7 +38,7 @@
       </div>
       <div class="item">
         <label>
-          قرأت العداد
+          قراءة العداد
           <font-awesome-icon :icon="['fas', 'gauge-high']" />
         </label>
         <div class="value">{{ car.odometer }}</div>
@@ -90,7 +90,7 @@ header {
 
       .logo {
         height: 120px;
-        margin: auto;
+        margin: 0 auto 20px;
         display: block;
       }
     }
@@ -105,7 +105,7 @@ header {
       display: flex;
       text-align: center;
       flex-direction: column;
-      border: 1px solid #000;
+      border: 1px solid var(--color-blue-5);
       padding: 5px;
       gap: 5px;
 

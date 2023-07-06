@@ -29,7 +29,7 @@
       >
       <textarea
         v-model="car.ground"
-        data-max="7"
+        data-max="5"
         @keydown="$check_max_lines"
       ></textarea>
     </div>
@@ -40,7 +40,7 @@
       >
       <textarea
         v-model="car.mechanical"
-        data-max="30"
+        data-max="28"
         @keydown="$check_max_lines"
       ></textarea>
     </div>

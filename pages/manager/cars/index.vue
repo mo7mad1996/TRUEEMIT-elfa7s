@@ -22,9 +22,7 @@
       <table>
         <thead>
           <tr>
-            <!-- <th>كود</th> -->
-            <th>رقم اللوحه</th>
-            <th>نوع السياره</th>
+            <th v-for="colomn in colomns" :key="colomn.en">{{ colomn.ar }}</th>
           </tr>
         </thead>
         <tbody>
@@ -34,9 +32,9 @@
               :key="car._id"
               @click="$router.push('/manager/cars/' + car._id)"
             >
-              <!-- <td>{{ car._id }}</td> -->
-              <td>{{ car.car_id }}</td>
-              <td>{{ car.type }}</td>
+              <td v-for="colomn in colomns" :key="colomn.en">
+                {{ car[colomn.en] }}
+              </td>
             </tr>
           </client-only>
         </tbody>
@@ -73,6 +71,11 @@ export default {
       page: 1,
       filters: [{ value: "" }],
       middleware_cars: [],
+      colomns: [
+        { en: "vin_no", ar: "رقم الشاصى" },
+        { en: "car_id", ar: "رقم اللوحه" },
+        { en: "type", ar: "نوع السياره" },
+      ],
     };
   },
 
@@ -81,19 +84,10 @@ export default {
       this.middleware_cars = this.$filter(
         this.DB_cars,
         this.filters,
-        [
-          // blocked
-          "body",
-          "chassis",
-          "computer",
-          "date",
-          "ground",
-          "mechanical",
-          "odometer",
-          "service",
-        ],
-        // skip id
-        true
+        // blocked
+        Object.keys(this.DB_cars[0] || {}).filter(
+          (el) => !this.colomns.map((el) => el.en).includes(el)
+        )
       );
     },
   },
@@ -109,7 +103,6 @@ export default {
   },
   mounted() {
     this.middleware_cars = Array.from(this.DB_cars);
-
     this.socket.on("update database", async () => {
       this.middleware_cars = await this.$axios.$get("/cars");
     });

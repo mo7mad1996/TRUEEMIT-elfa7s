@@ -439,14 +439,15 @@ span.key {
   p {
     width: 100%;
     // comment this border         <!-- uncomment this -->
-    border: 1px solid black;
+    border: 1px solid rgb(26, 16, 96);
     padding: 0;
+    margin: 0;
 
     > hr {
       margin: 2px 0;
       height: 1px;
       border: none;
-      border-top: 1px solid black;
+      border-top: 1px solid rgb(26, 16, 96);
     }
   }
 }

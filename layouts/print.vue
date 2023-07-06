@@ -48,7 +48,7 @@ export default {
 }
 
 .page {
-  margin: 4em auto;
+  margin: 4em auto 0;
   background: white;
   width: 210mm;
   height: 297mm;

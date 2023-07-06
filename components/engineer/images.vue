@@ -89,7 +89,7 @@ section {
   }
 
   .text-center {
-    color: #454444;
+    color: #e02e2e;
     font-size: 0.6em;
   }
 }

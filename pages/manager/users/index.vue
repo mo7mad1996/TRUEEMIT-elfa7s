@@ -33,9 +33,9 @@
         <thead>
           <tr>
             <th></th>
-            <th>الاسم</th>
-            <th>رقم المستخدم</th>
-            <th>الوظيفة</th>
+            <td v-for="colomn in colomns" :key="colomn.en">
+              {{ colomn.ar }}
+            </td>
             <th>اخر دخول للنظام</th>
           </tr>
         </thead>
@@ -51,9 +51,10 @@
                 <font-awesome-icon icon="fa-solid fa-user-xmark" />
               </button>
             </td>
-            <td>{{ user.name }}</td>
-            <td>{{ user.user_id }}</td>
-            <td>{{ user.job }}</td>
+            <td v-for="colomn in colomns" :key="colomn.en">
+              {{ user[colomn.en] }}
+            </td>
+
             <td class="d-8">{{ user.lastLogin }}</td>
           </tr>
         </tbody>
@@ -89,6 +90,11 @@ export default {
       is_model_open: false,
       filters: [{ value: "" }],
       users: [],
+      colomns: [
+        { en: "name", ar: "الاسم" },
+        { en: "user_id", ar: "رقم المستخدم" },
+        { en: "job", ar: "الوظيفة" },
+      ],
     };
   },
   components: { LayoutHeader, Add_user_modle },
@@ -107,7 +113,13 @@ export default {
     },
 
     setUsers() {
-      this.users = this.$filter(this.DB_users, this.filters);
+      this.users = this.$filter(
+        this.DB_users,
+        this.filters,
+        Object.keys(this.DB_users[0] || {}).filter(
+          (el) => !this.colomns.map((el) => el.en).includes(el)
+        )
+      );
     },
   },
   mounted() {

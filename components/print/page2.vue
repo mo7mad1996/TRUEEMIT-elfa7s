@@ -55,13 +55,14 @@ export default {
 .page {
   display: flex;
   flex-direction: column;
+  page-break-before: always;
 }
 .page2 {
   display: grid;
-  grid-template-rows: 1fr auto 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
   grid-template-columns: repeat(2, 1fr);
   flex: 1;
-  display: grid;
+  overflow: hidden;
   gap: 10px;
 
   h4 {
@@ -72,7 +73,7 @@ export default {
     margin: 0.3em 0 0;
 
     .squire {
-      border: 2px solid rgb(26, 16, 96);
+      border: 2px solid rgb(84, 60, 246);
       display: inline-block;
       height: 1.5em;
       aspect-ratio: 1 / 1;
@@ -87,12 +88,7 @@ export default {
     grid-row-start: 1;
     grid-row-end: 2;
   }
-  .five {
-    grid-column-start: 1;
-    grid-column-end: 2;
-    grid-row-start: 2;
-    grid-row-end: 3;
-  }
+
   .two {
     grid-column-start: 2;
     grid-column-end: 3;
@@ -121,7 +117,7 @@ export default {
     position: relative;
 
     &::after {
-      content: "";
+      // content: "";
       border-top: 1px solid #000;
       position: absolute;
       width: 100%;
@@ -129,6 +125,12 @@ export default {
 
       left: 0;
     }
+  }
+  .five {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 2;
+    grid-row-end: 3;
   }
 }
 </style>

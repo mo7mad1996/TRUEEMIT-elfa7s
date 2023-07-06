@@ -88,7 +88,6 @@ main {
     }
     th {
       padding: 0.2em 0.5em;
-      writing-mode: vertical-rl;
       font-size: 0.8em;
       color: var(--color-blue-5);
     }
@@ -113,7 +112,7 @@ main {
         height: 1em;
         width: 1em;
         display: block;
-        border: 2px solid #333;
+        border: 2px solid var(--color-blue-5);
         transform: translate(-50%, -50%);
       }
     }
@@ -121,6 +120,7 @@ main {
   h6 {
     margin: 0;
     text-align: center;
+    color: #25143d;
   }
   fieldset {
     border-radius: 5px;
@@ -160,17 +160,7 @@ footer {
   grid-row-end: 3;
   grid-column-start: 1;
   grid-column-end: 3;
-
-  position: relative;
-
-  &::after {
-    content: "";
-    border-top: 1px solid #000;
-    position: absolute;
-    width: 100%;
-    top: -5px;
-    left: 0;
-  }
+  border-top: 1px solid #333;
 }
 
 .page1 {
