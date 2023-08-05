@@ -1,0 +1,121 @@
+<template>
+  <div class="container">
+    <h3>الإحصائيات</h3>
+
+    <section>
+      <h4>
+        اخر 7 ايام بعدد <span class="tomato">{{ last7.length }}</span> سياره.
+      </h4>
+      <Charts :x="array_7.x" :y="array_7.y" />
+    </section>
+    <section>
+      <h4>
+        اخر 30 يوم بعدد <span class="tomato">{{ last30.length }} </span>سياره.
+      </h4>
+      <Charts :x="array_30.x" :y="array_30.y" />
+    </section>
+    <section>
+      <h4>
+        اخر 365 يوم بعدد
+        <span class="tomato">{{ last_year.length }} </span>سياره.
+      </h4>
+      <Charts :x="array_365.x" :y="array_365.y" />
+    </section>
+  </div>
+</template>
+
+<script>
+// components
+import Charts from "@/components/manager/charts";
+
+export default {
+  async asyncData({ $axios }) {
+    const last7 = await $axios.$get("/cars/last/7");
+    const last30 = await $axios.$get("/cars/last/30");
+    const last_year = await $axios.$get("/cars/last/365");
+
+    return { last7, last30, last_year };
+  },
+  middleware: "manager",
+  head() {
+    return { title: "الإحصائيات" };
+  },
+  components: {
+    Charts,
+  },
+
+  // $moment(user.lastLogin).fromNow()
+  computed: {
+    array_7() {
+      const x = [];
+      const y = [];
+      let times = this.last7.map((el) => Date.parse(el.date));
+
+      let t = new Date(new Date().setHours(24, 0, 0, 0));
+      let n = t;
+      let v = 0;
+
+      const one_day = 1000 * 60 * 60 * 24;
+
+      for (let i = 1; i <= 7; i++) {
+        v = t - i * one_day;
+        x.push(times.filter((el) => el > v && el < n).length);
+        y.push(this.$moment(v).format("dddd, Do MMMM  YYYY"));
+        n = v;
+      }
+
+      return { x, y };
+    },
+    array_30() {
+      const x = [];
+      const y = [];
+      let times = this.last30.map((el) => Date.parse(el.date));
+
+      let t = new Date(new Date().setHours(24, 0, 0, 0));
+      let n = t;
+      let v = 0;
+
+      const one_day = 1000 * 60 * 60 * 24;
+
+      for (let i = 1; i <= 30; i++) {
+        v = t - i * one_day;
+        x.push(times.filter((el) => el > v && el < n).length);
+        y.push(this.$moment(v).format(" DD MMM"));
+        n = v;
+      }
+
+      return { x, y };
+    },
+    array_365() {
+      const x = [];
+      const y = [];
+      let times = this.last_year.map((el) => Date.parse(el.date));
+
+      let t = new Date(new Date().setHours(24, 0, 0, 0));
+      let n = t;
+      let v = 0;
+
+      const one_month = 1000 * 60 * 60 * 24 * 30;
+
+      for (let i = 1; i <= 12; i++) {
+        v = t - i * one_month;
+        x.push(times.filter((el) => el > v && el < n).length);
+        y.push(this.$moment(v).format("MMM"));
+        n = v;
+      }
+
+      return { x, y };
+    },
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+h4 {
+  padding: 0 1em;
+  border-right: 5px solid var(--color-blue-5);
+}
+.tomato {
+  color: tomato;
+}
+</style>

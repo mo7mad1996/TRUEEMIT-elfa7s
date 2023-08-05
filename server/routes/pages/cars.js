@@ -33,5 +33,14 @@ module.exports = (router) => {
     res.json(cars);
   });
 
+  router.get("/last/:days", async (req, res) => {
+    var d = new Date();
+    d.setDate(d.getDate() - +req.params.days);
+
+    const cars = await Car.find({ date: { $gt: d } });
+
+    res.json(cars);
+  });
+
   return router;
 };

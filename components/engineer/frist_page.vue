@@ -27,7 +27,7 @@
           </label>
           <textarea
             v-model="car.body.note"
-            data-max="3"
+            data-max="5"
             @keydown="$check_max_lines"
           ></textarea>
         </div>

@@ -11,7 +11,7 @@
           :title="page.title"
         >
           <li>
-            <font-awesome-icon :icon="'fa-solid ' + page.icon" class="icon" />
+            <font-awesome-icon :icon="page.icon" class="icon" />
             <span>{{ page.title }}</span>
           </li>
         </nuxt-link>
@@ -30,17 +30,22 @@ export default {
     return {
       pages: [
         {
-          icon: "fa-users",
+          icon: "fa-solid fa-users",
           title: "المستخدمين",
           to: "/manager/users",
         },
         {
-          icon: "fa-car",
+          icon: "fa-solid fa-car",
           title: "السيارات",
           to: "/manager/cars",
         },
         {
-          icon: "fa-gear",
+          icon: "chart-line",
+          title: "الاحصائيات",
+          to: "/manager/statistics",
+        },
+        {
+          icon: "fa-solid  fa-gear",
           title: "الإعدادات",
           to: "/manager/settings",
         },
