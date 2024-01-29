@@ -113,7 +113,7 @@ export default {
 <style lang="scss" scoped>
 h4 {
   padding: 0 1em;
-  border-right: 5px solid var(--color-blue-5);
+  border-right: 5px solid #000;
 }
 .tomato {
   color: tomato;

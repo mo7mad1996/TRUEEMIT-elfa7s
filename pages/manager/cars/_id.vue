@@ -25,7 +25,7 @@
             <font-awesome-icon :icon="['fas', 'print']" />
           </span>
         </button>
-        <button class="d-block mt-4 mb-4 btn" @click="update">
+        <button class="d-block mt-4 mb-4 btn" @click="update" v-if="!saved">
           <span>
             تعديل
             <font-awesome-icon :icon="['fas', 'pen-to-square']" />

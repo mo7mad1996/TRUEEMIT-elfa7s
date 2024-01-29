@@ -28,8 +28,8 @@
           <textarea
             v-model="car.body.note"
             data-max="5"
-            @keydown="$check_max_lines"
-          ></textarea>
+            ></textarea>
+            <!-- @keydown="$check_max_lines" -->
         </div>
       </fieldset>
       <div class="images">
@@ -44,8 +44,8 @@
       <textarea
         v-model="car.chassis"
         data-max="5"
-        @keydown="$check_max_lines"
-      ></textarea>
+        ></textarea>
+        <!-- @keydown="$check_max_lines" -->
     </div>
   </div>
 </template>

@@ -1,42 +1,72 @@
 <template>
-  <div class="page">
+  <div
+    class="page"
+    :class="!(car.service == 'محركات' || car.service == 'صيانة') && 'break'"
+  >
     <PrintHeader :car="car" />
 
     <div class="page2">
-      <div class="section one">
-        <h4>
-          فحص الكمبيوتر
-          <font-awesome-icon :icon="['fas', 'computer']" />
-          <span class="squire"></span>
-        </h4>
-        <p v-html="$nltobr(car.computer)" v-if="car.computer"></p>
-      </div>
+      <section class="right">
+        <ul v-if="car.service == 'صيانة'">
+          <li>
+            - الفحص عباره عن فحص القطع الاستهلاكيه التي بحاجة غيار + تهريبات
+            الزيوت .
+          </li>
+          <li>
+            - لم يتم فحص الاجزاء المفكوكه للمكينه + القير - لم يتم فحص الشواصي .
+          </li>
+          <li>- لم يتم فحص البدي - لم يتم فحص الكمبيوتر + الارباقات .</li>
+        </ul>
 
-      <div class="section five">
-        <h4>
-          فحص الاكسسورات
-          <font-awesome-icon :icon="['fas', 'gears']" />
-          <span class="squire"></span>
-        </h4>
-        <p v-html="$nltobr(car.accessories)" v-if="car.computer"></p>
-      </div>
+        <!-- الكمبيوتر -->
+        <div class="service" v-if="car.service != 'صيانة'">
+          <h4>
+            فحص الكمبيوتر
+            <font-awesome-icon :icon="['fas', 'computer']" />
+            <span class="squire"></span>
+          </h4>
+          <p v-html="$nltobr(car.computer)" v-if="car.computer"></p>
+        </div>
 
-      <div class="section two">
-        <h4>
-          فحص ميكانيكا
-          <font-awesome-icon :icon="['fas', 'wrench']" />
-          <span class="squire"></span>
-        </h4>
-        <p v-html="$nltobr(car.mechanical)" v-if="car.mechanical"></p>
-      </div>
-      <div class="section three">
-        <h4>
-          الفحص الميداني
-          <font-awesome-icon :icon="['fas', 'car']" />
-          <span class="squire"></span>
-        </h4>
-        <p v-if="car.ground" v-html="$nltobr(car.ground)"></p>
-      </div>
+        <!-- الاكسسورات -->
+        <div
+          class="service"
+          v-if="car.service == 'VIP' || car.service == 'محركات'"
+        >
+          <h4>
+            فحص الاكسسورات
+            <font-awesome-icon :icon="['fas', 'gears']" />
+            <span class="squire"></span>
+          </h4>
+          <p v-html="$nltobr(car.accessories)" v-if="car.computer"></p>
+        </div>
+
+        <!-- الميداني -->
+        <div class="service">
+          <h4>
+            الفحص الميداني
+            <font-awesome-icon :icon="['fas', 'car']" />
+            <span class="squire"></span>
+          </h4>
+          <p v-if="car.ground" v-html="$nltobr(car.ground)"></p>
+        </div>
+      </section>
+
+      <!-- الميكانيكا -->
+      <section class="left">
+        <div class="service">
+          <h4>
+            {{
+              car.service == "صيانة"
+                ? "فحص القطع الاستهلاكيه والتهريبات"
+                : "فحص ميكانيكا"
+            }}
+            <font-awesome-icon :icon="['fas', 'wrench']" />
+            <span class="squire"></span>
+          </h4>
+          <p v-html="$nltobr(car.mechanical)" v-if="car.mechanical"></p>
+        </div>
+      </section>
     </div>
   </div>
 </template>
@@ -48,6 +78,9 @@ export default {
   name: "Page2",
   props: ["car"],
   components: { PrintHeader },
+  mounted() {
+    // console.log(this.car);
+  },
 };
 </script>
 
@@ -55,46 +88,58 @@ export default {
 .page {
   display: flex;
   flex-direction: column;
-  page-break-before: always;
+  overflow: hidden;
+
+  &.break {
+    page-break-before: always;
+  }
 }
 .page2 {
-  display: grid;
-  grid-template-rows: 1fr 1fr 1fr;
-  grid-template-columns: repeat(2, 1fr);
-  flex: 1;
+  --gap: 10px;
   overflow: hidden;
-  gap: 10px;
+  display: flex;
+  gap: var(--gap);
 
-  h4 {
-    color: rgb(26, 16, 96);
-    gap: 0.4em;
+  > section {
     display: flex;
-    align-items: center;
-    margin: 0.3em 0 0;
+    gap: var(--gap);
+    flex: 1;
+    flex-direction: column;
+  }
 
-    .squire {
-      border: 2px solid rgb(84, 60, 246);
-      display: inline-block;
-      height: 1.5em;
-      aspect-ratio: 1 / 1;
-      margin-right: auto;
-      border-radius: 4px;
+  // صيانه
+  ul {
+    padding: 0;
+
+    li {
+      border-right: 7px solid #2c2c2c;
+      background: #ddd;
+      padding: 0.5em;
+      font-size: 0.8em;
+      margin-top: 10px;
+      list-style: none;
     }
   }
 
-  .one {
-    grid-column-start: 1;
-    grid-column-end: 2;
-    grid-row-start: 1;
-    grid-row-end: 2;
+  .service {
+    h4 {
+      color: #000;
+      gap: 0.4em;
+      display: flex;
+      align-items: center;
+      margin: 0.3em 0;
+
+      .squire {
+        border: 2px solid #000;
+        display: inline-block;
+        height: 1.5em;
+        aspect-ratio: 1 / 1;
+        margin-right: auto;
+        border-radius: 4px;
+      }
+    }
   }
-
-  .two {
-    grid-column-start: 2;
-    grid-column-end: 3;
-    grid-row-start: 1;
-    grid-row-end: 4;
-
+  .left {
     position: relative;
 
     &::after {
@@ -107,30 +152,6 @@ export default {
       top: 50%;
       transform: translateY(-50%);
     }
-  }
-  .three {
-    grid-column-start: 1;
-    grid-column-end: 2;
-    grid-row-start: 3;
-    grid-row-end: 4;
-
-    position: relative;
-
-    &::after {
-      // content: "";
-      border-top: 1px solid #000;
-      position: absolute;
-      width: 100%;
-      top: -5px;
-
-      left: 0;
-    }
-  }
-  .five {
-    grid-column-start: 1;
-    grid-column-end: 2;
-    grid-row-start: 2;
-    grid-row-end: 3;
   }
 }
 </style>

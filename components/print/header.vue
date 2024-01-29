@@ -81,7 +81,7 @@ header {
         .time {
           font-size: 1.2em;
           text-transform: uppercase;
-          color: #555;
+          color: #000;
         }
         .date {
           font-size: 0.86em;
@@ -98,20 +98,20 @@ header {
 
   .bottom {
     display: flex;
-    border: 1px solid var(--color-blue-5);
+    border: 1px solid #000;
 
     .item {
       flex: 1;
       display: flex;
       text-align: center;
       flex-direction: column;
-      border: 1px solid var(--color-blue-5);
+      border: 1px solid #000;
       padding: 5px;
       gap: 5px;
 
       label {
         font-size: 0.8em;
-        color: var(--color-blue-5);
+        color: #000;
       }
     }
   }

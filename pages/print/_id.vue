@@ -1,6 +1,9 @@
 <template>
   <div>
-    <Page1 :car="car" v-if="car.service != 'محركات'" />
+    <Page1
+      :car="car"
+      v-if="!(car.service == 'محركات' || car.service == 'صيانة')"
+    />
     <Page2 :car="car" />
   </div>
 </template>

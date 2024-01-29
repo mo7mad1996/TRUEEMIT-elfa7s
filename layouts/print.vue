@@ -51,15 +51,16 @@ export default {
   margin: 4em auto 0;
   background: white;
   width: 210mm;
-  height: 297mm;
+  // height: 297mm;
   padding: 0.5in;
-  font-size: 16px;
+  font-size: 18px;
+  overflow: hidden;
 
   box-shadow: 0 0 10px #2a505d;
 
   @media print {
     width: calc(210mm - 1in);
-    height: calc(297mm - 1in);
+    // height: calc(297mm - 1in);
     padding: 0;
     box-shadow: none;
     margin: 0;
@@ -68,7 +69,7 @@ export default {
 
 .footer {
   font-size: 0.7em;
-  color: var(--color-blue-5);
+  color: #000;
   box-sizing: border-box;
   width: 100%;
   border-top: 1px solid #333;

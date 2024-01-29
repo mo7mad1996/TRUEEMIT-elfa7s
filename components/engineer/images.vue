@@ -47,6 +47,9 @@ section {
     .img-container {
       position: relative;
 
+      filter: grayscale(1);
+      @media print {
+      }
       &.img-1 {
         grid-row: 1/2;
         grid-column: 1/3;
@@ -89,7 +92,7 @@ section {
   }
 
   .text-center {
-    color: #e02e2e;
+    color: #000000;
     font-size: 0.6em;
   }
 }

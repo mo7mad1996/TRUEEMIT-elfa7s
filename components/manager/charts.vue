@@ -18,6 +18,7 @@ export default {
         xaxis: {
           categories: this.y,
         },
+        grid: { strokeDashArray: 2 },
       };
     },
     series() {

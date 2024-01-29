@@ -83,20 +83,22 @@ main {
 
   table {
     margin-top: -1em;
+    font-size: 16px;
+
     thead {
       border-bottom: 1px solid #333;
     }
     th {
       padding: 0.2em 0.5em;
       font-size: 0.8em;
-      color: var(--color-blue-5);
+      color: #000;
     }
 
     td {
       position: relative;
 
       &.blue {
-        color: var(--color-blue-5);
+        color: #000;
       }
 
       &:first-of-type {
@@ -112,7 +114,7 @@ main {
         height: 1em;
         width: 1em;
         display: block;
-        border: 2px solid var(--color-blue-5);
+        border: 2px solid #000;
         transform: translate(-50%, -50%);
       }
     }
@@ -120,7 +122,7 @@ main {
   h6 {
     margin: 0;
     text-align: center;
-    color: #25143d;
+    color: #000;
   }
   fieldset {
     border-radius: 5px;
@@ -132,7 +134,7 @@ main {
     legend {
       padding: 0 0.5em;
       font-size: 1.3em;
-      color: #25143d;
+      color: #000;
     }
 
     p {
@@ -160,7 +162,7 @@ footer {
   grid-row-end: 3;
   grid-column-start: 1;
   grid-column-end: 3;
-  border-top: 1px solid #333;
+  border-top: 1px solid #000;
 }
 
 .page1 {
