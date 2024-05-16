@@ -54,38 +54,50 @@ export default {
       this.socket.emit("update car", this.car);
     },
     save() {
-      if (!this.car.saved && !this.car.updated) {
-        this.loading = true;
-        this.$axios
-          .$post("/cars/save", this.car)
-          .then((res) => {
-            this.car.saved = res; // res == true
-            this.setAlert({ text: "تم الحفظ" });
-            this.car.updated = false;
+      if (this.car.payment !== "أجل") delete this.car.client;
+      console.log("this.car", this.car);
 
-            this.socket.emit("update car", this.car);
-            this.socket.emit(
-              "update cars",
-              this.cars.map((car) => (this.car._id == car._id ? this.car : car))
-            );
-            this.socket.emit("update database");
-          })
-          .finally(() => (this.loading = false));
-      } else {
-        if (this.car.updated) {
-          this.$axios.$post("/cars/update", this.car).then(() => {
-            this.car.saved = true;
-            this.car.updated = false;
-            this.setAlert({ text: "تم الحفظ" });
+      if (!(this.car.payment == "أجل" && this.car.client == undefined)) {
+        if (!this.car.saved && !this.car.updated) {
+          this.loading = true;
 
-            this.car = this.car;
+          this.$axios
+            .$post("/cars/save", this.car)
+            .then((res) => {
+              this.car.saved = res; // res == true
+              this.setAlert({ text: "تم الحفظ" });
+              this.car.updated = false;
 
-            this.socket.emit("update car", this.car);
-            this.cars.map((car) => (this.car._id == car._id ? this.car : car));
-          });
+              this.socket.emit("update car", this.car);
+              this.socket.emit(
+                "update cars",
+                this.cars.map((car) =>
+                  this.car._id == car._id ? this.car : car
+                )
+              );
+              this.socket.emit("update database");
+            })
+            .finally(() => (this.loading = false));
         } else {
-          open("/print/" + this.$route.params.id);
+          if (this.car.updated) {
+            this.$axios.$post("/cars/update", this.car).then(() => {
+              this.car.saved = true;
+              this.car.updated = false;
+              this.setAlert({ text: "تم الحفظ" });
+
+              this.car = this.car;
+
+              this.socket.emit("update car", this.car);
+              this.cars.map((car) =>
+                this.car._id == car._id ? this.car : car
+              );
+            });
+          } else {
+            open("/print/" + this.$route.params.id);
+          }
         }
+      } else {
+        this.setAlert({ text: "يجب اضافة عميل", error: true });
       }
     },
   },

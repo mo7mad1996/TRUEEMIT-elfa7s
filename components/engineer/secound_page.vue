@@ -33,11 +33,8 @@
             : "فحص ميكانيكا"
         }}</label
       >
-      <textarea
-        v-model="car.mechanical"
-        data-max="30"
-        @keydown="$check_max_lines"
-      ></textarea>
+      <textarea v-model="car.mechanical" data-max="30"></textarea>
+      <!-- @keydown="$check_max_lines" -->
     </div>
   </div>
 </template>

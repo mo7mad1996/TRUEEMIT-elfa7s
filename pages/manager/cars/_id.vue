@@ -1,11 +1,11 @@
 <template>
   <div>
-    <button @click.stop="remove" class="btn d-block container red">
+    <!-- <button @click.stop="remove" class="btn d-block container red">
       <Loader v-if="loading" />
       <span v-else>
         حذف <font-awesome-icon :icon="['fas', 'trash-can']" />
       </span>
-    </button>
+    </button> -->
 
     <div @change="saved = false" @input="saved = false" class="mt-4">
       <EngineerHeader :car="car" />
@@ -60,14 +60,23 @@ export default {
       setAlert: "alert/add",
     }),
     update() {
-      this.saved = false;
-      this.loading = true;
+      if (this.car.payment !== "أجل") {
+        // delete this.car.client;
+        this.car.client = null;
+      }
 
-      this.$axios.$post("/cars/update", this.car).then(() => {
-        this.saved = true;
-        this.loading = false;
-        this.setAlert({ text: "تم التعديل" });
-      });
+      if (!(this.car.payment == "أجل" && !this.car.client)) {
+        this.saved = false;
+        this.loading = true;
+
+        this.$axios.$post("/cars/update", this.car).then(() => {
+          this.saved = true;
+          this.loading = false;
+          this.setAlert({ text: "تم التعديل" });
+        });
+      } else {
+        this.setAlert({ text: "يجب اضافة عميل", error: true });
+      }
     },
     print() {
       window.open("/print/" + this.$route.params.id);

@@ -46,10 +46,8 @@ section {
 
     .img-container {
       position: relative;
-
       filter: grayscale(1);
-      @media print {
-      }
+
       &.img-1 {
         grid-row: 1/2;
         grid-column: 1/3;

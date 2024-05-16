@@ -1,6 +1,6 @@
 export default async function ({ $axios, redirect }) {
-  const { fileExists, shop } = await $axios.$get("/trueemit/isvalid");
   let go_to = "";
+  const { fileExists, shop } = await $axios.$get("/trueemit/isvalid");
 
   if (fileExists) {
     if (shop) {

@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Car = mongoose.model("Car");
+const Clients = mongoose.model("clients");
 
 module.exports = (router) => {
   router.get("/add_new_one", (req, res) => {
@@ -9,13 +10,16 @@ module.exports = (router) => {
     res.json(newcar);
   });
 
-  router.post("/save", (req, res) => {
+  router.post("/save", async (req, res) => {
     const car = new Car(req.body);
 
     car.save().then(() => res.json(true));
   });
   router.post("/update", (req, res) => {
-    Car.findByIdAndUpdate(req.body._id, req.body).then(res.json("Done"));
+    const client = req.body.client || null;
+    Car.findByIdAndUpdate(req.body._id, { ...req.body, client }).then(
+      res.json("Done")
+    );
   });
 
   router.get("/:id", async (req, res) => {

@@ -51,16 +51,17 @@ export default {
   margin: 4em auto 0;
   background: white;
   width: 210mm;
-  // height: 297mm;
+  height: 297mm;
   padding: 0.5in;
-  font-size: 18px;
+  // font-size: 18px;
   overflow: hidden;
 
   box-shadow: 0 0 10px #2a505d;
 
   @media print {
     width: calc(210mm - 1in);
-    // height: calc(297mm - 1in);
+    height: calc(297mm - 1in);
+    overflow: hidden !important;
     padding: 0;
     box-shadow: none;
     margin: 0;

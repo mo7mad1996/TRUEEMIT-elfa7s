@@ -1,3 +1,4 @@
+// inital value
 let cars = [];
 
 module.exports = (IO) => {

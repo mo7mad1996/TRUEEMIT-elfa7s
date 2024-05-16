@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+
 const pages_dir = path.join(__dirname, "pages");
 
 module.exports = async (app, express) => {

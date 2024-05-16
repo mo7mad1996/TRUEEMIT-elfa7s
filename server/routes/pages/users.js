@@ -2,6 +2,8 @@ const bcrypt = require("bcrypt");
 const JWT = require("jsonwebtoken");
 const mongoose = require("mongoose");
 const User = mongoose.model("Users");
+
+// Generate salt
 const salt = bcrypt.genSaltSync(8);
 
 module.exports = (router) => {
@@ -31,11 +33,18 @@ module.exports = (router) => {
   });
 
   router.post("/login", async (req, res) => {
+    //  Find the user in database by userId
     const user = await User.findOne({ user_id: req.body.user_id });
+
     if (user) {
+      // check is password ok
       const ok = await bcrypt.compare(req.body.password, user.password);
+
       if (ok) {
+        // create a token
         const token = JWT.sign({ id: user.id }, "secret");
+
+        // Update last login time and save it to
         await User.updateOne(user, { lastLogin: Date.now() }).then((_) =>
           res.json({ token, user })
         );
@@ -44,12 +53,17 @@ module.exports = (router) => {
   });
 
   router.get("/user", async (req, res) => {
+    // get auth token
     const token = req.headers.authorization;
     if (!token)
       return res.json({
-        error: "Not authorized",
+        error: "Not Authorized",
       });
+
+    // get id from the token
     const { id } = JWT.verify(token, "secret");
+
+    // get user from id
     const user = await User.findById(id);
     res.json({ user });
   });
@@ -74,7 +88,8 @@ module.exports = (router) => {
     }
   });
   router.post("/update", (req, res) => {
-    const new_user = req.body;
+    const new_user = { ...req.body };
+
     if (req.body.new_pass) {
       const password = bcrypt.hashSync(req.body.new_pass, salt);
       new_user.password = password;

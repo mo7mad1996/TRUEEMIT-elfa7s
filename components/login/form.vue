@@ -68,7 +68,10 @@ export default {
         if (last_login)
           this.setAlert({
             text: `مرحباً ${this.$auth.user.name}
-            اخر دخول كان ${this.$moment(last_login).calendar()}
+            اخر دخول كان
+            ${this.$moment(last_login).format(
+              "ddd - DD/MMM/YYY عند  hh:mm:ss a"
+            )}
             `,
           });
       } catch (err) {

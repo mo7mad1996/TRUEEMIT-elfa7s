@@ -159,10 +159,11 @@ export default {
   position: absolute;
   inset: 0;
   z-index: 2;
-  background: #0007;
+  background: rgba(241, 241, 241, 0.467);
   display: grid;
   place-items: center;
   min-height: 100vh;
+  backdrop-filter: blur(5px);
 
   .model {
     background: white;

@@ -8,7 +8,7 @@
     <button @click="close" v-if="text">
       <font-awesome-icon icon="fa-solid fa-close" />
     </button>
-    <span>{{ text }}</span>
+    <p>{{ text }}</p>
     <div class="info_icon" v-if="text">
       <font-awesome-icon icon="fa-solid fa-warning" v-if="error" />
       <font-awesome-icon icon="fa-solid fa-check-circle" v-else />
@@ -48,6 +48,11 @@ export default {
   display: flex;
   align-items: center;
   gap: 1em;
+
+  p {
+    white-space: preserve-breaks;
+    text-align: center;
+  }
 
   .info_icon {
     background: #38b259;

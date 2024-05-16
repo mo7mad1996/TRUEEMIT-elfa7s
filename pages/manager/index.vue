@@ -30,6 +30,12 @@ export default {
     return {
       pages: [
         {
+          icon: "fa-solid fa-handshake",
+
+          title: "العملاء",
+          to: "/manager/clients",
+        },
+        {
           icon: "fa-solid fa-users",
           title: "المستخدمين",
           to: "/manager/users",
