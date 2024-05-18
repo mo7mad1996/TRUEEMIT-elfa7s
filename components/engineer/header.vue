@@ -81,16 +81,15 @@
           </div>
         </div>
 
-        <div class="form-input" v-if="!car.cost_disabled">
+        <div
+          class="form-input"
+          v-if="!car.cost_disabled || $auth.user.job == 'manager'"
+        >
           <label>
             <font-awesome-icon :icon="['fas', 'dollar-sign']" />
             تكلفة الفحص
           </label>
-          <input
-            v-model="car.cost"
-            :disabled="car.cost_disabled"
-            @input="(e) => validate(e)"
-          />
+          <input v-model="car.cost" @input="(e) => validate(e)" />
         </div>
       </div>
       <div class="logo">

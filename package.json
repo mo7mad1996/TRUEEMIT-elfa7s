@@ -27,6 +27,7 @@
     "fs-extra": "^11.1.0",
     "jsbarcode": "^3.11.5",
     "jsonwebtoken": "^9.0.0",
+    "lodash": "^4.17.21",
     "mongoose": "^6.8.4",
     "nuxt": "^2.15.8",
     "nuxt-socket-io": "^2.0.3",

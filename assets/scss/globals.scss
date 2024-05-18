@@ -107,13 +107,15 @@
     flex-wrap: wrap;
     align-items: center;
 
-    .input,
-    .input * {
+    .input {
+      // border: 1px solid #333;
       word-break: keep-all;
       font-size: 0.9em;
       flex: 1;
       padding: 0;
       display: flex;
+      align-items: flex-start;
+      gap: 5px;
       margin: 0;
       cursor: pointer;
     }

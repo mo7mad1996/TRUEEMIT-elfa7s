@@ -4,7 +4,7 @@
 
     <section>
       <h4>
-        اخر 24 ساعه بعدد <span class="tomato">{{ last1.length }}</span> سياره.
+        هذا اليوم بعدد <span class="tomato">{{ last1.length }}</span> سياره.
       </h4>
       <Charts :data="last1" :x="array_1.x" :y="array_1.y" />
     </section>
@@ -64,7 +64,7 @@ export default {
 
       const one_Hour = 1000 * 60 * 60;
 
-      for (let i = 0; i <= 24; i++) {
+      for (let i = 0; i <= t.getHours(); i++) {
         v = t - i * one_Hour;
         x.push(times.filter((el) => el > v && el < n).length);
         // y.push(this.$moment(v).format("hh:mm a"));

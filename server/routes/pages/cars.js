@@ -41,6 +41,8 @@ module.exports = (router) => {
     var d = new Date();
     d.setDate(d.getDate() - +req.params.days);
 
+    if (+req.params.days == 1) d = d.setHours(24, 0, 0, 0);
+
     const cars = await Car.find({ date: { $gt: d } }).select([
       "cost",
       "payment",

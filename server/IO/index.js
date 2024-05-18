@@ -6,8 +6,8 @@ module.exports = (IO) => {
     socket.emit("update cars", cars);
 
     socket.on("update cars", (data) => {
-      cars = data;
-      socket.broadcast.emit("update cars", data);
+      cars = [...data];
+      IO.emit("update cars", data);
     });
 
     socket.on("leave_rooms", () =>
@@ -25,6 +25,7 @@ module.exports = (IO) => {
       cars = cars.map((c) => (c._id == car._id ? car : c));
     });
 
+    // update manager page
     socket.on("update database", () => IO.emit("update database"));
   });
 };

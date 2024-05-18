@@ -92,6 +92,7 @@ export default {
           type: "datetime",
           categories: this.y,
           labels: {
+            datetimeUTC: false,
             style: {
               colors: this.colors,
               fontSize: "12px",

@@ -16,7 +16,6 @@
 
 <script>
 import Alert from "@/components/layout/alert";
-import imagesVue from "../components/engineer/images.vue";
 
 export default {
   components: { Alert },
@@ -35,7 +34,7 @@ export default {
     },
 
     add_car(car) {
-      this.cars.push(car);
+      this.cars = [...this.cars, car];
       this.update();
     },
 
@@ -57,7 +56,9 @@ export default {
       });
 
       if (this.socket) {
-        this.socket.on("update cars", (cars) => (this.cars = cars));
+        this.socket.on("update cars", (cars) => {
+          this.cars = [...cars];
+        });
         this.socket.on("disconnect", () => {
           window.location.reload();
         });
@@ -66,6 +67,15 @@ export default {
 
     focus() {
       if (!this.socket?.connected) window.location.reload();
+    },
+  },
+
+  watch: {
+    cars() {
+      console.dir(
+        "cars",
+        this.cars.map((e) => ({ saved: e.saved, updated: e.updated }))
+      );
     },
   },
   mounted() {
