@@ -32,7 +32,7 @@
               :key="car._id"
               @click="$router.push('/manager/cars/' + car._id)"
             >
-              <td v-for="colomn in colomns" :key="colomn.en">
+              <td v-for="colomn in colomns" :key="colomn.en" :class="colomn.en">
                 {{ car[colomn.en] }}
               </td>
             </tr>
@@ -75,6 +75,8 @@ export default {
         { en: "vin_no", ar: "رقم الشاصى" },
         { en: "car_id", ar: "رقم اللوحه" },
         { en: "type", ar: "نوع السياره" },
+        { en: "payment", ar: "حالة السداد" },
+        { en: "cost", ar: "سعر التقرير" },
       ],
     };
   },
@@ -113,6 +115,10 @@ export default {
 <style lang="scss" scoped>
 thead tr th {
   width: calc(100% / 3);
+}
+
+.cost {
+  color: #3a78d7;
 }
 
 .buttons {

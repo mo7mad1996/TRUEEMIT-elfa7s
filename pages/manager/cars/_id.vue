@@ -51,6 +51,8 @@ export default {
       saved = true,
       loading = false;
 
+    if (car.cost) car.cost_disabled = true;
+
     return { car, saved, loading };
   },
   head: () => ({ title: "تفاصيل السياره" }),
@@ -60,6 +62,9 @@ export default {
       setAlert: "alert/add",
     }),
     update() {
+      if (this.car.payment !== "أجل") delete this.car.client;
+
+      this.car = { ...this.car, cost_disabled: true };
       if (this.car.payment !== "أجل") {
         // delete this.car.client;
         this.car.client = null;

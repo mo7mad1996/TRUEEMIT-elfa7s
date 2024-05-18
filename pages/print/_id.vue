@@ -15,6 +15,7 @@ import Page2 from "@/components/print/page2";
 export default {
   async asyncData({ params, $axios }) {
     const car = await $axios.$get("/cars/" + params.id);
+
     return { car };
   },
   components: { Page1, Page2 },

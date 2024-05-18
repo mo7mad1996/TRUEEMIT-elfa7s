@@ -45,6 +45,7 @@ export default {
   data: () => ({ car: {}, loading: false }),
   methods: {
     ...mapActions({ setAlert: "alert/add" }),
+
     update() {
       if (this.car.saved) {
         this.car.saved = false;
@@ -53,9 +54,11 @@ export default {
 
       this.socket.emit("update car", this.car);
     },
+
     save() {
       if (this.car.payment !== "أجل") delete this.car.client;
-      console.log("this.car", this.car);
+
+      this.car = { ...this.car, cost_disabled: true };
 
       if (!(this.car.payment == "أجل" && this.car.client == undefined)) {
         if (!this.car.saved && !this.car.updated) {
@@ -64,9 +67,8 @@ export default {
           this.$axios
             .$post("/cars/save", this.car)
             .then((res) => {
-              this.car.saved = res; // res == true
+              this.car = { ...this.car, saved: true, updated: false };
               this.setAlert({ text: "تم الحفظ" });
-              this.car.updated = false;
 
               this.socket.emit("update car", this.car);
               this.socket.emit(
@@ -81,11 +83,8 @@ export default {
         } else {
           if (this.car.updated) {
             this.$axios.$post("/cars/update", this.car).then(() => {
-              this.car.saved = true;
-              this.car.updated = false;
+              this.car = { ...this.car, saved: true, updated: false };
               this.setAlert({ text: "تم الحفظ" });
-
-              this.car = this.car;
 
               this.socket.emit("update car", this.car);
               this.cars.map((car) =>
@@ -118,7 +117,6 @@ export default {
       this.socket.on("update car", (car) => (this.car = car));
     }
   },
-
   components: {
     EngineerHeader,
     SecoundPage,
@@ -135,5 +133,11 @@ export default {
   &:focus {
     background: rgb(227, 48, 48);
   }
+}
+
+.fixed {
+  position: fixed;
+  padding: 2em;
+  top: 0;
 }
 </style>

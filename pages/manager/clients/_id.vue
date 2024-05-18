@@ -7,7 +7,10 @@
         <span class="num">
           {{
             data_to_show
-              .reduce((a, b) => a + (+b.cost || +b.value), client.start)
+              .reduce(
+                (a, b) => a + (+b.cost || +b.value || 0),
+                client.start || 0
+              )
               .toFixed(2)
           }}
         </span>

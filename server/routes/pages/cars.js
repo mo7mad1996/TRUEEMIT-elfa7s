@@ -41,7 +41,12 @@ module.exports = (router) => {
     var d = new Date();
     d.setDate(d.getDate() - +req.params.days);
 
-    const cars = await Car.find({ date: { $gt: d } });
+    const cars = await Car.find({ date: { $gt: d } }).select([
+      "cost",
+      "payment",
+      "date",
+      "createdAt",
+    ]);
 
     res.json(cars);
   });

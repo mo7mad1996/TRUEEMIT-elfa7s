@@ -2,10 +2,12 @@
   <header>
     <div class="top">
       <div>
-        <div v-if="car.payment">حالة السداد : {{ car.payment }}.</div>
-        <div v-if="car.cost" class="mt-2">
-          تكلفة التقرير : {{ car.cost.toFixed(2) }} ر.س.
-        </div>
+        <template v-if="car.payment !== 'أجل'">
+          <div v-if="car.payment">حالة السداد : {{ car.payment }}.</div>
+          <div v-if="car.cost" class="mt-2">
+            تكلفة التقرير : {{ car.cost.toFixed(2) }} ر.س.
+          </div>
+        </template>
       </div>
       <div>
         <img :src="$shop.logo" class="logo" />

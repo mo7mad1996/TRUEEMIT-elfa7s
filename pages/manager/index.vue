@@ -90,13 +90,21 @@ main ul {
       background: white;
       box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px;
       box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
-        rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+        #3939ac 0px 3px 7px -3px;
+
+      .icon {
+        transition: 0.3s;
+        transform: scale(1.2, 1.2);
+      }
+
+      span {
+        color: #3939ac;
+      }
     }
 
     .icon {
       font-size: 50px;
       display: block;
-      margin: 0 auto 20px;
       color: gray;
     }
   }
