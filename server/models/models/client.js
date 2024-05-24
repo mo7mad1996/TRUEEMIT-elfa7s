@@ -7,7 +7,8 @@ const client = new Schema(
     start: { type: Number, default: 0 },
     pay: [
       {
-        value: Number,
+        is_payed: { type: Boolean, default: false },
+        value: { type: Number, default: 0 },
         note: String,
         createdAt: { type: Date, default: Date.now },
       },

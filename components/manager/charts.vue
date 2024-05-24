@@ -13,6 +13,8 @@
                 >
                   {{ a }}
                 </td>
+
+                <td>سداد أجل</td>
               </thead>
               <tbody>
                 <tr>
@@ -20,6 +22,7 @@
                   <td v-for="(a, n) in labels" :key="n">
                     {{ cars(a).length }}
                   </td>
+                  <td>{{ pays.length }}</td>
                 </tr>
 
                 <tr>
@@ -31,11 +34,21 @@
                         .toFixed(2)
                     }}
                   </td>
+                  <td>
+                    {{ pays.reduce((a, b) => a - b.value, 0).toFixed(2) }}
+                  </td>
                 </tr>
                 <tr border="1">
                   <td>اجمالي إيرادات</td>
-                  <td colspan="4">
-                    {{ data.reduce((a, b) => a + b.cost, 0).toFixed(2) }}
+                  <td colspan="5">
+                    {{
+                      (
+                        data.reduce(
+                          (a, b) => (b.payment == "أجل" ? a : a + b.cost),
+                          0
+                        ) + pays.reduce((a, b) => a - b.value, 0)
+                      ).toFixed(2)
+                    }}
                     <sub>ر.س</sub>
                   </td>
                 </tr>
@@ -67,13 +80,14 @@
 
 <script>
 export default {
-  props: ["x", "y", "data"],
+  props: ["x", "y", "data", "time"],
   name: "Charts",
   data: () => ({
     labels: ["أجل", "كاش", "شبكة", ""],
-    colors: new Array(21)
+    colors: new Array(255)
       .fill(null)
       .map((e) => `hsl(${Math.random() * 255} 40% 60%)`),
+    pays: [],
   }),
   computed: {
     options() {
@@ -156,6 +170,33 @@ export default {
     cars(payment) {
       return this.data.filter((e) => e.payment == payment);
     },
+    generate_a_new_pay() {
+      const length = this.y.length;
+
+      if (length) {
+        const one_day = 1000 * 60 * 60 * 24;
+        const [start, end] = [this.y[length - 1], this.y[0] + one_day];
+
+        this.$axios
+          .$get(`/clients/custom_pays/${start}/${end}`)
+          .then((r) => (this.pays = r));
+      }
+    },
+    init() {
+      if (this.time)
+        this.$axios
+          .$get("/clients/pays/" + this.time)
+          .then((r) => (this.pays = r));
+      else this.generate_a_new_pay();
+    },
+  },
+  watch: {
+    data() {
+      this.init();
+    },
+  },
+  mounted() {
+    this.init();
   },
 };
 </script>

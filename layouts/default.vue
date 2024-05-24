@@ -70,14 +70,6 @@ export default {
     },
   },
 
-  watch: {
-    cars() {
-      console.dir(
-        "cars",
-        this.cars.map((e) => ({ saved: e.saved, updated: e.updated }))
-      );
-    },
-  },
   mounted() {
     addEventListener("keydown", this.handelKey);
     addEventListener("focus", this.focus);

@@ -53,5 +53,35 @@ module.exports = (router) => {
     res.json(cars);
   });
 
+  router.get("/special/:start/:end", async (req, res) => {
+    const { start, end } = req.params;
+
+    // Validate the timestamps
+    const startTimestamp = Number(start);
+    const endTimestamp = Number(end);
+
+    if (isNaN(startTimestamp) || isNaN(endTimestamp)) {
+      return res
+        .status(400)
+        .json({
+          error: "Invalid date format. Please provide valid timestamps.",
+        });
+    }
+
+    try {
+      // Find cars within the date range
+      const cars = await Car.find({
+        date: { $gte: startTimestamp, $lte: endTimestamp },
+      }).select(["cost", "payment", "date", "createdAt"]);
+
+      // Send the result as JSON
+      res.json(cars);
+    } catch (error) {
+      // Handle errors
+      console.error("Error fetching cars:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
   return router;
 };

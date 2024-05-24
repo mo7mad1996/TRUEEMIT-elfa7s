@@ -4,16 +4,7 @@
       <h1>{{ client.name }}</h1>
 
       <div class="cost">
-        <span class="num">
-          {{
-            data_to_show
-              .reduce(
-                (a, b) => a + (+b.cost || +b.value || 0),
-                client.start || 0
-              )
-              .toFixed(2)
-          }}
-        </span>
+        <span class="num"> {{ cost }} </span>
         <sub class="distinction"> ر.س </sub>
       </div>
 
@@ -23,7 +14,10 @@
       </button>
     </header>
 
-    <Table :data_to_show="data_to_show" :start="client.start" />
+    <Table
+      :data_to_show="data_to_show.filter((a) => a.is_payed != true)"
+      :start="client.start"
+    />
 
     <Add_pay_modle
       v-if="is_model_open"
@@ -63,6 +57,25 @@ export default {
         return d2 - d1;
       });
     },
+    cost() {
+      return this.data_to_show
+        .reduce(
+          (a, b) => a + (+b.cost || +b.value || 0),
+          this.client.start || 0
+        )
+        .toFixed(2);
+    },
+  },
+  mounted() {
+    if (this.cost == 0) {
+      const carsIds = this.cars.map((e) => e._id);
+      const client = this.client;
+
+      this.$axios.$post("/clients/update/", {
+        client,
+        carsIds,
+      });
+    }
   },
   methods: {
     toggle_model() {

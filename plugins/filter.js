@@ -9,7 +9,7 @@ export default async (_, inject) => {
             if (!blocked.find((i) => i == key)) {
               const value = item[key];
 
-              if (value.toString().indexOf(search.value) > -1) {
+              if (value?.toString().indexOf(search.value) > -1) {
                 return value;
               }
             }

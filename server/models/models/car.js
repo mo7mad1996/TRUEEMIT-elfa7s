@@ -41,6 +41,7 @@ const car = new Schema(
     payment: { type: String, default: "" },
     cost: { type: Number, default: 0 },
     cost_disabled: { type: Boolean, default: false },
+    is_payed: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
