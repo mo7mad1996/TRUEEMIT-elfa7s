@@ -15,13 +15,13 @@
       </div>
 
       <div class="left">
-        <span>
+        <span v-if="$shop.twitter">
           <font-awesome-icon :icon="['fab', 'twitter']" />
-          tashamlsa
+          {{ $shop.twitter }}
         </span>
-        <span>
+        <span v-if="$shop.tiktok">
           <font-awesome-icon :icon="['fab', 'tiktok']" />
-          tashamlsa
+          {{ $shop.tiktok }}
         </span>
       </div>
     </div>

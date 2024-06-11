@@ -1,9 +1,5 @@
 <template>
   <div @input="update" @change="update" @click.stop="update">
-    <!-- <div class="fixed">
-      {{ car.saved ? "" : "not" }} saved <br />
-      {{ car.updated ? "" : "not" }} updated <br />
-    </div> -->
     <EngineerHeader :car="car" />
     <FristPage :car="car" v-if="car?.service != 'محركات'" />
     <SecoundPage :car="car" />
@@ -45,7 +41,7 @@ import _ from "lodash";
 
 export default {
   middleware: "engineer",
-  props: ["cars", "socket"],
+  props: ["cars", "socket", "updateCars"],
   head: () => ({ title: " فحص السياره" }),
   data: () => ({ car: {}, loading: false }),
   methods: {
@@ -57,6 +53,7 @@ export default {
       }
 
       this.socket.emit("update car", this.car);
+      this.$emit("updateCars", this.car);
     },
 
     save() {

@@ -14,10 +14,7 @@
       </button>
     </header>
 
-    <Table
-      :data_to_show="data_to_show.filter((a) => a.is_payed != true)"
-      :start="client.start"
-    />
+    <Table :data="data_to_show" :start="client.start" />
 
     <Add_pay_modle
       v-if="is_model_open"
@@ -72,8 +69,8 @@ export default {
       const client = this.client;
 
       this.$axios.$post("/clients/update/", {
-        client,
         carsIds,
+        client,
       });
     }
   },

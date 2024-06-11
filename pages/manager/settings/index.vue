@@ -63,6 +63,7 @@
           </label>
           <input v-model="shop.name" />
         </div>
+
         <div class="form-input">
           <label>
             <font-awesome-icon icon="fa-solid fa-phone" />
@@ -84,7 +85,20 @@
           </label>
           <input v-model="shop.address" />
         </div>
-
+        <div class="form-input">
+          <label>
+            <font-awesome-icon :icon="['fab', 'twitter']" />
+            تويتر | X
+          </label>
+          <input v-model="shop.twitter" />
+        </div>
+        <div class="form-input">
+          <label>
+            <font-awesome-icon :icon="['fab', 'tiktok']" />
+            تيك توك
+          </label>
+          <input v-model="shop.tiktok" />
+        </div>
         <button type="submit" class="btn" :disabled="shop.loading">
           <Loader v-if="shop.loading" />
           <span v-else>تعديل</span>

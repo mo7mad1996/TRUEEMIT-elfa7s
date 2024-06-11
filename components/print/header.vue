@@ -19,6 +19,11 @@
         <span class="date">
           {{ $moment(new Date(car.date)).locale("En").format("DD/MM/YYYY") }}
         </span>
+
+        <div class="text-center cr" v-if="$shop.cr">
+          س . ت:
+          {{ $shop.cr }}
+        </div>
       </div>
     </div>
     <div class="bottom">
@@ -121,6 +126,11 @@ header {
         color: #000;
       }
     }
+  }
+
+  .cr {
+    margin: 2em 0;
+    font-size: 0.8em;
   }
 }
 </style>

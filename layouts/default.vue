@@ -1,5 +1,5 @@
 <template>
-  <div class="__default_layout" @input="update" @change="update">
+  <div class="__default_layout">
     <LayoutHeader />
     <main class="__main_layout">
       <NuxtChild
@@ -7,6 +7,7 @@
         :socket="socket"
         @add_car="add_car"
         @remove="remove"
+        @updateCars="updateCars"
       />
     </main>
 
@@ -40,6 +41,15 @@ export default {
 
     update() {
       this.socket.emit("update cars", this.cars);
+    },
+
+    updateCars(car) {
+      const cars = [
+        ...this.cars.map((e) => (e._id == car._id ? { ...car } : e)),
+      ];
+
+      this.cars = cars;
+      this.update();
     },
 
     remove(id) {
@@ -76,6 +86,7 @@ export default {
 
     this.connect();
   },
+
   beforeDestroy() {
     removeEventListener("keydown", this.handelKey);
     removeEventListener("focus", this.focus);
