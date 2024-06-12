@@ -71,7 +71,6 @@ module.exports = (router) => {
   router.post("/update", async (req, res) => {
     await Clients.findByIdAndUpdate(req.body.client._id, {
       pay: req.body.client.pay.map((e) => ({ ...e, is_payed: true })),
-      start: 0,
     });
 
     await Car.updateMany(

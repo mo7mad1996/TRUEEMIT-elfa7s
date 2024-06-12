@@ -47,50 +47,50 @@
             v-if="services.indexOf(car.service) == -1"
           />
         </div>
-        <div class="form-input">
-          <label>
-            <font-awesome-icon :icon="['fas', 'cash-register']" />
-            حالة السداد
-          </label>
-          <select v-model="car.payment">
-            <option v-for="(s, n) in payment" :key="n" :value="s">
-              {{ s }}
-            </option>
-          </select>
-        </div>
 
-        <div v-if="car.payment == 'أجل'">
+        <template v-if="!car.cost_disabled || $auth.user.job == 'manager'">
           <div class="form-input">
             <label>
-              <font-awesome-icon :icon="['fas', 'handshake']" />
-              العميل
+              <font-awesome-icon :icon="['fas', 'cash-register']" />
+              حالة السداد
             </label>
-            <select v-model="car.client">
-              <option v-for="(s, n) in clients" :key="n" :value="s._id">
-                {{ s.name }}
+            <select v-model="car.payment">
+              <option v-for="(s, n) in payment" :key="n" :value="s">
+                {{ s }}
               </option>
             </select>
           </div>
 
+          <div v-if="car.payment == 'أجل'">
+            <div class="form-input">
+              <label>
+                <font-awesome-icon :icon="['fas', 'handshake']" />
+                العميل
+              </label>
+              <select v-model="car.client">
+                <option v-for="(s, n) in clients" :key="n" :value="s._id">
+                  {{ s.name }}
+                </option>
+              </select>
+            </div>
+
+            <div class="form-input">
+              <label>
+                <font-awesome-icon :icon="['fas', 'truck']" />
+                اسم المندوب
+              </label>
+              <input v-model="car.representative" />
+            </div>
+          </div>
+
           <div class="form-input">
             <label>
-              <font-awesome-icon :icon="['fas', 'truck']" />
-              اسم المندوب
+              <font-awesome-icon :icon="['fas', 'dollar-sign']" />
+              تكلفة الفحص
             </label>
-            <input v-model="car.representative" />
+            <input v-model="car.cost" @input="(e) => validate(e)" />
           </div>
-        </div>
-
-        <div
-          class="form-input"
-          v-if="!car.cost_disabled || $auth.user.job == 'manager'"
-        >
-          <label>
-            <font-awesome-icon :icon="['fas', 'dollar-sign']" />
-            تكلفة الفحص
-          </label>
-          <input v-model="car.cost" @input="(e) => validate(e)" />
-        </div>
+        </template>
       </div>
       <div class="logo">
         <div><img :src="$shop.logo" /></div>

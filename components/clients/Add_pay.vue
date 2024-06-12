@@ -7,6 +7,14 @@
         </div>
 
         <div class="form-input">
+          <input id="createdAt" v-model="createdAt" type="date" />
+          <label for="createdAt">
+            <font-awesome-icon :icon="['far', 'calendar-check']" />
+            بتاريخ
+          </label>
+        </div>
+
+        <div class="form-input">
           <input
             id="value"
             required
@@ -17,6 +25,7 @@
           />
           <label for="value">
             <font-awesome-icon :icon="['fas', 'dollar-sign']" />
+
             المبلغ
           </label>
         </div>
@@ -28,7 +37,6 @@
             ملاحظات
           </label>
         </div>
-
         <button class="btn d-block mt-4" type="submit" :disabled="submited">
           <Loader v-if="submited" />
           <span v-else>أضف</span>
@@ -46,12 +54,13 @@
 import { mapActions } from "vuex";
 
 export default {
-  name: "Add_client_modle",
+  name: "Add_Pay_modle",
   props: ["id"],
   data: () => ({
+    submited: false,
     value: 0,
     note: "",
-    submited: false,
+    createdAt: "",
   }),
   methods: {
     ...mapActions({ setAlert: "alert/add" }),
@@ -62,6 +71,9 @@ export default {
         .$post(`/clients/${this.id}/addpay`, {
           value: +this.value * -1,
           note: this.note,
+          createdAt: this.createdAt
+            ? new Date(this.createdAt).getTime()
+            : undefined,
         })
         .then((data) => {
           this.$emit("close");
@@ -82,6 +94,7 @@ export default {
   },
   mounted() {
     addEventListener("keydown", this.keyDown);
+    this.createdAt = this.$moment().lang("en").format("YYYY-MM-DD");
   },
   beforeDestroy() {
     removeEventListener("keydown", this.keyDown);
