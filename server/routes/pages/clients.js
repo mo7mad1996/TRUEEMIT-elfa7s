@@ -68,6 +68,17 @@ module.exports = (router) => {
     res.json(filteredClients.reduce((a, b) => a.concat(b), []));
   });
 
+  router.get("/update/:id/:val", async (req, res) => {
+    const client = await Clients.findByIdAndUpdate(
+      req.params.id,
+      {
+        start: +req.params.val,
+      },
+      { new: true }
+    );
+
+    res.json(client);
+  });
   router.post("/update", async (req, res) => {
     await Clients.findByIdAndUpdate(req.body.client._id, {
       pay: req.body.client.pay.map((e) => ({ ...e, is_payed: true })),
