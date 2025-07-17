@@ -2,36 +2,13 @@
   <div class="bg" ref="p">
     <nuxt />
     <img class="logo-print" :src="$shop.logo" alt="" />
-    <div class="footer text-center" v-if="$shop.address">
-      <div class="right">
-        <span>
-          <font-awesome-icon :icon="['fass', 'map-location-dot']" />
-          {{ $shop.address }}
-        </span>
-        <span v-if="$shop.phone">
-          <font-awesome-icon :icon="['fas', 'mobile-screen-button']" />
-          {{ $shop.phone }}
-        </span>
-      </div>
-
-      <div class="left">
-        <span v-if="$shop.twitter">
-          <font-awesome-icon :icon="['fab', 'twitter']" />
-          {{ $shop.twitter }}
-        </span>
-        <span v-if="$shop.tiktok">
-          <font-awesome-icon :icon="['fab', 'tiktok']" />
-          {{ $shop.tiktok }}
-        </span>
-      </div>
-    </div>
   </div>
 </template>
 
 <script>
 export default {
   mounted() {
-    window.print();
+    if (!this.$route.query.hasOwnProperty("no_print")) window.print();
   },
 };
 </script>
@@ -50,8 +27,9 @@ export default {
 .page {
   margin: 4em auto 0;
   background: white;
+  display: table;
   width: 210mm;
-  height: 297mm;
+  min-height: 297mm;
   padding: 0.5in;
   // font-size: 18px;
   overflow: hidden;
@@ -60,7 +38,7 @@ export default {
 
   @media print {
     width: calc(210mm - 1in);
-    height: calc(297mm - 1in);
+    min-height: calc(297mm - 1in);
     overflow: hidden !important;
     padding: 0;
     box-shadow: none;
@@ -74,10 +52,6 @@ export default {
   box-sizing: border-box;
   width: 100%;
   border-top: 1px solid #333;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  display: none;
 
   > div {
     flex: 1;

@@ -3,6 +3,7 @@
     <LayoutHeader />
     <main class="__main_layout">
       <NuxtChild
+        v-if="socket"
         :cars="cars"
         :socket="socket"
         @add_car="add_car"
@@ -21,7 +22,12 @@ import Alert from "@/components/layout/alert";
 export default {
   components: { Alert },
   name: "Layout",
-  data: () => ({ cars: [], socket: false }),
+  data() {
+    return {
+      cars: [],
+      socket: null,
+    };
+  },
   methods: {
     handelKey(e) {
       switch (e.target.tagName.toLocaleLowerCase()) {
@@ -60,19 +66,18 @@ export default {
 
     connect() {
       this.socket = this.$nuxtSocket({
-        name: "home",
+        name: "main",
         channel: "/",
+        url: "/",
         reconnection: true,
       });
 
-      if (this.socket) {
-        this.socket.on("update cars", (cars) => {
-          this.cars = [...cars];
-        });
-        this.socket.on("disconnect", () => {
-          window.location.reload();
-        });
-      }
+      this.socket.on("update cars", (cars) => {
+        this.cars = [...cars];
+      });
+      this.socket.on("disconnect", () => {
+        window.location.reload();
+      });
     },
 
     focus() {

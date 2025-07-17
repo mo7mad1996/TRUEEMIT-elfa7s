@@ -88,7 +88,7 @@ export default {
         );
 
         this.$axios
-          .$post("/trueemit/save_file/", formdata, {
+          .$post("/cars-exclusive/append_image", formdata, {
             headers: {
               "Content-Type": "multipart/form-data",
             },

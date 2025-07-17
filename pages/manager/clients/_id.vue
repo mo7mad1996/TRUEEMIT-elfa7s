@@ -12,6 +12,15 @@
         <span>مبلغ جديد</span>
         <font-awesome-icon :icon="['fas', 'sack-dollar']" />
       </button>
+      <button
+        class="btn"
+        style="background-color: red"
+        title="حذف العميل"
+        @click="deleteClient"
+      >
+        <span>حذف</span>
+        <font-awesome-icon :icon="['fas', 'trash']" />
+      </button>
     </header>
 
     <Table :data="data_to_show" :start="client.start" />
@@ -29,6 +38,8 @@
 // components
 import Table from "@/components/clients/single/Table";
 import Add_pay_modle from "@/components/clients/Add_pay";
+
+import { mapActions } from "vuex";
 
 export default {
   middleware: "manager",
@@ -75,11 +86,25 @@ export default {
     }
   },
   methods: {
+    ...mapActions({
+      setAlert: "alert/add",
+    }),
     toggle_model() {
       this.is_model_open = !this.is_model_open;
     },
     update_client(d) {
       this.client = d;
+    },
+    deleteClient() {
+      if (confirm("هل تريد حذف فعلا تريد حذف" + this.client.name)) {
+        this.$axios.delete("/clients/" + this.$route.params.id).then((e) => {
+          this.$router.push("/manager/clients");
+
+          this.setAlert({
+            text: `تم حذف ${this.client.name} `,
+          });
+        });
+      }
     },
   },
   components: {

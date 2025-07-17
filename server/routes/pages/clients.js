@@ -107,5 +107,9 @@ module.exports = (router) => {
     ).then((d) => res.json(d));
   });
 
+  router.delete("/:id", (req, res) =>
+    Clients.findByIdAndDelete(req.params.id).then((d) => res.json(d))
+  );
+
   return router;
 };

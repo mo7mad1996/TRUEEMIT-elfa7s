@@ -95,9 +95,9 @@ module.exports = (router) => {
       new_user.password = password;
     }
 
-    User.findByIdAndUpdate(req.body._id, new_user).then((user) =>
-      res.json(user)
-    );
+    User.findByIdAndUpdate(req.body._id, new_user)
+      .then((user) => res.json(user))
+      .catch((err) => res.status(403).json(err));
   });
 
   return router;

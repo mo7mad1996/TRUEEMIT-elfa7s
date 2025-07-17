@@ -1,13 +1,13 @@
 // packages
-const { Nuxt, Builder } = require("nuxt");
-const socketio = require("socket.io");
+const socketIo = require("socket.io");
 const open = require("open");
+const { Nuxt, Builder } = require("nuxt");
 
 // where is nuxt.config.js file get it...
 const config = require("../../../nuxt.config");
 
 const nuxt = new Nuxt(config);
-const { host, port } = nuxt.options.server;
+let { host, port } = config.server;
 
 // ..:: start function ::..
 async function start(app) {
@@ -15,9 +15,12 @@ async function start(app) {
     // in development
     const builder = new Builder(nuxt);
     await builder.build();
+    // port = 3001;
   }
   // in production
-  else await nuxt.ready();
+  else {
+    await nuxt.ready();
+  }
 
   // ..:: render nuxt router ::..
   app.use(nuxt.render);
@@ -25,13 +28,13 @@ async function start(app) {
   // ..:: Running server ::..
   const server = app.listen(port, (_) => {
     console.log(`listen on: http://${host}:${port}`);
-    // ..:: open in the brawser in production ::..
+    // ..:: open in the browser in production ::..
     if (!config.dev) open(`http://${host}:${port}`);
   });
 
   // ..:: socket.io config ::..
   // It depends on a server constant
-  const IO = socketio(server);
+  const IO = socketIo(server);
   require("../../IO")(IO);
 }
 

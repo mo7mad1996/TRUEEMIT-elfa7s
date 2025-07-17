@@ -10,8 +10,10 @@ module.exports = {
     port,
     host: IP,
   },
-  dev: !!process.env.NODE_ENV,
+  dev: process.env.NODE_ENV == "development",
+
   telemetry: false,
+
   router: {
     middleware: ["valdation", "auth"],
   },
@@ -36,6 +38,7 @@ module.exports = {
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
+    "~/assets/scss/tailwind.css",
     "@fortawesome/fontawesome-svg-core/styles.css",
     "~/assets/scss/reset.scss",
     "~/assets/scss/globals.scss",
@@ -46,6 +49,7 @@ module.exports = {
     { src: "~/plugins/apex-chart.js", mode: "client" },
     { src: "~/plugins/particles.js", mode: "client" },
     { src: "~/plugins/barcode.js", mode: "client" },
+    { src: "~/plugins/v-click-outside.js", mode: "client" },
     { src: "~/plugins/fontawesome.js" },
     { src: "~/plugins/filter.js" },
     { src: "~/plugins/check_max_lines.js" },
@@ -68,6 +72,8 @@ module.exports = {
     "@nuxtjs/axios",
 
     "@nuxtjs/auth-next",
+
+    "@nuxtjs/tailwindcss",
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios

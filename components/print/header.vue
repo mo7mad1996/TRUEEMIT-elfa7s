@@ -2,12 +2,27 @@
   <header>
     <div class="top">
       <div>
-        <template v-if="car.payment !== 'أجل'">
-          <div v-if="car.payment">حالة السداد : {{ car.payment }}.</div>
+        <template v-if="$auth.user.job != 'exclusive'">
+          <div v-if="car.payment">
+            حالة السداد : {{ car.payment == "أجل" ? "اخرى" : car.payment }}.
+          </div>
           <div v-if="car.cost" class="mt-2">
-            تكلفة التقرير : {{ car.cost.toFixed(2) }} ر.س.
+            تكلفة التقرير :
+            {{
+              new Intl.NumberFormat("ar-SA", {
+                style: "currency",
+                currency: "SAR",
+              }).format(car.cost)
+            }}
           </div>
         </template>
+        <div v-else>
+          <img
+            v-if="$auth.user.logo"
+            :src="$auth.user.logo"
+            class="h-28 mx-auto mb-5 object-contain block"
+          />
+        </div>
       </div>
       <div>
         <img :src="$shop.logo" class="logo" />
@@ -78,6 +93,11 @@ export default {
 
 <style lang="scss" scoped>
 header {
+  @media print {
+    display: table-header-group;
+    width: 100%;
+  }
+
   .top {
     display: flex;
 

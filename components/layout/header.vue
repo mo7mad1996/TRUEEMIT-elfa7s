@@ -1,91 +1,158 @@
 <template>
-  <header>
-    <div class="container">
-      <div class="logo">
-        <img :src="$shop.logo" />
-
-        <div>
-          <h3>{{ $shop.name }}</h3>
-          <nuxt-link :to="'/' + $auth.user.job">
-            صفحة ال{{ $shop.jobs[$auth.user.job] }}.
-          </nuxt-link>
+  <header
+    class="pt-1 sticky top-0 left-0 z-50 backdrop-blur-sm mx-auto container"
+  >
+    <div
+      class="backdrop-blur-sm bg-white/30 flex items-center justify-between border shadow rounded-lg px-2 py-2"
+    >
+      <div class="flex items-end gap-2 flex-1">
+        <nuxt-link to="/">
+          <img :src="$auth.user?.logo || $shop.logo" class="h-16" />
+        </nuxt-link>
+        <div class="clock">
+          <div>
+            <span class="text-2xl">{{ time.full }}</span>
+            <span class="text-xs opacity-60">{{ time.am_pm }}</span>
+          </div>
+          <div class="text-sm opacity-60">{{ time.date }}</div>
         </div>
       </div>
 
-      <div class="left">
-        <div class="time">{{ time }}</div>
-        <button class="btn" @click="$auth.logout()" title="خروج من النظام">
-          <span>خروج</span>
-          <font-awesome-icon icon="fa-solid fa-right-from-bracket" />
+      <div class="text-center flex-1 text-lg">
+        <h3 class="">{{ $shop.name }}</h3>
+        <p class="opacity-60 text-sm">{{ $auth.user.name }}</p>
+      </div>
+
+      <div
+        class="flex flex-1 justify-end relative"
+        v-click-outside="() => (menu = false)"
+      >
+        <button
+          class="p-2 flex bg-slate-100 hover:bg-slate-200 aspect-square rounded"
+          @click.prevent.stop="menu = !menu"
+        >
+          <font-awesome-icon
+            icon="fa-solid fa-bars"
+            class="pointer-events-none"
+          />
         </button>
+
+        <Transition>
+          <ul
+            v-if="menu"
+            class="absolute top-full pt-1 min-w-36 z-50 border mt-2 shadow rounded origin-top"
+          >
+            <li
+              class="p-px group flex gap-px flex-col backdrop-blur-sm bg-white/60"
+              v-for="(link, n) in links.filter((l) => l.show)"
+              :key="n"
+              @click="() => handleClick(link)"
+            >
+              <nuxt-link
+                class="flex gap-3 items-center group-hover:bg-slate-200 text-gray-700 py-1 px-2 rounded"
+                :class="link.customClass"
+                :to="link.to"
+              >
+                <font-awesome-icon
+                  v-if="link.icon"
+                  :icon="link.icon"
+                  class="text-sm opacity-75"
+                />
+                <span>{{ link.title }}</span>
+              </nuxt-link>
+            </li>
+          </ul>
+        </Transition>
       </div>
     </div>
   </header>
 </template>
 
 <script>
+import { mapActions } from "vuex";
+
 export default {
   name: "LayoutHeader",
+
   data() {
-    return { time: "" };
+    const job = this.$auth?.user?.job;
+
+    return {
+      menu: false,
+      links: [
+        { to: "/", title: "الرئيسية", icon: "fa-solid fa-home", show: true },
+        {
+          to: `/${job}/cars`,
+          title: "السيارات",
+          icon: "fa-car-rear",
+          show: ["engineer", "exclusive"].includes(job),
+        },
+        {
+          to: `/${job}/settings`,
+          title: "الإعدادات",
+          icon: "fa-cog",
+          show: ["engineer", "exclusive"].includes(job),
+        },
+        {
+          to: "",
+          title: "خروج من النظام",
+          // icon: "fa-solid fa-right-from-bracket",
+          show: true,
+          customClass:
+            "!bg-red-500 px-6  group-hover:!bg-red-600 justify-center text-white shadow",
+          action() {
+            this.$auth.logout();
+          },
+        },
+      ],
+      time: {
+        full: "",
+        am_pm: "",
+        date: "",
+      },
+    };
   },
-  mounted() {
-    this.update_time();
-  },
+
   methods: {
-    update_time() {
-      this.time = this.$moment().format("hh:mm");
-      if (process.client) requestAnimationFrame(this.update_time);
+    ...mapActions({
+      setAlert: "alert/add",
+    }),
+
+    handleClick(link) {
+      if (typeof link.action === "function") {
+        link.action.bind(this).call(this);
+      }
     },
+
+    updateTime() {
+      const now = this.$moment();
+
+      this.time.full = now.locale("en").format("hh:mm");
+      this.time.am_pm = now.locale("en").format("A");
+      this.time.date = now.locale("ar").format("dddd: DD MMM Y");
+
+      requestAnimationFrame(this.updateTime);
+    },
+  },
+
+  mounted() {
+    this.updateTime();
   },
 };
 </script>
 
-<style lang="scss" scoped>
-header {
-  background: white;
-  padding: 5px 10px;
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px,
-    rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+<style scoped lang="scss">
+.v-enter-active {
+  animation: menu 0.2s ease;
+}
 
-  .container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+.v-leave-active {
+  animation: menu 0.2s ease reverse;
+}
 
-    .logo {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-
-      * {
-        margin: 0;
-      }
-
-      img {
-        max-height: 70px;
-        max-width: 14vw;
-      }
-
-      a {
-        color: #555;
-        text-decoration: none;
-        font-size: 0.8em;
-      }
-    }
-
-    .left {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      .time {
-        color: #555;
-
-        @media (max-width: 840px) {
-          display: none;
-        }
-      }
-    }
+@keyframes menu {
+  from {
+    transform: perspective(100px) rotateX(-90deg) scale(0.7);
   }
 }
 </style>

@@ -92,6 +92,8 @@ export default {
   computed: {
     options() {
       return {
+        dir: "rtl",
+        defaultLocale: "ar",
         plotOptions: {
           bar: {
             columnWidth: "20",

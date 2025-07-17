@@ -66,7 +66,7 @@ export default (ctx, inject) => {
           );
 
           if (destance < 100 && destance > 5) {
-            drawLine(p, partical, destance);
+          drawLine(p, partical, destance);
           }
         });
       });

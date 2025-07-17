@@ -22,6 +22,19 @@ module.exports = (router) => {
     );
   });
 
+  router.delete("/delete", async (req, res) => {
+    const { date } = req.query;
+    const parsedDate = new Date(date);
+
+    if (isNaN(parsedDate)) {
+      return res.status(400).json({ error: "Invalid date format" });
+    }
+
+    const result = await Car.deleteMany({ date: { $lt: parsedDate } });
+
+    return res.json(result);
+  });
+
   router.get("/:id", async (req, res) => {
     const car = await Car.findById(req.params.id);
     res.json(car);
@@ -61,11 +74,9 @@ module.exports = (router) => {
     const endTimestamp = Number(end);
 
     if (isNaN(startTimestamp) || isNaN(endTimestamp)) {
-      return res
-        .status(400)
-        .json({
-          error: "Invalid date format. Please provide valid timestamps.",
-        });
+      return res.status(400).json({
+        error: "Invalid date format. Please provide valid timestamps.",
+      });
     }
 
     try {

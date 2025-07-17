@@ -1,18 +1,18 @@
 <template>
-  <div @input="update" @change="update" @click.stop="update">
+  <div @input="update" @change="update" @click.stop="update" v-if="car">
     <EngineerHeader :car="car" />
-    <FristPage :car="car" v-if="car?.service != 'محركات'" />
-    <SecoundPage :car="car" />
+    <FirstPage :car="car" v-if="car?.service != 'محركات'" />
+    <SecondPage :car="car" />
 
     <div class="container">
-      <button :disabled="loading" @click="save" class="btn d-block mb-2">
+      <button :disabled="loading" @click="save" class="btn d-block mb-2 mt-4">
         <Loader v-show="loading" />
 
         <div v-show="!loading">
           <span v-if="car?.saved">
             طباعه
-            <font-awesome-icon :icon="['fas', 'print']"
-          /></span>
+            <font-awesome-icon :icon="['fas', 'print']" />
+          </span>
           <span v-else>
             حفظ
             <font-awesome-icon :icon="['fas', 'floppy-disk']" />
@@ -29,21 +29,23 @@
       </button>
     </div>
   </div>
+  <div v-else class="text-center font-bold pt-12">
+    جاري تحميل بيانات السيارة
+  </div>
 </template>
 
 <script>
 import EngineerHeader from "@/components/engineer/header";
-import SecoundPage from "@/components/engineer/secound_page";
-import FristPage from "@/components/engineer/frist_page";
+import SecondPage from "@/components/engineer/SecondPage";
+import FirstPage from "@/components/engineer/First_page";
 
 import { mapActions } from "vuex";
-import _ from "lodash";
 
 export default {
   middleware: "engineer",
   props: ["cars", "socket", "updateCars"],
   head: () => ({ title: " فحص السياره" }),
-  data: () => ({ car: {}, loading: false }),
+  data: () => ({ car: null, loading: false }),
   methods: {
     ...mapActions({ setAlert: "alert/add" }),
 
@@ -57,6 +59,11 @@ export default {
     },
 
     save() {
+      if (!this.car.payment || !this.car.cost) {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        return this.setAlert({ text: "تاكد من البيانات", error: true });
+      }
+
       // print
       if (!this.car.updated && this.car.saved)
         return open("/print/" + this.$route.params.id);
@@ -97,29 +104,38 @@ export default {
 
         .finally(() => (this.loading = false));
     },
-  },
 
-  mounted() {
-    this.car = this.cars.filter((car) => car._id == this.$route.params.id)[0];
+    getCar() {
+      // wait if no cars
+      if (!this.cars) return;
+      if (!this.cars.length) return this.$router.push("/exclusive");
 
-    if (!this.car) this.$router.push("/engineer");
+      this.car = this.cars.filter((car) => car._id == this.$route.params.id)[0];
 
-    if (this.socket) {
+      // if no car go home
+      if (!this.car) this.$router.push("/exclusive");
+
+      // socket
       this.socket.emit("join room", this.$route.params.id);
-
       this.socket.on("leave room", (_) => {
-        this.$router.push("/engineer");
-
+        this.$router.push("/exclusive");
         this.setAlert({ error: true, text: "شخص ما حذف السياره" });
       });
-
       this.socket.on("update car", (car) => (this.car = { ...car }));
-    }
+    },
+  },
+  mounted() {
+    this.getCar();
+  },
+  watch: {
+    cars() {
+      this.getCar();
+    },
   },
   components: {
     EngineerHeader,
-    SecoundPage,
-    FristPage,
+    SecondPage,
+    FirstPage,
   },
 };
 </script>

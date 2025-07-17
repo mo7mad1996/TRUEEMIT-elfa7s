@@ -1,63 +1,71 @@
 <template>
   <div class="page">
     <PrintHeader :car="car" />
-    <div class="page1">
-      <main>
-        <h4>
-          فحص البودي
+    <div style="display: table-row-group">
+      <div class="page1">
+        <div class="flex">
+          <main>
+            <h4>
+              فحص البودي
 
-          <font-awesome-icon :icon="['fas', 'car-on']" />
-        </h4>
-        <table>
-          <thead>
-            <th></th>
-            <th v-for="val in values" :key="val">{{ val }}</th>
-          </thead>
-          <tbody>
-            <tr v-for="input in $inputs" :key="input.en">
-              <td class="blue">{{ input.ar }}</td>
-              <td class="text-center" v-for="(_, val) in values" :key="val">
-                <font-awesome-icon
-                  :icon="['fas', 'check']"
-                  v-if="car.body[input.en] == val"
-                />
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <h6>الفايبر + الصدامات خارج الفحص</h6>
-        <fieldset v-if="car.body.note">
-          <legend>
-            <font-awesome-icon :icon="['fas', 'clipboard']" />
+              <font-awesome-icon :icon="['fas', 'car-on']" />
+            </h4>
+            <table>
+              <thead>
+                <th></th>
+                <th v-for="val in values" :key="val">{{ val }}</th>
+              </thead>
+              <tbody>
+                <tr v-for="input in $inputs" :key="input.en">
+                  <td class="blue">{{ input.ar }}</td>
+                  <td class="text-center" v-for="(_, val) in values" :key="val">
+                    <font-awesome-icon
+                      :icon="['fas', 'check']"
+                      v-if="car.body[input.en] == val"
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <h6>الفايبر + الصدامات خارج الفحص</h6>
+            <fieldset v-if="car.body.note">
+              <legend>
+                <font-awesome-icon :icon="['fas', 'clipboard']" />
 
-            ملاحظه
-          </legend>
+                ملاحظه
+              </legend>
 
-          <p v-html="$nltobr(car.body.note)"></p>
-        </fieldset>
-      </main>
-      <aside>
-        <h4>
-          الرسم التوضيحي
-          <font-awesome-icon :icon="['fas', 'compass-drafting']" />
-        </h4>
-        <Images :car="car" />
-      </aside>
-      <footer>
-        <h4>
-          فحص الشاصى
-          <font-awesome-icon :icon="['fas', 'toolbox']" />
-        </h4>
+              <p v-html="$nltobr(car.body.note)"></p>
+            </fieldset>
+          </main>
+          <aside>
+            <h4>
+              الرسم التوضيحي
+              <font-awesome-icon :icon="['fas', 'compass-drafting']" />
+            </h4>
+            <Images :car="car" />
+          </aside>
+        </div>
 
-        <p v-html="$nltobr(car.chassis)" v-if="car.chassis"></p>
-      </footer>
+        <footer>
+          <h4>
+            فحص الشاصى
+            <font-awesome-icon :icon="['fas', 'toolbox']" />
+          </h4>
+
+          <p v-html="$nltobr(car.chassis)" v-if="car.chassis"></p>
+        </footer>
+      </div>
     </div>
+
+    <PrintFooter />
   </div>
 </template>
 
 <script>
 import Images from "@/components/engineer/images.vue";
 import PrintHeader from "@/components/print/header";
+import PrintFooter from "@/components/print/footer";
 
 export default {
   name: "Page1",
@@ -67,22 +75,16 @@ export default {
       values: ["سليم", "معدل", "مرشوش", "رش ومعجون", "مغير ومرشوش"],
     };
   },
-  components: { PrintHeader, Images },
+  components: { PrintHeader, PrintFooter, Images },
 };
 </script>
 
 <style lang="scss" scoped>
 main {
-  grid-row-start: 1;
-  grid-row-end: 2;
-  grid-column-start: 1;
-  grid-column-end: 2;
-
   display: flex;
   flex-direction: column;
 
   table {
-    margin-top: -1em;
     font-size: 16px;
 
     thead {
@@ -166,11 +168,14 @@ footer {
 }
 
 .page1 {
-  display: grid;
-  grid-template-rows: 1fr auto;
-  grid-template-columns: repeat(2, 1fr);
-
-  display: grid;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   gap: 10px;
+  margin: -2em 0 0 0;
+
+  .flex {
+    display: flex;
+  }
 }
 </style>

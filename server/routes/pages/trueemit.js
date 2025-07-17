@@ -70,22 +70,6 @@ module.exports = (router) => {
     }
   });
 
-  router.post("/save_file", (req, res) => {
-    const uploadDir = path.join(__dirname, "../..", "upload");
-
-    const form = formidable({
-      uploadDir,
-      keepExtensions: true,
-    });
-
-    form.parse(req, (err, fields, files) => {
-      if (err) console.log(err);
-      res.json({
-        file: "/" + files.file.newFilename,
-      });
-    });
-  });
-
   router.post("/save_client", async (req, res) => {
     const salt = bcrypt.genSaltSync(8);
     const password = bcrypt.hashSync(req.body.password, salt);

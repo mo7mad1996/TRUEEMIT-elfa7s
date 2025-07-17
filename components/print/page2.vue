@@ -18,7 +18,13 @@
       </ul>
 
       <!-- الكمبيوتر -->
-      <div class="section one" v-if="car.service != 'صيانة'">
+      <div
+        class="section"
+        v-if="car.service != 'صيانة'"
+        :class="{
+          one: this.$auth.user.job != 'exclusive',
+        }"
+      >
         <h4>
           فحص الكمبيوتر
           <font-awesome-icon :icon="['fas', 'computer']" />
@@ -29,7 +35,10 @@
 
       <!-- الاكسسورات -->
       <div
-        class="section five"
+        class="section"
+        :class="{
+          five: this.$auth.user.job != 'exclusive',
+        }"
         v-if="
           car.service == 'VIP' || car.service == 'محركات'
           // || car.service == 'شامل'
@@ -44,7 +53,7 @@
       </div>
 
       <!-- الميداني -->
-      <div class="section three">
+      <div class="section three" v-if="this.$auth.user.job != 'exclusive'">
         <h4>
           الفحص الميداني
           <font-awesome-icon :icon="['fas', 'car']" />
@@ -54,7 +63,7 @@
       </div>
 
       <!-- الميكانيكا -->
-      <section class="section two">
+      <section class="section two" v-if="this.$auth.user.job != 'exclusive'">
         <div class="service">
           <h4>
             {{
@@ -69,16 +78,19 @@
         </div>
       </section>
     </div>
+
+    <PrintFooter />
   </div>
 </template>
 
 <script>
 import PrintHeader from "@/components/print/header";
+import PrintFooter from "@/components/print/footer";
 
 export default {
   name: "Page2",
   props: ["car"],
-  components: { PrintHeader },
+  components: { PrintHeader, PrintFooter },
 };
 </script>
 

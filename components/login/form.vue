@@ -54,7 +54,7 @@ export default {
       setAlert: "alert/add",
     }),
     async submit() {
-      // this.submited = true
+      this.submited = true;
 
       try {
         const { data } = await this.$auth.loginWith("local", {
@@ -75,6 +75,7 @@ export default {
             `,
           });
       } catch (err) {
+        this.submited = false;
         console.log(err);
         this.setAlert({
           error: true,

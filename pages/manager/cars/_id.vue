@@ -9,12 +9,12 @@
 
     <div @change="saved = false" @input="saved = false" class="mt-4">
       <EngineerHeader :car="car" />
-      <FristPage :car="car" v-if="car?.service != 'محركات'" />
-      <SecoundPage :car="car" />
+      <First_page :car="car" v-if="car?.service != 'محركات'" />
+      <SecondPage :car="car" />
 
       <div class="container">
         <button
-          class="d-block btn"
+          class="d-block btn mt-4"
           @click="print"
           v-if="saved"
           :disabled="loading"
@@ -38,8 +38,8 @@
 
 <script>
 import EngineerHeader from "@/components/engineer/header";
-import SecoundPage from "@/components/engineer/secound_page";
-import FristPage from "@/components/engineer/frist_page";
+import SecondPage from "@/components/engineer/SecondPage";
+import First_page from "@/components/engineer/First_page";
 
 import { mapActions } from "vuex";
 
@@ -56,7 +56,7 @@ export default {
     return { car, saved, loading };
   },
   head: () => ({ title: "تفاصيل السياره" }),
-  components: { EngineerHeader, FristPage, SecoundPage },
+  components: { EngineerHeader, First_page, SecondPage },
   methods: {
     ...mapActions({
       setAlert: "alert/add",
