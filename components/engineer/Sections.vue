@@ -10,6 +10,7 @@
       >
         <h1 class="text-center text-blue-700 text-lg my-2 font-bold">
           {{ section.title }}
+          ({{ section.title_en }})
         </h1>
 
         <ul>
@@ -21,12 +22,14 @@
             <div class="flex justify-between items-center">
               <h4 class="text-sm text-gray-500">
                 {{ item.name }}
+                <br />
+                ({{ item.name_en }})
               </h4>
 
               <button
                 @click="item.edit = true"
                 v-if="!item.edit"
-                class="py-1 px-3 text-xs rounded shadow bg-blue-100 hover:bg-blue-200 shadow text-blue-700"
+                class="py-1 px-3 text-xs rounded shadow bg-blue-100 hover:bg-blue-200 text-blue-700"
               >
                 اضف ملاحظات
               </button>

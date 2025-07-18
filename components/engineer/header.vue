@@ -48,6 +48,45 @@
           />
         </div>
 
+        <div class="form-input">
+          <label>
+            <font-awesome-icon :icon="['fas', 'oil-well']" />
+            سعة المحرك
+          </label>
+          <input v-model="car.engine" />
+        </div>
+
+        <div class="form-input">
+          <label>
+            <font-awesome-icon :icon="['fas', 'gears']" />
+            نوع القير
+          </label>
+          <select v-model="car.gear">
+            <option
+              v-for="(s, n) in ['يدوي (عادي)', 'اتوماتيك']"
+              :key="n"
+              :value="s"
+            >
+              {{ s }}
+            </option>
+          </select>
+        </div>
+        <div class="form-input">
+          <label>
+            <font-awesome-icon :icon="['fas', 'gas-pump']" />
+            نوع الوقود
+          </label>
+          <select v-model="car.fuel">
+            <option
+              v-for="(s, n) in ['بنزين', 'ديزيل', 'كهرباء']"
+              :key="n"
+              :value="s"
+            >
+              {{ s }}
+            </option>
+          </select>
+        </div>
+
         <template v-if="!car.cost_disabled || $auth.user.job == 'manager'">
           <div class="form-input">
             <label>

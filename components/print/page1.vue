@@ -3,12 +3,11 @@
     <PrintHeader :car="car" />
     <div style="display: table-row-group">
       <div class="page1">
-        <div class="flex">
+        <div class="flex gap-0.5">
           <main>
-            <h4>
-              فحص البودي
-
+            <h4 class="text-center text-zinc-700 text-sm">
               <font-awesome-icon :icon="['fas', 'car-on']" />
+              فحص البودي
             </h4>
             <table>
               <thead>
@@ -21,13 +20,16 @@
                   <td class="text-center" v-for="(_, val) in values" :key="val">
                     <font-awesome-icon
                       :icon="['fas', 'check']"
+                      class="!text-sky-700 !rounded"
                       v-if="car.body[input.en] == val"
                     />
                   </td>
                 </tr>
               </tbody>
             </table>
-            <h6>الفايبر + الصدامات خارج الفحص</h6>
+            <h6 class="text-xs opacity-60 p-2">
+              الفايبر + الصدامات خارج الفحص
+            </h6>
             <fieldset v-if="car.body.note">
               <legend>
                 <font-awesome-icon :icon="['fas', 'clipboard']" />
@@ -38,10 +40,12 @@
               <p v-html="$nltobr(car.body.note)"></p>
             </fieldset>
           </main>
+
+          <div class="line"></div>
           <aside>
-            <h4>
-              الرسم التوضيحي
+            <h4 class="text-center text-zinc-700 text-sm">
               <font-awesome-icon :icon="['fas', 'compass-drafting']" />
+              الرسم التوضيحي
             </h4>
             <Images :car="car" />
           </aside>
@@ -85,6 +89,7 @@ main {
   flex-direction: column;
 
   table {
+    width: 100%;
     font-size: 16px;
 
     thead {
@@ -113,10 +118,10 @@ main {
         position: absolute;
         top: 50%;
         left: 50%;
-        height: 1em;
-        width: 1em;
+        height: 1.2em;
+        width: 1.2em;
         display: block;
-        border: 2px solid #000;
+        @apply border rounded border-blue-950;
         transform: translate(-50%, -50%);
       }
     }
@@ -148,15 +153,10 @@ main {
 aside {
   position: relative;
   box-sizing: border-box;
+}
 
-  &::after {
-    content: "";
-    border-left: 1px solid #000;
-    position: absolute;
-    height: 100%;
-    right: -5px;
-    top: 0;
-  }
+.line {
+  border-left: 1px solid #000;
 }
 
 footer {

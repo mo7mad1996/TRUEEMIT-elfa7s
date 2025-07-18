@@ -193,6 +193,7 @@
               :key="n"
               class="shadow p-4 rounded bg-white flex flex-col gap-2 h-fit relative group/section"
             >
+              <!-- title -->
               <button
                 @click="
                   user.sections = user.sections.filter((i, a) => {
@@ -220,12 +221,13 @@
                 placeholder="اسم القسم (EN)."
               />
 
+              <!-- list -->
               <div class="flex-1">
                 <ul
                   class="text-slate-400 flex items-center justify-between group hover:bg-neutral-50 p-2"
                   v-for="(item, n) in section.items"
                 >
-                  <li class="flex flex-col gap-2">
+                  <li class="flex flex-col gap-2 border-r pr-4">
                     <div>
                       {{ item.name }}
                     </div>
@@ -252,6 +254,7 @@
                 </ul>
               </div>
 
+              <!-- add list item -->
               <form
                 class="flex gap-2 border-t pt-2"
                 @submit.prevent.stop="
@@ -260,6 +263,7 @@
                     { name: section.append, name_en: section.append_en },
                   ];
                   section.append = '';
+                  section.append_en = '';
                 "
               >
                 <div class="flex-1">

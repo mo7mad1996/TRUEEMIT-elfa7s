@@ -47,35 +47,63 @@
           نوع السياره
           <font-awesome-icon :icon="['fas', 'car-side']" />
         </label>
-        <div class="value">{{ car.type }}</div>
+        <div class="value">{{ car.type || "-" }}</div>
       </div>
       <div class="item">
         <label>
           رقم اللوحه
           <font-awesome-icon :icon="['fas', 'passport']" />
         </label>
-        <div class="value">{{ car.car_id }}</div>
+        <div class="value">{{ car.car_id || "-" }}</div>
       </div>
       <div class="item">
         <label>
           رقم الشاصى
           <font-awesome-icon :icon="['fas', 'car']" />
         </label>
-        <div class="value">{{ car.vin_no }}</div>
+        <div class="value">{{ car.vin_no || "-" }}</div>
       </div>
       <div class="item">
         <label>
           قراءة العداد
           <font-awesome-icon :icon="['fas', 'gauge-high']" />
         </label>
-        <div class="value">{{ car.odometer }}</div>
+        <div class="value">{{ car.odometer || "-" }}</div>
       </div>
+
+      <div class="item">
+        <label>
+          نوع القير
+
+          <font-awesome-icon :icon="['fas', 'gears']" />
+        </label>
+        <div class="value">{{ car.gear || "-" }}</div>
+      </div>
+
+      <div class="item">
+        <label>
+          سعة المحرك
+
+          <font-awesome-icon :icon="['fas', 'oil-well']" />
+        </label>
+        <div class="value">{{ car.engine || "-" }}</div>
+      </div>
+
+      <div class="item">
+        <label>
+          نوع الوقود
+
+          <font-awesome-icon :icon="['fas', 'gas-pump']" />
+        </label>
+        <div class="value">{{ car.fuel || "-" }}</div>
+      </div>
+
       <div class="item">
         <label>
           الخدمة المقدمه
           <font-awesome-icon :icon="['fas', 'bell-concierge']" />
         </label>
-        <div class="value">{{ car.service }}</div>
+        <div class="value">{{ car.service || "-" }}</div>
       </div>
     </div>
   </header>
@@ -129,21 +157,19 @@ header {
   }
 
   .bottom {
-    display: flex;
-    border: 1px solid #000;
+    @apply grid grid-cols-4    gap-1;
 
     .item {
-      flex: 1;
-      display: flex;
-      text-align: center;
-      flex-direction: column;
-      border: 1px solid #000;
-      padding: 5px;
       gap: 5px;
+      @apply flex flex-col items-center gap-1  p-1 rounded border;
 
       label {
         font-size: 0.8em;
         color: #000;
+      }
+
+      .value {
+        @apply text-sky-700;
       }
     }
   }

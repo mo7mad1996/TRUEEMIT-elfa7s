@@ -1,3 +1,4 @@
+a
 <template>
   <header
     class="pt-1 sticky top-0 left-0 z-50 backdrop-blur-sm mx-auto container"
@@ -40,16 +41,16 @@
         <Transition>
           <ul
             v-if="menu"
-            class="absolute top-full pt-1 min-w-36 z-50 border mt-2 shadow rounded origin-top"
+            class="absolute top-full py-0.5 min-w-36 z-50 mt-2 shadow rounded origin-top overflow-hidden flex flex-col gap-0"
           >
             <li
-              class="p-px group flex gap-px flex-col backdrop-blur-sm bg-white/60"
+              class="group flex gap-px flex-col backdrop-blur-sm px-1 py-0.5 bg-white/50"
               v-for="(link, n) in links.filter((l) => l.show)"
               :key="n"
               @click="() => handleClick(link)"
             >
               <nuxt-link
-                class="flex gap-3 items-center group-hover:bg-slate-200 text-gray-700 py-1 px-2 rounded"
+                class="flex gap-3 items-center group-hover:bg-slate-200/80 text-gray-700 py-1 px-2 rounded"
                 :class="link.customClass"
                 :to="link.to"
               >
@@ -122,6 +123,8 @@ export default {
       if (typeof link.action === "function") {
         link.action.bind(this).call(this);
       }
+
+      this.closeMenu();
     },
 
     updateTime() {
@@ -132,6 +135,10 @@ export default {
       this.time.date = now.locale("ar").format("dddd: DD MMM Y");
 
       requestAnimationFrame(this.updateTime);
+    },
+
+    closeMenu() {
+      this.menu = false;
     },
   },
 

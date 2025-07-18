@@ -7,6 +7,11 @@ const car = new Schema(
     type: { type: String, default: "" },
     car_id: { type: String, default: "" },
     vin_no: { type: String, default: "" },
+
+    engine: { type: String, default: "" },
+    gear: { type: String, default: "" },
+    fuel: { type: String, default: "" },
+
     service: { type: String, default: "" },
     odometer: { type: String, default: "" },
     mechanical: { type: String, default: "" },

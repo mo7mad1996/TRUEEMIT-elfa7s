@@ -8,8 +8,11 @@
         :key="n"
         class="bg-neutral-50/40 border border-gray-200 rounded-xl shadow-sm p-4"
       >
-        <h2 class="text-xl font-semibold text-center text-blue-700 mb-4">
-          {{ section.title }}
+        <h2
+          class="text-xl font-semibold text-blue-700 mb-4 flex justify-between items-center py-2 px-4"
+        >
+          <span> {{ section.title }} </span>
+          <span> {{ section.title_en }} </span>
         </h2>
 
         <div
@@ -26,6 +29,7 @@
           >
             <h3 class="text-base font-medium text-lime-900 table-header-group">
               {{ item.name }}
+              <span class="opacity-75"> ({{ item.name_en }}) </span>
             </h3>
             <p
               class="text-sm text-green-600 font-semibold bg-green-100 rounded-lg px-4 py-2"
