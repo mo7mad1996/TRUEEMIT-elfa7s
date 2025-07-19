@@ -10,7 +10,7 @@ module.exports = async (app, express) => {
     const router = express.Router();
     app.use(
       "/api/" + page.split(".")[0],
-      require(path.join(pages_dir, page))(router)
+      require(path.join(pages_dir, page))(router, app)
     );
   });
 };

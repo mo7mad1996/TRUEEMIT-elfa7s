@@ -12,7 +12,7 @@ const file_path = "./secret";
 
 let times = 0;
 
-module.exports = (router) => {
+module.exports = (router, app) => {
   router.get("/isvalid", async (req, res) => {
     const fileExists = fs.existsSync(file_path);
     const shop = await Shop.findOne();
@@ -100,7 +100,8 @@ module.exports = (router) => {
 
   router.get("/update", (req, res) => {
     const update_file = path.join(__dirname, "../../..", "install.bat");
-    open(update_file);
+    app.close(() => open(update_file));
+
     res.json({ update_file });
   });
 
