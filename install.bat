@@ -1,0 +1,1 @@
+cls && git pull origin main && npm i && npm run build && node remove.js && npm start
