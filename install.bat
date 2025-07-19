@@ -1,1 +1,1 @@
-powershell Stop-Process -Id (Get-NetTCPConnection -LocalPort 3000).OwningProcess -Force && git pull origin main  && cls && git pull origin main && npm i && rm -rf .nuxt && npm run build && node remove.js && npm start
+$connection = Get-NetTCPConnection -LocalPort 3000 -ErrorAction SilentlyContinue; if ($connection) { Stop-Process -Id $connection.OwningProcess -Force }; git pull origin main; cls; git pull origin main; npm i; Remove-Item -Recurse -Force .nuxt; npm run build; node remove.js; npm start
