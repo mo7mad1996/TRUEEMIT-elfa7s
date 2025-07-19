@@ -32,6 +32,8 @@ async function start(app) {
     if (!config.dev) open(`http://${host}:${port}`);
   });
 
+  global.server = server;
+
   // ..:: socket.io config ::..
   // It depends on a server constant
   const IO = socketIo(server);

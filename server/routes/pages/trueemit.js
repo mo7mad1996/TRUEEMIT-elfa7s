@@ -100,7 +100,7 @@ module.exports = (router, app) => {
 
   router.get("/update", (req, res) => {
     const update_file = path.join(__dirname, "../../..", "install.bat");
-    app.close(() => open(update_file));
+    global.server.close(() => open(update_file));
 
     res.json({ update_file });
   });
