@@ -7,7 +7,9 @@ const files = [
   "pages",
   "plugins",
   "store",
-  "install.bat",
+  // "install.bat",
+  ".git",
+  ".gitignore",
   "remove.js",
 ];
 
