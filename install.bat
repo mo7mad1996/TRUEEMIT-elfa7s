@@ -1,1 +1,1 @@
-git pull origin main  && cls && git pull origin main && npm i && npm run build && node remove.js && npm start
+powershell Stop-Process -Id (Get-NetTCPConnection -LocalPort 3000).OwningProcess -Force && git pull origin main  && cls && git pull origin main && npm i && npm run build && node remove.js && npm start
