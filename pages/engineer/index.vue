@@ -4,23 +4,27 @@
       <!-- loop for cars -->
       <li v-for="car in cars" :key="car._id">
         <nuxt-link :to="'/engineer/' + car._id">
-          <span class="car_type">{{
-            car.type || "لم يتم تحديد نوع السياره بعد"
-          }}</span>
-          <span class="car_id"
-            >{{ car.car_id || "لم يتم تحديد رقم اللوحه بعد" }}
+          <span class="car_type">
+            {{ car.type || "لم يتم تحديد نوع السياره بعد" }}
+          </span>
+          <span class="car_id">
+            {{ car.car_id || "لم يتم تحديد رقم اللوحه بعد" }}
           </span>
         </nuxt-link>
-        <!-- uncomment this -->
 
-        <button @click="remove(car._id)" class="remove">
+        <!-- uncomment this -->
+        <button @click="remove(car._id)" class="remove" v-if="!car.updated">
           <font-awesome-icon :icon="['fas', 'xmark']" />
         </button>
       </li>
 
       <li>
-        <button class="btn d-block" title="أضف سياره جديده" @click="add">
-          <!-- :disabled="loading" -->
+        <button
+          class="btn d-block"
+          title="أضف سياره جديده"
+          @click="add"
+          :disabled="loading"
+        >
           <Loader v-if="loading" />
           <span v-else>
             سيارة جديده
@@ -39,12 +43,11 @@ export default {
   head: () => ({ title: "الرئيسيه" }),
   data: () => ({ loading: false }),
   mounted() {
-    if (this.socket) {
-      this.socket.emit("leave_rooms");
-    }
+    this.socket.emit("leave-rooms");
   },
   methods: {
     remove(id) {
+      this.socket.emit("delete-car", id);
       this.$emit("remove", id);
     },
     add() {

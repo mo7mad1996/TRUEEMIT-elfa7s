@@ -22,7 +22,7 @@
       <table>
         <thead>
           <tr>
-            <th v-for="colomn in colomns" :key="colomn.en">{{ colomn.ar }}</th>
+            <th v-for="column in columns" :key="column.en">{{ column.ar }}</th>
           </tr>
         </thead>
         <tbody>
@@ -32,8 +32,8 @@
               :key="car._id"
               @click="$router.push(`/print/${car._id}?no_print`)"
             >
-              <td v-for="colomn in colomns" :key="colomn.en" :class="colomn.en">
-                {{ car[colomn.en] }}
+              <td v-for="column in columns" :key="column.en" :class="column.en">
+                {{ car[column.en] }}
               </td>
             </tr>
           </client-only>
@@ -62,8 +62,9 @@ export default {
 
     return { DB_cars };
   },
-  props: ["socket"],
   middleware: "exclusive",
+  props: ["socket"],
+
   head: () => ({ title: "السيارات" }),
   data() {
     return {
@@ -71,7 +72,7 @@ export default {
       page: 1,
       filters: [{ value: "" }],
       middleware_cars: [],
-      colomns: [
+      columns: [
         { en: "vin_no", ar: "رقم الشاصى" },
         { en: "car_id", ar: "رقم اللوحه" },
         { en: "type", ar: "نوع السياره" },
@@ -86,7 +87,7 @@ export default {
         this.filters,
         // blocked
         Object.keys(this.DB_cars[0] || {}).filter(
-          (el) => !this.colomns.map((el) => el.en).includes(el)
+          (el) => !this.columns.map((el) => el.en).includes(el)
         )
       );
     },
@@ -103,7 +104,8 @@ export default {
   },
   mounted() {
     this.middleware_cars = Array.from(this.DB_cars);
-    this.socket.on("update database", async () => {
+
+    this.socket.on("update-database", async () => {
       this.middleware_cars = await this.$axios.$get("/cars-exclusive");
     });
   },

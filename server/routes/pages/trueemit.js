@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const fsExtra = require("fs-extra");
 const fs = require("fs");
 const path = require("path");
+const open = require("open");
 
 const mongoose = require("mongoose");
 const Shop = mongoose.model("Shop");
@@ -88,13 +89,19 @@ module.exports = (router) => {
   router.post("/update_client", async (req, res) => {
     Shop.findOneAndUpdate({}, req.body)
       .then(() => res.json({ updated: true }))
-      .catch((err) => console.log(err));
+      .catch((err) => console.error(err));
   });
 
   router.get("/shop", async (req, res) => {
     const shop = await Shop.findOne();
 
     res.json(shop);
+  });
+
+  router.get("/update", (req, res) => {
+    const update_file = path.join(__dirname, "../../..", "install.bat");
+    open(update_file);
+    res.json({ update_file });
   });
 
   return router;

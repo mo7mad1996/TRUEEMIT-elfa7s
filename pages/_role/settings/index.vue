@@ -432,7 +432,7 @@ export default {
 
         this.setAlert({ text: "تم تعديل البيانات" });
       } catch (err) {
-        console.log(err);
+        console.error(err);
       } finally {
         this.shop.loading = false;
       }

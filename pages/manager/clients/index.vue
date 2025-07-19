@@ -33,8 +33,8 @@
         <thead>
           <tr>
             <th></th>
-            <td v-for="colomn in colomns" :key="colomn.en">
-              {{ colomn.ar }}
+            <td v-for="column in columns" :key="column.en">
+              {{ column.ar }}
             </td>
           </tr>
         </thead>
@@ -47,8 +47,8 @@
             <td>
               {{ n + 1 }}
             </td>
-            <td v-for="colomn in colomns" :key="colomn.en">
-              {{ client[colomn.en] }}
+            <td v-for="column in columns" :key="column.en">
+              {{ client[column.en] }}
             </td>
           </tr>
         </tbody>
@@ -80,7 +80,7 @@ export default {
   data: () => {
     return {
       is_model_open: false,
-      colomns: [{ en: "name", ar: "الاسم" }],
+      columns: [{ en: "name", ar: "الاسم" }],
       clients: [],
       filters: [{ value: "" }],
     };
@@ -98,7 +98,7 @@ export default {
         this.DB_clients,
         this.filters,
         Object.keys(this.DB_clients[0] || {}).filter(
-          (el) => !this.colomns.map((el) => el.en).includes(el)
+          (el) => !this.columns.map((el) => el.en).includes(el)
         )
       );
     },

@@ -76,7 +76,7 @@ export default {
           });
       } catch (err) {
         this.submited = false;
-        console.log(err);
+        console.error(err);
         this.setAlert({
           error: true,
           text: "تأكد من رقم المستخدم او كلمة المرور",

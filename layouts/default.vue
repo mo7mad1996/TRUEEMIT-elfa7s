@@ -1,6 +1,7 @@
 <template>
   <div class="__default_layout">
     <LayoutHeader />
+
     <main class="__main_layout">
       <NuxtChild
         v-if="socket"
@@ -18,13 +19,17 @@
 
 <script>
 import Alert from "@/components/layout/alert";
+let lastData = [];
+let updating = false;
 
 export default {
   components: { Alert },
   name: "Layout",
   data() {
     return {
+      normal_cars: [],
       cars: [],
+      exclusive_cars: [],
       socket: null,
     };
   },
@@ -36,18 +41,16 @@ export default {
           break;
 
         default:
+          // backspace 🛺
           if (e.keyCode == 8) this.$router.back();
       }
     },
 
     add_car(car) {
       this.cars = [...this.cars, car];
-      this.update();
     },
 
-    update() {
-      this.socket.emit("update cars", this.cars);
-    },
+    update() {},
 
     updateCars(car) {
       const cars = [
@@ -60,7 +63,7 @@ export default {
 
     remove(id) {
       this.cars = this.cars.filter((car) => car._id != id);
-      this.socket.emit("leave room", id);
+
       this.update();
     },
 
@@ -70,11 +73,12 @@ export default {
         channel: "/",
         url: "/",
         reconnection: true,
+
+        auth: {
+          role: this.$auth.user.job,
+        },
       });
 
-      this.socket.on("update cars", (cars) => {
-        this.cars = [...cars];
-      });
       this.socket.on("disconnect", () => {
         window.location.reload();
       });
@@ -89,12 +93,34 @@ export default {
     addEventListener("keydown", this.handelKey);
     addEventListener("focus", this.focus);
 
+    // socket
     this.connect();
+
+    // get cars
+    this.socket.on("cars", (data) => {
+      if (updating) return;
+      this.cars = data;
+    });
   },
 
   beforeDestroy() {
     removeEventListener("keydown", this.handelKey);
     removeEventListener("focus", this.focus);
+  },
+
+  watch: {
+    cars: {
+      handler(data) {
+        const hasDiff = JSON.stringify(data) != JSON.stringify(lastData);
+
+        lastData = JSON.parse(JSON.stringify(data));
+        if (hasDiff && !updating) {
+          updating = true;
+          this.socket.emit("update-cars", data, () => (updating = false));
+        }
+      },
+      deep: true,
+    },
   },
 };
 </script>

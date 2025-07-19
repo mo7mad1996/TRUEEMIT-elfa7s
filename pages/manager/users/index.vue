@@ -33,8 +33,8 @@
         <thead>
           <tr>
             <th></th>
-            <td v-for="colomn in colomns" :key="colomn.en">
-              {{ colomn.ar }}
+            <td v-for="column in columns" :key="column.en">
+              {{ column.ar }}
             </td>
             <th>اخر دخول للنظام</th>
           </tr>
@@ -51,8 +51,8 @@
                 <font-awesome-icon icon="fa-solid fa-user-xmark" />
               </button>
             </td>
-            <td v-for="colomn in colomns" :key="colomn.en">
-              {{ user[colomn.en] }}
+            <td v-for="column in columns" :key="column.en">
+              {{ user[column.en] }}
             </td>
 
             <td class="d-8">{{ user.lastLogin }}</td>
@@ -90,7 +90,7 @@ export default {
       is_model_open: false,
       filters: [{ value: "" }],
       users: [],
-      colomns: [
+      columns: [
         { en: "name", ar: "الاسم" },
         { en: "user_id", ar: "رقم المستخدم" },
         { en: "job", ar: "الوظيفة" },
@@ -117,7 +117,7 @@ export default {
         this.DB_users,
         this.filters,
         Object.keys(this.DB_users[0] || {}).filter(
-          (el) => !this.colomns.map((el) => el.en).includes(el)
+          (el) => !this.columns.map((el) => el.en).includes(el)
         )
       );
     },

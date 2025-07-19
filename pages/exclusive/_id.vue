@@ -1,10 +1,5 @@
 <template>
-  <div
-    @input="update"
-    @change="update"
-    @click.stop="update"
-    v-if="cars && car && car._id"
-  >
+  <div v-if="car">
     <EngineerHeader :car="car" />
     <FirstPage :car="car" v-if="car?.service != 'محركات'" />
     <secondPage :car="car" />
@@ -16,10 +11,11 @@
         <Loader v-show="loading" />
 
         <div v-show="!loading">
-          <span v-if="car?.saved">
+          <span v-if="!car.updated && car.saved">
             طباعه
             <font-awesome-icon :icon="['fas', 'print']" />
           </span>
+
           <span v-else>
             حفظ
             <font-awesome-icon :icon="['fas', 'floppy-disk']" />
@@ -27,7 +23,7 @@
         </div>
       </button>
       <button
-        v-if="car?.saved || car?.updated"
+        v-if="car.saved || !car.updated"
         @click="$router.push('/exclusive')"
         class="btn d-block mt-2 red"
       >
@@ -49,6 +45,7 @@ import Files from "@/components/engineer/Files";
 import Sections from "@/components/engineer/Sections";
 
 import { mapActions } from "vuex";
+let skipCheck = true;
 
 export default {
   middleware: "exclusive",
@@ -59,18 +56,14 @@ export default {
     ...mapActions({ setAlert: "alert/add" }),
 
     update() {
-      if (this.car.saved) {
-        this.car = { ...this.car, saved: false, updated: true };
-      }
-
-      this.socket.emit("update car", this.car);
-      this.$emit("updateCars", this.car);
+      if (!skipCheck) this.car.updated = true;
+      skipCheck = false;
     },
 
     save() {
       if (!this.car.payment || !this.car.cost) {
         window.scrollTo({ top: 0, behavior: "smooth" });
-        return this.setAlert({ text: "تاكد من البيانات", error: true });
+        return this.setAlert({ text: "تاكد من بيانات الدفع", error: true });
       }
 
       // print
@@ -85,66 +78,63 @@ export default {
         return this.setAlert({ text: "يجب اضافة عميل", error: true });
 
       // update the car with cost_disabled => false
-      this.car = { ...this.car, cost_disabled: true };
+      this.car.cost_disabled = true;
 
       this.loading = true;
       let url = "/cars-exclusive/update";
-      if (!this.car.saved && !this.car.updated) {
-        url = "/cars-exclusive/save";
-      }
+      if (!this.car.saved) url = "/cars-exclusive/save";
 
       this.$axios
         .$post(url, this.car)
         .then((res) => {
-          const newCar = { ...this.car, saved: true, updated: false };
-          this.car = newCar;
-          this.socket.emit("update car", newCar);
+          this.car.saved = true;
+          this.car.updated = false;
+          skipCheck = true;
+
           this.setAlert({ text: "تم الحفظ" });
-          this.socket.emit(
-            "update cars",
-            this.cars.map((car) =>
-              this.car._id == car._id ? { ...newCar } : car
-            )
-          );
 
-          // update manager page
-          this.socket.emit("update database");
+          // socket
+          // this.socket.emit("save-car");
         })
-
+        .catch((err) => console.error(err))
         .finally(() => (this.loading = false));
     },
 
     getCar() {
       // wait if no cars
       if (!this.cars) return;
-      if (!this.cars.length) return this.$router.push("/exclusive");
+      if (!this.cars.length) return this.$router.push("/");
 
       this.car = this.cars.filter((car) => car._id == this.$route.params.id)[0];
 
       // if no car go home
-      if (!this.car) this.$router.push("/exclusive");
+      if (!this.car) this.$router.push("/");
 
       // if no sections
       if (this.car.sections.length == 0)
         this.car.sections = this.$auth.user.sections;
-
-      // socket
-      this.socket.emit("join room", this.$route.params.id);
-      this.socket.on("leave room", (_) => {
-        this.$router.push("/exclusive");
-        this.setAlert({ error: true, text: "شخص ما حذف السياره" });
-      });
-      this.socket.on("update car", (car) => (this.car = { ...car }));
     },
   },
   mounted() {
     this.getCar();
+
+    if (this.car) this.socket.emit("join-room", this.car._id);
+
+    // socket
+    this.socket.on("delete-car", () =>
+      this.setAlert({ text: "شخص ما حذف السيارة", error: true })
+    );
   },
+
   watch: {
     cars() {
       this.getCar();
     },
+    car(c, l) {
+      if (l) this.update();
+    },
   },
+
   components: {
     EngineerHeader,
     SecondPage,

@@ -42,8 +42,8 @@
         <thead>
           <tr>
             <td>تم الدفع</td>
-            <td v-for="(colomn, n) in colomns" :key="n">
-              {{ colomn.ar }}
+            <td v-for="(column, n) in columns" :key="n">
+              {{ column.ar }}
             </td>
           </tr>
         </thead>
@@ -61,12 +61,12 @@
             </td>
             <template v-if="item.item_type === 'car'">
               <td
-                v-for="colomn in colomns"
-                :key="colomn.en"
-                :title="colomn.ar"
+                v-for="column in columns"
+                :key="column.en"
+                :title="column.ar"
                 @click="$router.push('/manager/cars/' + item._id)"
               >
-                {{ view(item, colomn) }}
+                {{ view(item, column) }}
               </td>
             </template>
 
@@ -75,14 +75,14 @@
               <td title="التاريخ">
                 {{ $moment(item.createdAt).format("YYYY/MM/DD -  HH:mm a") }}
               </td>
-              <td title="ملاحظات" :colspan="colomns.length - 2">
+              <td title="ملاحظات" :colspan="columns.length - 2">
                 {{ item.note }}
               </td>
             </template>
           </tr>
           <tr>
             <td title="سابق حساب">{{ start.toFixed(2) }}</td>
-            <td title="رصيد البداية" :colspan="colomns.length - 1">
+            <td title="رصيد البداية" :colspan="columns.length - 1">
               رصيد بداية
             </td>
           </tr>
@@ -102,7 +102,7 @@ export default {
   props: ["data", "start"],
   data: () => ({
     month: "",
-    colomns: [
+    columns: [
       { ar: "القيمة", en: "cost" },
       { ar: "التاريخ", en: "date" },
       { ar: "اسم المندوب", en: "representative" },
@@ -111,16 +111,16 @@ export default {
     ],
   }),
   methods: {
-    view(item, colomn) {
-      switch (colomn.en) {
+    view(item, column) {
+      switch (column.en) {
         case "date":
           return this.$moment(item.date).format("YYYY/MM/DD -  HH:mm a");
 
         case "cost":
-          return item[colomn.en].toFixed(2);
+          return item[column.en].toFixed(2);
 
         default:
-          return item[colomn.en];
+          return item[column.en];
       }
     },
   },

@@ -95,6 +95,15 @@ export default {
           show: ["engineer", "exclusive"].includes(job),
         },
         {
+          to: ``,
+          title: "تحديث البرنامج",
+          icon: "cloud-arrow-down",
+          show: ["manager"].includes(job),
+          action() {
+            this.$axios.$get("/trueemit/update");
+          },
+        },
+        {
           to: "",
           title: "خروج من النظام",
           // icon: "fa-solid fa-right-from-bracket",

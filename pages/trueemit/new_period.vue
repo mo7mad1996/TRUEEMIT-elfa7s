@@ -46,7 +46,7 @@ export default {
         })
         .catch((err) => {
           res.status(403).json({ err });
-          console.log(err);
+          console.error(err);
         });
     },
   },
