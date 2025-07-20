@@ -115,6 +115,10 @@ module.exports = (router, app) => {
           path.join(extractPath, "TRUEEMIT-elfa7s-main/server/upload")
         );
         cleanDirectory(extractPath, ["TRUEEMIT-elfa7s-main"]);
+        copyDirContents(
+          path.join(extractPath, "TRUEEMIT-elfa7s-main"),
+          extractPath
+        );
         open(installFile);
       }
 
