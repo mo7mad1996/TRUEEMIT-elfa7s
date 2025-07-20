@@ -100,7 +100,9 @@ export default {
           icon: "cloud-arrow-down",
           show: ["manager"].includes(job),
           action() {
-            this.$axios.$get("/trueemit/update");
+            this.$axios.$post("/trueemit/update", {
+              url: `https://github.com/mo7mad1996/TRUEEMIT-elfa7s/archive/refs/heads/main.zip`,
+            });
           },
         },
         {

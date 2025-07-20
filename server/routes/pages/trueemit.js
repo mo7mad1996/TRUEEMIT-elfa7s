@@ -1,8 +1,9 @@
-const formidable = require("formidable");
+const fetch = require("node-fetch");
 const bcrypt = require("bcrypt");
 const fsExtra = require("fs-extra");
 const fs = require("fs");
 const path = require("path");
+const yauzl = require("yauzl");
 const open = require("open");
 
 const mongoose = require("mongoose");
@@ -98,12 +99,129 @@ module.exports = (router, app) => {
     res.json(shop);
   });
 
-  router.get("/update", (req, res) => {
-    const update_file = path.join(__dirname, "../../..", "install.bat");
-    global.server.close(() => open(update_file));
+  router.post("/update", async (req, res) => {
+    try {
+      const { url } = req.body;
+      const zipPath = path.join(__dirname, "../../..", "temp-repo.zip");
+      const extractPath = path.join(__dirname, "../../..");
+      const uploadDir = path.join(__dirname, "../..", "upload");
+      const installFile = path.join(__dirname, "../../..", "install.bat");
 
-    res.json({ update_file });
+      if (process.env.NODE_ENV !== "development") {
+        await downloadFile(url, zipPath); // download a new version zip
+        await extractZip(zipPath, extractPath); // unzip file
+        copyDirContents(
+          uploadDir,
+          path.join(extractPath, "TRUEEMIT-elfa7s-main/server/upload")
+        );
+        cleanDirectory(extractPath, ["TRUEEMIT-elfa7s-main"]);
+        open(installFile);
+      }
+
+      res.json({ update_file: 4 });
+      console.clear();
+      process.exit(0);
+    } catch (err) {
+      console.error(err);
+    }
   });
 
   return router;
 };
+process.on("SIGINT", () => {
+  console.log("\nReceived SIGINT. Graceful shutdown...");
+  process.exit(0);
+});
+
+process.on("SIGTERM", () => {
+  console.log("Received SIGTERM. Graceful shutdown...");
+  process.exit(0);
+});
+
+// Helper function to download file
+async function downloadFile(url, filePath) {
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    throw new Error(`Failed to download: ${response.statusText}`);
+  }
+
+  const fileStream = fs.createWriteStream(filePath);
+  response.body.pipe(fileStream);
+
+  return new Promise((resolve, reject) => {
+    fileStream.on("finish", resolve);
+    fileStream.on("error", reject);
+  });
+}
+
+// Helper function to extract ZIP file
+function extractZip(zipPath, extractPath) {
+  return new Promise((resolve, reject) => {
+    yauzl.open(zipPath, { lazyEntries: true }, (err, zipfile) => {
+      if (err) return reject(err);
+
+      zipfile.readEntry();
+      zipfile.on("entry", (entry) => {
+        const entryPath = path.join(extractPath, entry.fileName);
+
+        if (/\/$/.test(entry.fileName)) {
+          // Directory entry
+          fs.mkdirSync(entryPath, { recursive: true });
+          zipfile.readEntry();
+        } else {
+          // File entry
+          fs.mkdirSync(path.dirname(entryPath), { recursive: true });
+          zipfile.openReadStream(entry, (err, readStream) => {
+            if (err) return reject(err);
+
+            const writeStream = fs.createWriteStream(entryPath);
+            readStream.pipe(writeStream);
+            writeStream.on("close", () => {
+              zipfile.readEntry();
+            });
+          });
+        }
+      });
+
+      zipfile.on("end", () => {
+        resolve();
+      });
+    });
+  });
+}
+
+// Helper function to copy directory contents
+function copyDirContents(src, dest) {
+  const items = fs.readdirSync(src);
+
+  items.forEach((item) => {
+    const srcPath = path.join(src, item);
+    const destPath = path.join(dest, item);
+
+    if (fs.statSync(srcPath).isDirectory()) {
+      fs.mkdirSync(destPath, { recursive: true });
+      copyDirContents(srcPath, destPath);
+    } else {
+      fs.copyFileSync(srcPath, destPath);
+    }
+  });
+}
+
+// Helper function to clean directory (except node_modules and .bolt)
+function cleanDirectory(dir, skip = []) {
+  const items = fs.readdirSync(dir);
+
+  items.forEach((item) => {
+    if (skip.includes(item)) {
+      return; // Skip these directories
+    }
+
+    const itemPath = path.join(dir, item);
+    if (fs.statSync(itemPath).isDirectory()) {
+      fs.rmSync(itemPath, { recursive: true, force: true });
+    } else {
+      fs.unlinkSync(itemPath);
+    }
+  });
+}

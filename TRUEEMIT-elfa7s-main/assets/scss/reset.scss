@@ -1,0 +1,25 @@
+:root {
+  --color-blue-1: rgb(87, 87, 234);
+  --color-blue-2: rgb(75, 75, 212);
+  --color-blue-3: rgb(57, 57, 172);
+  --color-blue-4: rgb(49, 49, 147);
+  --color-blue-5: rgb(38, 38, 114);
+}
+
+* {
+  box-sizing: border-box;
+  font-family: "Alexandria", sans-serif;
+  color: inherit;
+}
+
+body,
+html {
+  direction: rtl;
+  margin: 0;
+  padding: 0;
+  background: url("/bg.png");
+
+  @media (max-width: 840px) {
+    font-size: 14px;
+  }
+}

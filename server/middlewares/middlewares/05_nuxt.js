@@ -13,20 +13,20 @@ let { host, port } = config.server;
 async function start(app) {
   if (config.dev) {
     // in development
-    const builder = new Builder(nuxt);
-    await builder.build();
-    // port = 3001;
+    // const builder = new Builder(nuxt);
+    // await builder.build();
+    port = 3001;
   }
   // in production
   else {
     await nuxt.ready();
+
+    // ..:: render nuxt router ::..
+    app.use(nuxt.render);
   }
 
-  // ..:: render nuxt router ::..
-  app.use(nuxt.render);
-
   // ..:: Running server ::..
-  const server = app.listen(port, (_) => {
+  const server = app.listen(config.dev ? 3001 : port, (_) => {
     console.log(`listen on: http://${host}:${port}`);
     // ..:: open in the browser in production ::..
     if (!config.dev) open(`http://${host}:${port}`);
