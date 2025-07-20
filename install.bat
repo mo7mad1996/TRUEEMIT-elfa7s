@@ -16,17 +16,7 @@ if exist .env.pro (
 )
 
 echo Installing dependencies...
-npm install && npm run build && node remove.js
+npm install && npm run build && node remove.js && start.bat
 
 
-echo Starting application...
-if exist start.bat (
-    call start.bat
-) else (
-    echo Error: start.bat not found
-    pause
-    exit /b 1
-)
-
-echo Deployment process completed successfully!
 pause
