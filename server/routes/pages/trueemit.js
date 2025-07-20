@@ -4,7 +4,7 @@ const fsExtra = require("fs-extra");
 const fs = require("fs");
 const path = require("path");
 const yauzl = require("yauzl");
-const open = require("open");
+const { execFileSync } = require("node:child_process");
 
 const mongoose = require("mongoose");
 const Shop = mongoose.model("Shop");
@@ -233,7 +233,7 @@ function cleanDirectory(dir, skip = []) {
 
 function startFile(file, cb) {
   if (fs.existsSync(file)) {
-    open(file);
+    execFileSync(file);
     cb();
     return true;
   } else {
