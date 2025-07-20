@@ -9,7 +9,7 @@ const files = [
   "store",
   ".git",
   ".gitignore",
-  // "install.bat",
+  "TRUEEMIT-elfa7s-main",
   "remove.js",
 ];
 
