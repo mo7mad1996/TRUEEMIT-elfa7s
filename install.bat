@@ -16,15 +16,7 @@ if exist .env.pro (
 )
 
 echo Installing dependencies...
-npm install
-
-
-echo Building project...
-npm run build
-
-
-echo Running cleanup script...
-node remove.js
+npm install && npm run build && node remove.js
 
 
 echo Starting application...
