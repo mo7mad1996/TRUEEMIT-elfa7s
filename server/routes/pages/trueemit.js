@@ -119,12 +119,13 @@ module.exports = (router, app) => {
           path.join(extractPath, "TRUEEMIT-elfa7s-main"),
           extractPath
         );
-        open(installFile);
+        startFile(installFile, () => {
+          res.json({ update_file: 4 });
+          console.clear();
+          process.exit(0);
+        });
       }
-
       res.json({ update_file: 4 });
-      console.clear();
-      process.exit(0);
     } catch (err) {
       console.error(err);
     }
@@ -228,4 +229,14 @@ function cleanDirectory(dir, skip = []) {
       fs.unlinkSync(itemPath);
     }
   });
+}
+
+function startFile(file, cb) {
+  if (fs.existsSync(file)) {
+    open(file);
+    cb();
+    return true;
+  } else {
+    setTimeout(() => startFile(file, cb), 2000);
+  }
 }
