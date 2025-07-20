@@ -79,9 +79,7 @@ module.exports = {
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
-    baseURL: `http://${IP}:${
-      process.env.NODE_ENV == "development" ? 3001 : port
-    }/api`,
+    baseURL: `http://${IP}:${this.dev ? 3001 : port}/api`,
   },
   io: {
     // module options
