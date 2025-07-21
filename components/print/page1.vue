@@ -45,7 +45,7 @@
                     <font-awesome-icon
                       :icon="['fas', 'check']"
                       class="!text-sky-700 !rounded !text-md"
-                      v-if="car.body[input.key] == val"
+                      v-if="car.body[input.en] == val"
                     />
                   </td>
                 </tr>
