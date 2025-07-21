@@ -13,7 +13,6 @@ class CarSocketHandler {
 
     // Join user to a room based on role
     this.socket.join(this.role);
-    console.log(role, "join");
 
     // role events
     this.handlers[this.role].call(this);

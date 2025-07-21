@@ -2,6 +2,7 @@
 const socketIo = require("socket.io");
 const open = require("open");
 const { Nuxt, Builder } = require("nuxt");
+let http = require("http");
 
 // where is nuxt.config.js file get it...
 const config = require("../../../nuxt.config");
@@ -27,13 +28,12 @@ async function start(app) {
   }
 
   // ..:: Running server ::..
-  const server = app.listen(config.dev ? 3001 : port, (_) => {
+  const server = http.createServer(app.callback ? app.callback() : app);
+  global.server = server.listen(config.dev ? 3000 : port, (_) => {
     console.log(`listen on: http://${host}:${port}`);
     // ..:: open in the browser in production ::..
     if (!config.dev) open(`http://${host}:${port}`);
   });
-
-  global.server = server;
 
   // ..:: socket.io config ::..
   // It depends on a server constant

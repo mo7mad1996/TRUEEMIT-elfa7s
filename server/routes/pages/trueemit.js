@@ -108,24 +108,33 @@ module.exports = (router, app) => {
       const installFile = path.join(__dirname, "../../..", "install.bat");
 
       if (process.env.NODE_ENV !== "development") {
+        console.log("downloadFile");
         await downloadFile(url, zipPath); // download a new version zip
+        console.log("extractZip");
         await extractZip(zipPath, extractPath); // unzip file
+        console.log("copyDirContents 1 ");
         copyDirContents(
           uploadDir,
           path.join(extractPath, "TRUEEMIT-elfa7s-main/server/upload")
         );
-        cleanDirectory(extractPath, ["TRUEEMIT-elfa7s-main"]);
+        console.log("cleanDirectory");
+        cleanDirectory(extractPath, ["TRUEEMIT-elfa7s-main", "node_modules"]);
+        console.log("copyDirContents 2");
         copyDirContents(
           path.join(extractPath, "TRUEEMIT-elfa7s-main"),
           extractPath
         );
+        console.log("startFile", installFile);
+        global.server.close();
         startFile(installFile, () => {
           res.json({ update_file: 4 });
           console.clear();
           process.exit(0);
         });
+      } else {
+        console.log(Object.keys());
+        res.json({ update_file: 4 });
       }
-      res.json({ update_file: 4 });
     } catch (err) {
       console.error(err);
     }
