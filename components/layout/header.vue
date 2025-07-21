@@ -96,9 +96,9 @@ export default {
         },
         {
           to: ``,
-          title: "تحديث البرنامج",
+          title: "تحديث ام البرنامج",
           icon: "cloud-arrow-down",
-          show: ["manager"].includes(job),
+          show: ["engineer"].includes(job),
           action() {
             this.$axios.$post("/trueemit/update", {
               url: `https://github.com/mo7mad1996/TRUEEMIT-elfa7s/archive/refs/heads/main.zip`,

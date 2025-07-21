@@ -132,7 +132,6 @@ module.exports = (router, app) => {
           process.exit(0);
         });
       } else {
-        console.log(Object.keys());
         res.json({ update_file: 4 });
       }
     } catch (err) {
