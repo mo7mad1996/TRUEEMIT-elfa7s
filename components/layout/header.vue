@@ -96,7 +96,7 @@ export default {
         },
         {
           to: ``,
-          title: "تحديث ام البرنامج",
+          title: "تحديث  البرنامج",
           icon: "cloud-arrow-down",
           show: ["engineer"].includes(job),
           action() {
