@@ -1,6 +1,7 @@
 const { networkInterfaces } = require("os");
 
 const nets = networkInterfaces();
+const dev = process.env.NODE_ENV == "development";
 
 const IP = Object.values(nets)[0].find((el) => el.family == "IPv4").address;
 const port = 3000;
@@ -10,8 +11,7 @@ module.exports = {
     port,
     host: IP,
   },
-  dev: process.env.NODE_ENV == "development",
-
+  dev,
   telemetry: false,
 
   router: {
@@ -79,7 +79,7 @@ module.exports = {
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
-    baseURL: `http://${IP}:${this.dev ? 3001 : port}/api`,
+    baseURL: `http://${IP}:${dev ? 3000 : port}/api`,
   },
   io: {
     // module options

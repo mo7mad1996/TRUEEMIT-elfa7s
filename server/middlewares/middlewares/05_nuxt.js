@@ -13,9 +13,10 @@ let { host, port } = config.server;
 async function start(app) {
   if (config.dev) {
     // in development
-    // const builder = new Builder(nuxt);
-    // await builder.build();
-    port = 3001;
+    const builder = new Builder(nuxt);
+    await builder.build();
+    app.use(nuxt.render);
+    // port = 3001;
   }
   // in production
   else {

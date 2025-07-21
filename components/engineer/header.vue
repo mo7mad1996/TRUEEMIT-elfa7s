@@ -48,7 +48,7 @@
           />
         </div>
 
-        <div class="form-input">
+        <div class="form-input" v-if="['exclusive'].includes($auth.user.job)">
           <label>
             <font-awesome-icon :icon="['fas', 'oil-well']" />
             سعة المحرك
@@ -56,7 +56,7 @@
           <input v-model="car.engine" />
         </div>
 
-        <div class="form-input">
+        <div class="form-input" v-if="['exclusive'].includes($auth.user.job)">
           <label>
             <font-awesome-icon :icon="['fas', 'gears']" />
             نوع القير
@@ -71,7 +71,7 @@
             </option>
           </select>
         </div>
-        <div class="form-input">
+        <div class="form-input" v-if="['exclusive'].includes($auth.user.job)">
           <label>
             <font-awesome-icon :icon="['fas', 'gas-pump']" />
             نوع الوقود

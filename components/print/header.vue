@@ -41,7 +41,13 @@
         </div>
       </div>
     </div>
-    <div class="bottom">
+    <div
+      class="bottom"
+      :class="{
+        'grid grid-cols-5 gap-1': !['exclusive'].includes($auth.user.job),
+        'grid grid-cols-4 gap-1': ['exclusive'].includes($auth.user.job),
+      }"
+    >
       <div class="item">
         <label>
           نوع السياره
@@ -71,7 +77,7 @@
         <div class="value">{{ car.odometer || "-" }}</div>
       </div>
 
-      <div class="item">
+      <div class="item" v-if="['exclusive'].includes($auth.user.job)">
         <label>
           نوع القير
 
@@ -80,7 +86,7 @@
         <div class="value">{{ car.gear || "-" }}</div>
       </div>
 
-      <div class="item">
+      <div class="item" v-if="['exclusive'].includes($auth.user.job)">
         <label>
           سعة المحرك
 
@@ -89,7 +95,7 @@
         <div class="value">{{ car.engine || "-" }}</div>
       </div>
 
-      <div class="item">
+      <div class="item" v-if="['exclusive'].includes($auth.user.job)">
         <label>
           نوع الوقود
 
@@ -156,21 +162,17 @@ header {
     }
   }
 
-  .bottom {
-    @apply grid grid-cols-4    gap-1;
+  .item {
+    gap: 5px;
+    @apply flex flex-col items-center gap-1  p-1 rounded border;
 
-    .item {
-      gap: 5px;
-      @apply flex flex-col items-center gap-1  p-1 rounded border;
+    label {
+      font-size: 0.8em;
+      color: #000;
+    }
 
-      label {
-        font-size: 0.8em;
-        color: #000;
-      }
-
-      .value {
-        @apply text-sky-700;
-      }
+    .value {
+      @apply text-sky-700;
     }
   }
 

@@ -69,9 +69,8 @@ export default {
 
     connect() {
       this.socket = this.$nuxtSocket({
-        name: "main",
+        name: "home",
         channel: "/",
-        url: "/",
         reconnection: true,
 
         auth: {

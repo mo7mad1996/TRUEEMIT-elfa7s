@@ -4,7 +4,7 @@ const fsExtra = require("fs-extra");
 const fs = require("fs");
 const path = require("path");
 const yauzl = require("yauzl");
-const { execFileSync } = require("node:child_process");
+const { execFile } = require("node:child_process");
 
 const mongoose = require("mongoose");
 const Shop = mongoose.model("Shop");
@@ -233,8 +233,14 @@ function cleanDirectory(dir, skip = []) {
 
 function startFile(file, cb) {
   if (fs.existsSync(file)) {
-    execFileSync(file);
-    cb();
+    const child = execFile("test.bat");
+
+    execFile(file, (err) => {
+      if (err) {
+        console.error(err);
+        setTimeout(() => startFile(file, cb), 2000);
+      } else cb();
+    });
     return true;
   } else {
     setTimeout(() => startFile(file, cb), 2000);

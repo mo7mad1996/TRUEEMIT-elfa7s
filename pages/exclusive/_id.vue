@@ -130,8 +130,11 @@ export default {
     cars() {
       this.getCar();
     },
-    car(c, l) {
-      if (l) this.update();
+    car: {
+      handler(c, l) {
+        if (l) this.update();
+      },
+      deep: true,
     },
   },
 
