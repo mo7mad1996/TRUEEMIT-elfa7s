@@ -4,7 +4,7 @@
       <fieldset v-if="car.body">
         <legend>فحص البودي</legend>
 
-        <div class="check-input" v-for="input in $inputs" :key="input.en">
+        <div class="check-input" v-for="(input, n) in $inputs" :key="n">
           <span>{{ input.ar }}</span>
           <div class="inputs">
             <div class="input" v-for="(text, v) in values" :key="v">
@@ -25,11 +25,8 @@
             <font-awesome-icon :icon="['fas', 'clipboard']" />
             ملاحظات
           </label>
-          <textarea
-            v-model="car.body.note"
-            data-max="5"
-            ></textarea>
-            <!-- @keydown="$check_max_lines" -->
+          <textarea v-model="car.body.note" data-max="5"></textarea>
+          <!-- @keydown="$check_max_lines" -->
         </div>
       </fieldset>
       <div class="images">
@@ -41,11 +38,8 @@
         <font-awesome-icon :icon="['fas', 'toolbox']" />
         فحص الشاصى
       </label>
-      <textarea
-        v-model="car.chassis"
-        data-max="5"
-        ></textarea>
-        <!-- @keydown="$check_max_lines" -->
+      <textarea v-model="car.chassis" data-max="5"></textarea>
+      <!-- @keydown="$check_max_lines" -->
     </div>
   </div>
 </template>

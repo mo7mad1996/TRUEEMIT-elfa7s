@@ -1,7 +1,11 @@
 <template>
   <div class="bg" ref="p">
     <nuxt />
-    <img class="logo-print" :src="$shop.logo" alt="" />
+    <img
+      class="logo-print"
+      :src="$shop.logo"
+      v-if="!['exclusive'].includes($auth.user.job)"
+    />
   </div>
 </template>
 

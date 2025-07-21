@@ -101,39 +101,45 @@ module.exports = (router, app) => {
 
   router.post("/update", async (req, res) => {
     try {
+      // variables
       const { url } = req.body;
-      const zipPath = path.join(__dirname, "../../..", "temp-repo.zip");
       const extractPath = path.join(__dirname, "../../..");
       const uploadDir = path.join(__dirname, "../..", "upload");
+      const zipPath = path.join(__dirname, "../../..", "temp-repo.zip");
       const installFile = path.join(__dirname, "../../..", "install.bat");
 
       if (process.env.NODE_ENV !== "development") {
-        console.log("downloadFile");
-        await downloadFile(url, zipPath); // download a new version zip
-        console.log("extractZip");
-        await extractZip(zipPath, extractPath); // unzip file
-        console.log("copyDirContents 1 ");
+        // 1| download a new version zip
+        await downloadFile(url, zipPath);
+
+        // 2| unzip file
+        await extractZip(zipPath, extractPath);
+
         copyDirContents(
+          // 3| copy old images and files
           uploadDir,
           path.join(extractPath, "TRUEEMIT-elfa7s-main/server/upload")
         );
-        console.log("cleanDirectory");
+
+        // 4| clean the base dir and skip [files / dirs]
         cleanDirectory(extractPath, ["TRUEEMIT-elfa7s-main", "node_modules"]);
-        console.log("copyDirContents 2");
+
+        // 5| get the new code
         copyDirContents(
           path.join(extractPath, "TRUEEMIT-elfa7s-main"),
           extractPath
         );
-        console.log("startFile", installFile);
+
+        // 6| stop current server
         global.server.close();
+
+        // 7| start install and build new code
         startFile(installFile, () => {
           res.json({ update_file: 4 });
           console.clear();
           process.exit(0);
         });
-      } else {
-        res.json({ update_file: 4 });
-      }
+      } else res.json({ update_file: 4 });
     } catch (err) {
       console.error(err);
     }
@@ -241,8 +247,6 @@ function cleanDirectory(dir, skip = []) {
 
 function startFile(file, cb) {
   if (fs.existsSync(file)) {
-    const child = execFile("test.bat");
-
     execFile(file, (err) => {
       if (err) {
         console.error(err);

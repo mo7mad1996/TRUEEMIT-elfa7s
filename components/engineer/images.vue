@@ -4,7 +4,7 @@
       <div :class="`img-${n} img-container`" v-for="n in 5" :key="n">
         <img class="main-car" :src="require(`~/assets/cars/${n}.png`)" />
 
-        <div class="problem" v-for="input in $inputs" :key="`${n}_${input.en}`">
+        <div class="problem" v-for="(input, b) in $inputs" :key="b">
           <img
             v-if="car.body[input.en]"
             :src="
@@ -17,9 +17,13 @@
       </div>
     </div>
 
-    <div class="text-center">
+    <div class="text-center text-xs opacity-75">
       ملاحظة : علامة M تعني مرشوش و T تعني تعديل وعلامة MM تعني مرشوش و معجون
       وعلامة MB تعني مغير ومرشوش
+
+      <br />
+      Note: The letter M indicates Repainted, T stands for Repaired, MM means
+      Repainted and Filled, and MB indicates Replaced and Repainted.
     </div>
   </section>
 </template>

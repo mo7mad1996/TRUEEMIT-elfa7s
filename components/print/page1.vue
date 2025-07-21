@@ -4,30 +4,54 @@
     <div style="display: table-row-group">
       <div class="page1">
         <div class="flex gap-0.5">
-          <main>
-            <h4 class="text-center text-zinc-700 text-sm">
-              <font-awesome-icon :icon="['fas', 'car-on']" />
-              فحص البودي
-            </h4>
-            <table>
-              <thead>
-                <th></th>
-                <th v-for="val in values" :key="val">{{ val }}</th>
-              </thead>
+          <main class="flex-1">
+            <table class="w-full">
+              <div class="table-header-group h-fit">
+                <td>
+                  <h4
+                    class="text-center text-zinc-700 text-sm h-full flex flex-col justify-between"
+                  >
+                    <font-awesome-icon :icon="['fas', 'car-on']" />
+                    <div>فحص البودي</div>
+                    <div>Body</div>
+                  </h4>
+                </td>
+                <div
+                  v-for="(val, n) in values"
+                  :key="n"
+                  class="text-gray-400 text-[10px] text-bt text-left px-1 pb-1 table-cell justify-center"
+                >
+                  <div>
+                    {{ val.ar }}
+                  </div>
+                  <div>
+                    {{ val.en }}
+                  </div>
+                </div>
+              </div>
+
               <tbody>
-                <tr v-for="input in $inputs" :key="input.en">
-                  <td class="blue">{{ input.ar }}</td>
+                <tr
+                  v-for="(input, v) in $inputs"
+                  :key="v"
+                  class="text-[10px] text-gray-400 odd:bg-neutral-200 odd:!text-neutral-900"
+                >
+                  <td class="">
+                    {{ input.ar }}
+                    <br />
+                    {{ input.lang_en }}
+                  </td>
                   <td class="text-center" v-for="(_, val) in values" :key="val">
                     <font-awesome-icon
                       :icon="['fas', 'check']"
-                      class="!text-sky-700 !rounded"
-                      v-if="car.body[input.en] == val"
+                      class="!text-sky-700 !rounded !text-md"
+                      v-if="car.body[input.key] == val"
                     />
                   </td>
                 </tr>
               </tbody>
             </table>
-            <h6 class="text-xs opacity-60 p-2">
+            <h6 class="text-xs opacity-60 p-1">
               الفايبر + الصدامات خارج الفحص
             </h6>
             <fieldset v-if="car.body.note">
@@ -42,7 +66,8 @@
           </main>
 
           <div class="line"></div>
-          <aside>
+
+          <aside class="flex-1">
             <h4 class="text-center text-zinc-700 text-sm">
               <font-awesome-icon :icon="['fas', 'compass-drafting']" />
               الرسم التوضيحي
@@ -76,7 +101,13 @@ export default {
   props: ["car"],
   data() {
     return {
-      values: ["سليم", "معدل", "مرشوش", "رش ومعجون", "مغير ومرشوش"],
+      values: [
+        { ar: "سليم", en: "In Good Condition" },
+        { ar: "معدل", en: "Repaired" },
+        { ar: "مرشوش", en: "Repainted" },
+        { ar: "رش ومعجون", en: "Repainted & Filled" },
+        { ar: "مغير ومرشوش", en: "Replaced & Repainted" },
+      ],
     };
   },
   components: { PrintHeader, PrintFooter, Images },
@@ -91,15 +122,6 @@ main {
   table {
     width: 100%;
     font-size: 16px;
-
-    thead {
-      border-bottom: 1px solid #333;
-    }
-    th {
-      padding: 0.2em 0.5em;
-      font-size: 0.8em;
-      color: #000;
-    }
 
     td {
       position: relative;
@@ -176,6 +198,10 @@ footer {
 
   .flex {
     display: flex;
+  }
+
+  .text-bt {
+    writing-mode: sideways-lr;
   }
 }
 </style>

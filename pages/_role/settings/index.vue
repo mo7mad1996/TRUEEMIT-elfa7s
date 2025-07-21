@@ -191,7 +191,7 @@
             <div
               v-for="(section, n) in user.sections"
               :key="n"
-              class="shadow p-4 rounded bg-white flex flex-col gap-2 h-fit relative group/section"
+              class="shadow p-4 rounded bg-white flex flex-col gap-2 relative group/section"
             >
               <!-- title -->
               <button
@@ -222,7 +222,7 @@
               />
 
               <!-- list -->
-              <div class="flex-1">
+              <div class="flex-1 max-h-96 overflow-auto">
                 <ul
                   class="text-slate-400 flex items-center justify-between group hover:bg-neutral-50 p-2"
                   v-for="(item, n) in section.items"

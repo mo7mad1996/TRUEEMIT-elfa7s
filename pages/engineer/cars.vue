@@ -33,7 +33,7 @@
               @click="$router.push(`/print/${car._id}?no_print`)"
             >
               <td v-for="column in columns" :key="column.en" :class="column.en">
-                {{ car[column.en] }}
+                {{ car[column.en] || "-" }}
               </td>
             </tr>
           </client-only>

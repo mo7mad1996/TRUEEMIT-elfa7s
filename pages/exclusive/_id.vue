@@ -112,7 +112,7 @@ export default {
 
       // if no sections
       if (this.car.sections.length == 0)
-        this.car.sections = this.$auth.user.sections;
+        this.car.sections = [...this.$auth.user.sections];
     },
   },
   mounted() {
