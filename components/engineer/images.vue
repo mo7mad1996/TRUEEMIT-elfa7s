@@ -18,12 +18,14 @@
     </div>
 
     <div class="text-center text-xs opacity-75">
-      ملاحظة : علامة M تعني مرشوش و T تعني تعديل وعلامة MM تعني مرشوش و معجون
-      وعلامة MB تعني مغير ومرشوش
-
-      <br />
-      Note: The letter M indicates Repainted, T stands for Repaired, MM means
-      Repainted and Filled, and MB indicates Replaced and Repainted.
+      <span v-if="lang == 'ar'">
+        ملاحظة : علامة M تعني مرشوش و T تعني تعديل وعلامة MM تعني مرشوش و معجون
+        وعلامة MB تعني مغير ومرشوش
+      </span>
+      <span v-else>
+        Note: The letter M indicates Repainted, T stands for Repaired, MM means
+        Repainted and Filled, and MB indicates Replaced and Repainted.
+      </span>
     </div>
   </section>
 </template>
@@ -31,7 +33,7 @@
 <script>
 export default {
   name: "Images",
-  props: ["car"],
+  props: ["car", "lang"],
 };
 </script>
 

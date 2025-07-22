@@ -1,6 +1,7 @@
 <template>
   <div class="page">
-    <PrintHeader :car="car" />
+    <PrintHeader :car="car" :lang="lang" />
+
     <h1 class="text-blue-950 text-center">صور الملاحظات</h1>
     <div class="page3">
       <div v-for="image in car?.images" :key="image.image">
@@ -20,7 +21,7 @@ import PrintFooter from "@/components/print/footer";
 
 export default {
   name: "Page3",
-  props: ["car"],
+  props: ["car", "lang"],
   components: { PrintHeader, PrintFooter },
 };
 </script>

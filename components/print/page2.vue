@@ -3,18 +3,33 @@
     class="page"
     :class="!(car.service == 'محركات' || car.service == 'صيانة') && 'break'"
   >
-    <PrintHeader :car="car" />
+    <PrintHeader :car="car" :lang="lang" />
 
     <div class="page2">
       <ul v-if="car.service == 'صيانة'">
-        <li>
+        <li v-if="lang === 'ar'">
           - الفحص عباره عن فحص القطع الاستهلاكيه التي بحاجة غيار + تهريبات
           الزيوت .
         </li>
-        <li>
+        <li v-else>
+          - Inspection covers consumable parts that need replacement + oil
+          leaks.
+        </li>
+
+        <li v-if="lang === 'ar'">
           - لم يتم فحص الاجزاء المفكوكه للمكينه + القير - لم يتم فحص الشواصي .
         </li>
-        <li>- لم يتم فحص البدي - لم يتم فحص الكمبيوتر + الارباقات .</li>
+        <li v-else>
+          - Engine and transmission disassembled parts were not inspected +
+          chassis not inspected.
+        </li>
+
+        <li v-if="lang === 'ar'">
+          - لم يتم فحص البدي - لم يتم فحص الكمبيوتر + الارباقات .
+        </li>
+        <li v-else>
+          - Body not inspected + computer and airbags not inspected.
+        </li>
       </ul>
 
       <!-- الكمبيوتر -->
@@ -26,7 +41,8 @@
         }"
       >
         <h4>
-          فحص الكمبيوتر
+          <span v-if="lang == 'ar'"> فحص الكمبيوتر </span>
+          <span v-else> Computer scan </span>
           <font-awesome-icon :icon="['fas', 'computer']" />
           <span class="squire"></span>
         </h4>
@@ -45,7 +61,8 @@
         "
       >
         <h4>
-          فحص الاكسسورات
+          <span v-if="lang == 'ar'"> فحص الاكسسورات </span>
+          <span v-else> Check accessories</span>
           <font-awesome-icon :icon="['fas', 'gears']" />
           <span class="squire"></span>
         </h4>
@@ -55,7 +72,8 @@
       <!-- الميداني -->
       <div class="section three" v-if="this.$auth.user.job != 'exclusive'">
         <h4>
-          الفحص الميداني
+          <span v-if="lang == 'ar'"> الفحص الميداني </span>
+          <span v-else> Field examination</span>
           <font-awesome-icon :icon="['fas', 'car']" />
           <span class="squire"></span>
         </h4>
@@ -66,11 +84,20 @@
       <section class="section two" v-if="this.$auth.user.job != 'exclusive'">
         <div class="service">
           <h4>
-            {{
-              car.service == "صيانة"
-                ? "فحص القطع الاستهلاكيه والتهريبات"
-                : "فحص ميكانيكا"
-            }}
+            <span v-if="lang == 'ar'">
+              {{
+                car.service == "صيانة"
+                  ? "فحص القطع الاستهلاكيه والتهريبات"
+                  : "فحص ميكانيكا"
+              }}
+            </span>
+            <span v-else>
+              {{
+                car.service === "صيانة"
+                  ? "Consumables and leak inspection"
+                  : "Mechanical inspection"
+              }}
+            </span>
             <font-awesome-icon :icon="['fas', 'wrench']" />
             <span class="squire"></span>
           </h4>
@@ -89,7 +116,7 @@ import PrintFooter from "@/components/print/footer";
 
 export default {
   name: "Page2",
-  props: ["car"],
+  props: ["car", "lang"],
   components: { PrintHeader, PrintFooter },
 };
 </script>

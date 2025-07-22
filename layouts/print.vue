@@ -1,18 +1,60 @@
 <template>
-  <div class="bg" ref="p">
-    <nuxt />
-    <img
-      class="logo-print"
-      :src="$shop.logo"
-      v-if="!['exclusive'].includes($auth.user.job)"
-    />
+  <div class="bg min-h-screen" ref="p">
+    <clientOnly>
+      <div
+        class="fixed py-2 top-0 z-50 flex justify-center items-center w-full print:hidden gap-2"
+      >
+        <button
+          class="btn !bg-neutral-800 hover:!bg-neutral-700 !border-neutral-800 !text-neutral-300 font-light"
+          @click="print"
+        >
+          طباعة
+
+          <font-awesome-icon icon="fa-solid fa-print" />
+        </button>
+
+        <button
+          class="btn !bg-neutral-800 hover:!bg-neutral-800 !border-neutral-800 !text-neutral-300 font-light"
+          @click="lang = lang == 'ar' ? 'en' : 'ar'"
+        >
+          <div
+            class="transition-all"
+            :class="{ 'text-neutral-600': lang == 'en' }"
+          >
+            عربي
+          </div>
+          <div
+            class="transition-all"
+            :class="{ 'text-neutral-600': lang == 'ar' }"
+          >
+            ENGLISH
+          </div>
+        </button>
+      </div>
+      <NuxtChild :lang="lang" />
+      <img
+        class="logo-print"
+        :src="$shop.logo"
+        v-if="!['exclusive'].includes($auth.user.job)"
+      />
+    </clientOnly>
   </div>
 </template>
 
 <script>
 export default {
+  data() {
+    return {
+      lang: "ar",
+    };
+  },
+  methods: {
+    print() {
+      window.print();
+    },
+  },
   mounted() {
-    if (!this.$route.query.hasOwnProperty("no_print")) window.print();
+    if (!this.$route.query.hasOwnProperty("no_print")) this.print();
   },
 };
 </script>

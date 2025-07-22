@@ -1,6 +1,7 @@
 <template>
   <div class="page">
-    <PrintHeader :car="car" />
+    <PrintHeader :car="car" :lang="lang" />
+
     <div style="display: table-row-group">
       <h1 class="text-blue-950 text-center">صور السيارة</h1>
       <div class="page3 break">
@@ -22,7 +23,7 @@ import PrintFooter from "@/components/print/footer";
 
 export default {
   name: "Page3",
-  props: ["car"],
+  props: ["car", "lang"],
   components: { PrintHeader, PrintFooter },
 };
 </script>

@@ -1,45 +1,40 @@
 <template>
   <div class="page">
-    <PrintHeader :car="car" />
+    <PrintHeader :car="car" :lang="lang" />
     <div style="display: table-row-group">
       <div class="page1">
         <div class="flex gap-0.5">
-          <main class="flex-1">
+          <main class="flex-1 max-w-1/2">
+            <h4 class="text-center">
+              <font-awesome-icon :icon="['fas', 'car-on']" />
+              <span v-if="lang == 'en'">Body </span>
+              <span v-else> فحص البودي </span>
+            </h4>
             <table class="w-full">
-              <div class="table-header-group h-fit">
-                <td>
-                  <h4
-                    class="text-center text-zinc-700 text-sm h-full flex flex-col justify-between"
-                  >
-                    <font-awesome-icon :icon="['fas', 'car-on']" />
-                    <div>فحص البودي</div>
-                    <div>Body</div>
-                  </h4>
-                </td>
-                <div
+              <thead>
+                <th></th>
+                <th
                   v-for="(val, n) in values"
                   :key="n"
-                  class="text-gray-400 text-[10px] text-bt text-left px-1 pb-1 table-cell justify-center"
+                  class="text-gray-700 text-center text-[10px] px-1 pb-1"
                 >
-                  <div>
-                    {{ val.ar }}
-                  </div>
-                  <div>
-                    {{ val.en }}
-                  </div>
-                </div>
-              </div>
+                  {{ val[lang] }}
+                </th>
+              </thead>
 
               <tbody>
                 <tr
                   v-for="(input, v) in $inputs"
                   :key="v"
-                  class="text-[10px] text-gray-400 odd:bg-neutral-200 odd:!text-neutral-900"
+                  class="text-gray-700 odd:bg-neutral-200 odd:!text-neutral-900"
                 >
-                  <td class="">
-                    {{ input.ar }}
-                    <br />
-                    {{ input.lang_en }}
+                  <td class="pr-1">
+                    <div v-if="lang == 'ar'">
+                      {{ input.ar }}
+                    </div>
+                    <div v-else>
+                      {{ input.lang_en }}
+                    </div>
                   </td>
                   <td class="text-center" v-for="(_, val) in values" :key="val">
                     <font-awesome-icon
@@ -52,13 +47,17 @@
               </tbody>
             </table>
             <h6 class="text-xs opacity-60 p-1">
-              الفايبر + الصدامات خارج الفحص
+              <span v-if="lang == 'en'">
+                Fiber and bumpers are excluded from inspection.
+              </span>
+              <span v-else> الفايبر + الصدامات خارج الفحص </span>
             </h6>
             <fieldset v-if="car.body.note">
               <legend>
                 <font-awesome-icon :icon="['fas', 'clipboard']" />
 
-                ملاحظه
+                <span v-if="lang == 'ar'"> ملاحظه </span>
+                <span v-else>Notes</span>
               </legend>
 
               <p v-html="$nltobr(car.body.note)"></p>
@@ -70,15 +69,17 @@
           <aside class="flex-1">
             <h4 class="text-center text-zinc-700 text-sm">
               <font-awesome-icon :icon="['fas', 'compass-drafting']" />
-              الرسم التوضيحي
+              <span v-if="lang == 'ar'"> الرسم التوضيحي </span>
+              <span v-else>Clarification</span>
             </h4>
-            <Images :car="car" />
+            <Images :car="car" :lang="lang" />
           </aside>
         </div>
 
         <footer>
           <h4>
-            فحص الشاصى
+            <span v-if="lang == 'ar'"> فحص الشاصى </span>
+            <span v-else>Chassis</span>
             <font-awesome-icon :icon="['fas', 'toolbox']" />
           </h4>
 
@@ -98,15 +99,15 @@ import PrintFooter from "@/components/print/footer";
 
 export default {
   name: "Page1",
-  props: ["car"],
+  props: ["car", "lang"],
   data() {
     return {
       values: [
         { ar: "سليم", en: "In Good Condition" },
         { ar: "معدل", en: "Repaired" },
         { ar: "مرشوش", en: "Repainted" },
-        { ar: "رش ومعجون", en: "Repainted & Filled" },
-        { ar: "مغير ومرشوش", en: "Replaced & Repainted" },
+        { ar: "رش ومعجون", en: "Repainted  Filled" },
+        { ar: "مغير ومرشوش", en: "Replaced  Repainted" },
       ],
     };
   },

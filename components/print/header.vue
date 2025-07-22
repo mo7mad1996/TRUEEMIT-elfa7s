@@ -41,74 +41,59 @@
         </div>
       </div>
     </div>
-    <div
-      class="bottom"
-      :class="{
-        'grid grid-cols-5 gap-1': !['exclusive'].includes($auth.user.job),
-        'grid grid-cols-4 gap-1': ['exclusive'].includes($auth.user.job),
-      }"
-    >
+    <div class="bottom">
       <div class="item">
         <label>
-          نوع السياره
+          <span v-if="lang == 'ar'"> نوع السياره </span>
+          <span v-else> Type of car</span>
+
           <font-awesome-icon :icon="['fas', 'car-side']" />
         </label>
+
         <div class="value">{{ car.type || "-" }}</div>
       </div>
+
       <div class="item">
         <label>
-          رقم اللوحه
+          <span v-if="lang == 'ar'"> رقم اللوحه</span>
+          <span v-else> Plate number</span>
+
           <font-awesome-icon :icon="['fas', 'passport']" />
         </label>
+
         <div class="value">{{ car.car_id || "-" }}</div>
       </div>
+
       <div class="item">
         <label>
-          رقم الشاصى
+          <span v-if="lang == 'ar'"> رقم الشاصى </span>
+          <span v-else> Chassis number </span>
+
           <font-awesome-icon :icon="['fas', 'car']" />
         </label>
+
         <div class="value">{{ car.vin_no || "-" }}</div>
       </div>
+
       <div class="item">
         <label>
-          قراءة العداد
+          <span v-if="lang == 'ar'"> قراءة العداد</span>
+          <span v-else> Meter reading </span>
+
           <font-awesome-icon :icon="['fas', 'gauge-high']" />
         </label>
+
         <div class="value">{{ car.odometer || "-" }}</div>
       </div>
 
-      <div class="item" v-if="['exclusive'].includes($auth.user.job)">
-        <label>
-          نوع القير
-
-          <font-awesome-icon :icon="['fas', 'gears']" />
-        </label>
-        <div class="value">{{ car.gear || "-" }}</div>
-      </div>
-
-      <div class="item" v-if="['exclusive'].includes($auth.user.job)">
-        <label>
-          سعة المحرك
-
-          <font-awesome-icon :icon="['fas', 'oil-well']" />
-        </label>
-        <div class="value">{{ car.engine || "-" }}</div>
-      </div>
-
-      <div class="item" v-if="['exclusive'].includes($auth.user.job)">
-        <label>
-          نوع الوقود
-
-          <font-awesome-icon :icon="['fas', 'gas-pump']" />
-        </label>
-        <div class="value">{{ car.fuel || "-" }}</div>
-      </div>
-
       <div class="item">
         <label>
-          الخدمة المقدمه
+          <span v-if="lang == 'ar'"> الخدمة المقدمه </span>
+          <span v-else> Service provided </span>
+
           <font-awesome-icon :icon="['fas', 'bell-concierge']" />
         </label>
+
         <div class="value">{{ car.service || "-" }}</div>
       </div>
     </div>
@@ -120,7 +105,7 @@ import BarCode from "@/components/engineer/barcode";
 
 export default {
   name: "PrintHeader",
-  props: ["car"],
+  props: ["car", "lang"],
   components: { BarCode },
 };
 </script>
@@ -162,17 +147,28 @@ header {
     }
   }
 
-  .item {
-    gap: 5px;
-    @apply flex flex-col items-center gap-1  p-1 rounded border;
+  .bottom {
+    display: flex;
+    border: 1px solid #000;
 
-    label {
-      font-size: 0.8em;
-      color: #000;
-    }
+    .item {
+      flex: 1;
+      display: flex;
+      text-align: center;
+      flex-direction: column;
+      border: 1px solid #000;
+      padding: 5px;
+      gap: 5px;
 
-    .value {
-      @apply text-sky-700;
+      label {
+        font-size: 0.8em;
+
+        color: #000;
+      }
+
+      .value {
+        @apply text-blue-800;
+      }
     }
   }
 

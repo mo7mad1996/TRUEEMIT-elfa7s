@@ -1,6 +1,6 @@
 <template>
   <div class="page">
-    <PrintHeader :car="car" />
+    <PrintHeader :car="car" :lang="lang" />
 
     <div class="page4">
       <div
@@ -90,7 +90,7 @@ import PrintFooter from "@/components/print/footer";
 
 export default {
   name: "Page4",
-  props: ["car"],
+  props: ["car", "lang"],
   components: { PrintHeader, PrintFooter },
 };
 </script>

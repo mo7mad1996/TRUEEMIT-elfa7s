@@ -2,20 +2,24 @@
   <div>
     <Page1
       :car="car"
+      :lang="lang"
       v-if="!(car.service == 'محركات' || car.service == 'صيانة')"
     />
-    <Page2 :car="car" />
+    <Page2 :car="car" :lang="lang" />
     <car-images
+      :lang="lang"
       :car="car"
       v-if="
         car.car_images && car.car_images.length && $auth.user.job == 'exclusive'
       "
     />
     <Page3
+      :lang="lang"
       :car="car"
       v-if="car.images && car.images.length && $auth.user.job == 'exclusive'"
     />
     <Page4
+      :lang="lang"
       :car="car"
       v-if="
         car.sections && car.sections.length && $auth.user.job == 'exclusive'
@@ -42,6 +46,7 @@ export default {
   },
   components: { CarImages, Page1, Page2, Page3, Page4 },
   layout: "print",
+  props: ["lang"],
   head() {
     return { title: this.car.car_id };
   },
