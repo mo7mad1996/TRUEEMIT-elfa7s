@@ -6,19 +6,45 @@
         <div class="flex gap-0.5">
           <main class="flex-1 max-w-1/2">
             <h4 class="text-center">
-              <font-awesome-icon :icon="['fas', 'car-on']" />
-              <span v-if="lang == 'en'">Body </span>
-              <span v-else> فحص البودي </span>
+              <template v-if="['exclusive'].includes($auth.user.job)">
+              </template>
+              <template v-else>
+                <font-awesome-icon :icon="['fas', 'car-on']" />
+                <span v-if="lang == 'en'">Body </span>
+                <span v-else> فحص البودي </span>
+              </template>
             </h4>
             <table class="w-full">
               <thead>
-                <th></th>
+                <th>
+                  <h4
+                    v-if="['exclusive'].includes($auth.user.job)"
+                    class="text-center text-zinc-700 text-sm h-full flex flex-col justify-between"
+                  >
+                    <font-awesome-icon :icon="['fas', 'car-on']" />
+
+                    <div>فحص البودي</div>
+
+                    <div>Body</div>
+                  </h4>
+                </th>
                 <th
                   v-for="(val, n) in values"
                   :key="n"
                   class="text-gray-700 text-center text-[10px] px-1 pb-1"
+                  :class="{
+                    'text-[10px] text-bt text-left px-1 pb-1 table-cell justify-center':
+                      ['exclusive'].includes($auth.user.job),
+                  }"
                 >
-                  {{ val[lang] }}
+                  <template v-if="['exclusive'].includes($auth.user.job)">
+                    <div>{{ val.ar }}</div>
+
+                    <div class="text-gray-400">{{ val.en }}</div>
+                  </template>
+                  <template v-else>
+                    {{ val[lang] }}
+                  </template>
                 </th>
               </thead>
 
@@ -28,7 +54,22 @@
                   :key="v"
                   class="text-gray-700 odd:bg-neutral-200 odd:!text-neutral-900"
                 >
-                  <td class="pr-1">
+                  <td
+                    v-if="['exclusive'].includes($auth.user.job)"
+                    class="text-[10px] text-gray-400 odd:!text-neutral-900"
+                  >
+                    <div class="flex justify-between">
+                      <span>
+                        {{ input.ar }}
+                      </span>
+
+                      <span>
+                        {{ input.lang_en }}
+                      </span>
+                    </div>
+                  </td>
+
+                  <td class="pr-1" v-else>
                     <div v-if="lang == 'ar'">
                       {{ input.ar }}
                     </div>
@@ -36,6 +77,7 @@
                       {{ input.lang_en }}
                     </div>
                   </td>
+
                   <td class="text-center" v-for="(_, val) in values" :key="val">
                     <font-awesome-icon
                       :icon="['fas', 'check']"
@@ -46,14 +88,34 @@
                 </tr>
               </tbody>
             </table>
+
             <h6 class="text-xs opacity-60 p-1">
-              <span v-if="lang == 'en'">
-                Fiber and bumpers are excluded from inspection.
-              </span>
-              <span v-else> الفايبر + الصدامات خارج الفحص </span>
+              <template v-if="['exclusive'].includes($auth.user.job)">
+                <div>الفايبر + الصدامات خارج الفحص</div>
+                <span class="dir-ltr">
+                  Fiber and bumpers are excluded from inspection
+                </span>
+              </template>
+              <template v-else>
+                <span v-if="lang == 'en'">
+                  Fiber and bumpers are excluded from inspection.
+                </span>
+                <span v-else> الفايبر + الصدامات خارج الفحص </span>
+              </template>
             </h6>
+
             <fieldset v-if="car.body.note">
-              <legend>
+              <legend v-if="['exclusive'].includes($auth.user.job)">
+                <h4
+                  class="flex justify-between items-center px-1 text-zinc-700 text-sm"
+                >
+                  <span> ملاحظه</span>
+                  <font-awesome-icon :icon="['fas', 'clipboard']" />
+
+                  <span>Notes</span>
+                </h4>
+              </legend>
+              <legend v-else>
                 <font-awesome-icon :icon="['fas', 'clipboard']" />
 
                 <span v-if="lang == 'ar'"> ملاحظه </span>
@@ -67,20 +129,36 @@
           <div class="line"></div>
 
           <aside class="flex-1">
-            <h4 class="text-center text-zinc-700 text-sm">
-              <font-awesome-icon :icon="['fas', 'compass-drafting']" />
-              <span v-if="lang == 'ar'"> الرسم التوضيحي </span>
-              <span v-else>Clarification</span>
-            </h4>
+            <template v-if="['exclusive'].includes($auth.user.job)">
+              <h4
+                class="flex justify-between items-center px-1 text-zinc-700 text-sm"
+              >
+                <span> الرسم التوضيحي </span>
+                <font-awesome-icon :icon="['fas', 'compass-drafting']" />
+                <span>Clarification</span>
+              </h4>
+            </template>
+            <template v-else>
+              <h4 class="text-center text-zinc-700 text-sm">
+                <font-awesome-icon :icon="['fas', 'compass-drafting']" />
+                <span v-if="lang == 'ar'"> الرسم التوضيحي </span>
+                <span v-else>Clarification</span>
+              </h4>
+            </template>
             <Images :car="car" :lang="lang" />
           </aside>
         </div>
 
         <footer>
-          <h4>
+          <h4 v-if="['exclusive'].includes($auth.user.job)">
+            <font-awesome-icon :icon="['fas', 'toolbox']" />
+            <span> فحص الشاصى </span>
+            <span>(Chassis)</span>
+          </h4>
+          <h4 v-else>
+            <font-awesome-icon :icon="['fas', 'toolbox']" />
             <span v-if="lang == 'ar'"> فحص الشاصى </span>
             <span v-else>Chassis</span>
-            <font-awesome-icon :icon="['fas', 'toolbox']" />
           </h4>
 
           <p v-html="$nltobr(car.chassis)" v-if="car.chassis"></p>

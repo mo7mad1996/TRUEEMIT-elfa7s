@@ -14,6 +14,7 @@
         </button>
 
         <button
+          v-if="['engineer'].includes($auth.user.job)"
           class="btn !bg-neutral-800 hover:!bg-neutral-800 !border-neutral-800 !text-neutral-300 font-light"
           @click="lang = lang == 'ar' ? 'en' : 'ar'"
         >

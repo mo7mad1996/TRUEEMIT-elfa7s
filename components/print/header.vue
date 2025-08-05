@@ -44,10 +44,15 @@
     <div class="bottom">
       <div class="item">
         <label>
-          <span v-if="lang == 'ar'"> نوع السياره </span>
-          <span v-else> Type of car</span>
-
-          <font-awesome-icon :icon="['fas', 'car-side']" />
+          <template v-if="['exclusive'].includes($auth.user.job)">
+            <div>نوع السياره</div>
+            <div>Type of car</div>
+          </template>
+          <template v-else>
+            <span v-if="lang == 'ar'"> نوع السياره </span>
+            <span v-else> Type of car</span>
+            <font-awesome-icon :icon="['fas', 'car-side']" />
+          </template>
         </label>
 
         <div class="value">{{ car.type || "-" }}</div>
@@ -55,21 +60,43 @@
 
       <div class="item">
         <label>
-          <span v-if="lang == 'ar'"> رقم اللوحه</span>
-          <span v-else> Plate number</span>
+          <template v-if="['exclusive'].includes($auth.user.job)">
+            <div>رقم اللوحه</div>
+            <div>Plate number</div>
+          </template>
+          <template v-else>
+            <span v-if="lang == 'ar'"> رقم اللوحه</span>
+            <span v-else> Plate number</span>
 
-          <font-awesome-icon :icon="['fas', 'passport']" />
+            <font-awesome-icon :icon="['fas', 'passport']" />
+          </template>
         </label>
 
         <div class="value">{{ car.car_id || "-" }}</div>
       </div>
+      <div class="item" v-if="['exclusive'].includes($auth.user.job)">
+        <label>
+          <template>
+            <div>سعة المحرك</div>
+            <div>Engine capacity</div>
+          </template>
+        </label>
+
+        <div class="value">{{ car.engine || "-" }}</div>
+      </div>
 
       <div class="item">
         <label>
-          <span v-if="lang == 'ar'"> رقم الشاصى </span>
-          <span v-else> Chassis number </span>
+          <template v-if="['exclusive'].includes($auth.user.job)">
+            <div>رقم الشاصى</div>
+            <div>Chassis number</div>
+          </template>
+          <template v-else>
+            <span v-if="lang == 'ar'"> رقم الشاصى </span>
+            <span v-else> Chassis number </span>
 
-          <font-awesome-icon :icon="['fas', 'car']" />
+            <font-awesome-icon :icon="['fas', 'car']" />
+          </template>
         </label>
 
         <div class="value">{{ car.vin_no || "-" }}</div>
@@ -77,10 +104,16 @@
 
       <div class="item">
         <label>
-          <span v-if="lang == 'ar'"> قراءة العداد</span>
-          <span v-else> Meter reading </span>
+          <template v-if="['exclusive'].includes($auth.user.job)">
+            <div>قراءة العداد</div>
+            <div>Meter reading</div>
+          </template>
+          <template v-else>
+            <span v-if="lang == 'ar'"> قراءة العداد</span>
+            <span v-else> Meter reading </span>
 
-          <font-awesome-icon :icon="['fas', 'gauge-high']" />
+            <font-awesome-icon :icon="['fas', 'gauge-high']" />
+          </template>
         </label>
 
         <div class="value">{{ car.odometer || "-" }}</div>
@@ -88,10 +121,16 @@
 
       <div class="item">
         <label>
-          <span v-if="lang == 'ar'"> الخدمة المقدمه </span>
-          <span v-else> Service provided </span>
+          <template v-if="['exclusive'].includes($auth.user.job)">
+            <div>الخدمة المقدمه</div>
+            <div>Service provided</div>
+          </template>
+          <template v-else>
+            <span v-if="lang == 'ar'"> الخدمة المقدمه </span>
+            <span v-else> Service provided </span>
 
-          <font-awesome-icon :icon="['fas', 'bell-concierge']" />
+            <font-awesome-icon :icon="['fas', 'bell-concierge']" />
+          </template>
         </label>
 
         <div class="value">{{ car.service || "-" }}</div>

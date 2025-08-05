@@ -18,7 +18,7 @@
         </div>
         <div class="form-input">
           <label>
-            <font-awesome-icon :icon="['fass', 'car']" />
+            <font-awesome-icon :icon="['fas', 'car']" />
             رقم الشاصى</label
           >
           <input v-model="car.vin_no" />
@@ -48,7 +48,7 @@
           />
         </div>
 
-        <div class="form-input" v-if="['none'].includes($auth.user.job)">
+        <div class="form-input" v-if="['exclusive'].includes($auth.user.job)">
           <label>
             <font-awesome-icon :icon="['fas', 'oil-well']" />
             سعة المحرك

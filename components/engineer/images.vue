@@ -18,14 +18,28 @@
     </div>
 
     <div class="text-center text-xs opacity-75">
-      <span v-if="lang == 'ar'">
-        ملاحظة : علامة M تعني مرشوش و T تعني تعديل وعلامة MM تعني مرشوش و معجون
-        وعلامة MB تعني مغير ومرشوش
-      </span>
-      <span v-else>
-        Note: The letter M indicates Repainted, T stands for Repaired, MM means
-        Repainted and Filled, and MB indicates Replaced and Repainted.
-      </span>
+      <template v-if="['exclusive'].includes($auth.user.job)">
+        <div class="text-center text-xs opacity-75">
+          ملاحظة : علامة M تعني مرشوش و T تعني تعديل وعلامة MM تعني مرشوش و
+          معجون وعلامة MB تعني مغير ومرشوش
+
+          <div class="dir-ltr">
+            Note: The letter M indicates Repainted, T stands for Repaired, MM
+            means Repainted and Filled, and MB indicates Replaced and Repainted.
+          </div>
+        </div>
+      </template>
+
+      <template v-else>
+        <span v-if="lang == 'ar'">
+          ملاحظة : علامة M تعني مرشوش و T تعني تعديل وعلامة MM تعني مرشوش و
+          معجون وعلامة MB تعني مغير ومرشوش
+        </span>
+        <span v-else>
+          Note: The letter M indicates Repainted, T stands for Repaired, MM
+          means Repainted and Filled, and MB indicates Replaced and Repainted.
+        </span>
+      </template>
     </div>
   </section>
 </template>

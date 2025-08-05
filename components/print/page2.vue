@@ -7,29 +7,54 @@
 
     <div class="page2">
       <ul v-if="car.service == 'صيانة'">
-        <li v-if="lang === 'ar'">
-          - الفحص عباره عن فحص القطع الاستهلاكيه التي بحاجة غيار + تهريبات
-          الزيوت .
-        </li>
-        <li v-else>
-          - Inspection covers consumable parts that need replacement + oil
-          leaks.
-        </li>
+        <template v-if="['exclusive'].includes($auth.user.job)">
+          <li>
+            - الفحص عباره عن فحص القطع الاستهلاكيه التي بحاجة غيار + تهريبات
+            الزيوت .
+            <br />
+            - Inspection covers consumable parts that need replacement + oil
+            leaks.
+          </li>
 
-        <li v-if="lang === 'ar'">
-          - لم يتم فحص الاجزاء المفكوكه للمكينه + القير - لم يتم فحص الشواصي .
-        </li>
-        <li v-else>
-          - Engine and transmission disassembled parts were not inspected +
-          chassis not inspected.
-        </li>
+          <li>
+            - لم يتم فحص الاجزاء المفكوكه للمكينه + القير - لم يتم فحص الشواصي .
+            <br />
+            - Engine and transmission disassembled parts were not inspected +
+            chassis not inspected.
+          </li>
 
-        <li v-if="lang === 'ar'">
-          - لم يتم فحص البدي - لم يتم فحص الكمبيوتر + الارباقات .
-        </li>
-        <li v-else>
-          - Body not inspected + computer and airbags not inspected.
-        </li>
+          <li>
+            - لم يتم فحص البدي - لم يتم فحص الكمبيوتر + الارباقات .
+            <br />
+
+            - Body not inspected + computer and airbags not inspected.
+          </li>
+        </template>
+        <template v-else>
+          <li v-if="lang === 'ar'">
+            - الفحص عباره عن فحص القطع الاستهلاكيه التي بحاجة غيار + تهريبات
+            الزيوت .
+          </li>
+          <li v-else>
+            - Inspection covers consumable parts that need replacement + oil
+            leaks.
+          </li>
+
+          <li v-if="lang === 'ar'">
+            - لم يتم فحص الاجزاء المفكوكه للمكينه + القير - لم يتم فحص الشواصي .
+          </li>
+          <li v-else>
+            - Engine and transmission disassembled parts were not inspected +
+            chassis not inspected.
+          </li>
+
+          <li v-if="lang === 'ar'">
+            - لم يتم فحص البدي - لم يتم فحص الكمبيوتر + الارباقات .
+          </li>
+          <li v-else>
+            - Body not inspected + computer and airbags not inspected.
+          </li>
+        </template>
       </ul>
 
       <!-- الكمبيوتر -->
@@ -40,7 +65,12 @@
           one: this.$auth.user.job != 'exclusive',
         }"
       >
-        <h4>
+        <h4 v-if="['exclusive'].includes($auth.user.job)">
+          <font-awesome-icon :icon="['fas', 'computer']" />
+          <span> فحص الكمبيوتر </span>
+          <span>(Computer scan)</span>
+        </h4>
+        <h4 v-else>
           <span v-if="lang == 'ar'"> فحص الكمبيوتر </span>
           <span v-else> Computer scan </span>
           <font-awesome-icon :icon="['fas', 'computer']" />
@@ -60,7 +90,13 @@
           // || car.service == 'شامل'
         "
       >
-        <h4>
+        <h4 v-if="['exclusive'].includes($auth.user.job)">
+          <font-awesome-icon :icon="['fas', 'gears']" />
+
+          <span> فحص الاكسسورات </span>
+          <span>(Check accessories)</span>
+        </h4>
+        <h4 v-else>
           <span v-if="lang == 'ar'"> فحص الاكسسورات </span>
           <span v-else> Check accessories</span>
           <font-awesome-icon :icon="['fas', 'gears']" />
@@ -71,7 +107,13 @@
 
       <!-- الميداني -->
       <div class="section three" v-if="this.$auth.user.job != 'exclusive'">
-        <h4>
+        <h4 v-if="['exclusive'].includes($auth.user.job)">
+          <font-awesome-icon :icon="['fas', 'car']" />
+
+          <span>الفحص الميداني</span>
+          <span>(Field examination)</span>
+        </h4>
+        <h4 v-else>
           <span v-if="lang == 'ar'"> الفحص الميداني </span>
           <span v-else> Field examination</span>
           <font-awesome-icon :icon="['fas', 'car']" />
@@ -83,24 +125,33 @@
       <!-- الميكانيكا -->
       <section class="section two" v-if="this.$auth.user.job != 'exclusive'">
         <div class="service">
-          <h4>
-            <span v-if="lang == 'ar'">
-              {{
-                car.service == "صيانة"
-                  ? "فحص القطع الاستهلاكيه والتهريبات"
-                  : "فحص ميكانيكا"
-              }}
-            </span>
-            <span v-else>
-              {{
-                car.service === "صيانة"
-                  ? "Consumables and leak inspection"
-                  : "Mechanical inspection"
-              }}
-            </span>
+          <h4 v-if="['exclusive'].includes($auth.user.job)">
             <font-awesome-icon :icon="['fas', 'wrench']" />
-            <span class="squire"></span>
+
+            <span>فحص ميكانيكا</span>
+            <span>(Mechanical inspection)</span>
           </h4>
+          <template v-else>
+            <h4>
+              <span v-if="lang == 'ar'">
+                {{
+                  car.service == "صيانة"
+                    ? "فحص القطع الاستهلاكيه والتهريبات"
+                    : "فحص ميكانيكا"
+                }}
+              </span>
+              <span v-else>
+                {{
+                  car.service === "صيانة"
+                    ? "Consumables and leak inspection"
+                    : "Mechanical inspection"
+                }}
+              </span>
+              <font-awesome-icon :icon="['fas', 'wrench']" />
+              <span class="squire"></span>
+            </h4>
+          </template>
+
           <p v-html="$nltobr(car.mechanical)" v-if="car.mechanical"></p>
         </div>
       </section>
