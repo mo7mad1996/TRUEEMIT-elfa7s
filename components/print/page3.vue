@@ -2,7 +2,7 @@
 	<div class="page">
 		<PrintHeader :car="car" :lang="lang" />
 
-		<h1 class="text-blue-950 text-center">صور الملاحظات</h1>
+		<h1 class="text-red-950 text-center">صور الملاحظات</h1>
 		<div class="page3">
 			<div v-for="image in car?.images" :key="image.image">
 				<div class="bg-soft">
