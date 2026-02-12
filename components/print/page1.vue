@@ -81,7 +81,7 @@
 									<td class="text-center" v-for="(_, val) in values" :key="val">
 										<font-awesome-icon
 											:icon="['fas', 'check']"
-											class="!text-red-700 !rounded !text-md"
+											class="!text-sky-700 !rounded !text-md"
 											v-if="car.body[input.en] == val"
 										/>
 									</td>

@@ -42,7 +42,7 @@
 					@input="(image) => (item.image = image)"
 					@delete="() => (item.image = '')"
 				>
-					<template><h1>d</h1> </template>
+					<template> </template>
 				</FileDropAble>
 			</label>
 			<img

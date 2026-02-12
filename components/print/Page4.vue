@@ -34,7 +34,7 @@
 											'bg-green-50 items-center p-2 rounded-md': !item.image && !item.description,
 										}"
 									>
-										<h3 class="text-base font-medium text-rose-900 flex-1">
+										<h3 class="text-base font-medium text-lime-900 flex-1">
 											{{ item.name }}
 
 											<br />
@@ -53,7 +53,7 @@
 										<div class="flex-1">
 											<p
 												v-if="item.description"
-												class="text-sm text-red-600 bg-red-50 mt-1 border-r pr-4 py-4"
+												class="text-sm text-blue-600 bg-red-50 mt-1 border-r pr-4 py-4"
 												v-html="$nltobr(item.description, 'br')"
 											></p>
 										</div>
