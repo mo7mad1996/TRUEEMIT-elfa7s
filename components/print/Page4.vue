@@ -11,7 +11,7 @@
 						<tr>
 							<td colspan="2">
 								<h2
-									class="section-title text-xl font-semibold text-red-700 flex justify-between items-center py-4 px-6"
+									class="section-title text-xl font-semibold text-blue-700 flex justify-between items-center py-4 px-6"
 								>
 									<span>{{ section.title }}</span>
 									<span>{{ section.title_en }}</span>
@@ -53,7 +53,7 @@
 										<div class="flex-1">
 											<p
 												v-if="item.description"
-												class="text-sm text-blue-600 bg-red-50 mt-1 border-r pr-4 py-4"
+												class="text-sm text-red-600 bg-red-50 mt-1 border-r pr-4 py-4"
 												v-html="$nltobr(item.description, 'br')"
 											></p>
 										</div>
