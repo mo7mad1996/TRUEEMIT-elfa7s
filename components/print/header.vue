@@ -77,12 +77,34 @@
 			<div class="item" v-if="['exclusive'].includes($auth.user.job)">
 				<label>
 					<template>
-						<div>سعة المحرك</div>
+						<div>السلندرات</div>
 						<div>Engine capacity</div>
 					</template>
 				</label>
 
 				<div class="value">{{ car.engine || "-" }}</div>
+			</div>
+
+			<div class="item" v-if="['exclusive'].includes($auth.user.job)">
+				<label>
+					<template>
+						<div>تاريخ الصنع</div>
+						<div>Model</div>
+					</template>
+				</label>
+
+				<div class="value">{{ car.model || "-" }}</div>
+			</div>
+
+			<div class="item" v-if="['exclusive'].includes($auth.user.job)">
+				<label>
+					<template>
+						<div>نوع القير</div>
+						<div>Gear Type</div>
+					</template>
+				</label>
+
+				<div class="value">{{ car.gear || "-" }}</div>
 			</div>
 
 			<div class="item">
@@ -195,12 +217,13 @@ header {
 			display: flex;
 			text-align: center;
 			flex-direction: column;
+			justify-content: space-between;
 			border: 1px solid #000;
-			padding: 5px;
+			padding: 5px 0;
 			gap: 5px;
 
 			label {
-				font-size: 0.8em;
+				font-size: 0.7em;
 
 				color: #000;
 			}
