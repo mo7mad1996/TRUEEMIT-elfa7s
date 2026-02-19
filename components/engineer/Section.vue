@@ -12,7 +12,7 @@
 				v-if="!edit"
 				class="py-1 px-3 text-xs rounded shadow bg-blue-100 hover:bg-blue-200 text-blue-700"
 			>
-				اضف ملاحظات
+				أضف ملاحظات
 			</button>
 		</div>
 
