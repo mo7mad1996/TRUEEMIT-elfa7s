@@ -16,7 +16,7 @@
 			</button>
 		</div>
 
-		<div class="form-input my-4" v-if="edit">
+		<div class="form-input my-4" v-if="edit || item.image || item.description">
 			<textarea placeholder="ملاحظات" v-model="item.description" rows="2" class="!h-16"></textarea>
 
 			<label>
