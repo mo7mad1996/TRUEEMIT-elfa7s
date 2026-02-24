@@ -64,7 +64,7 @@
 					</select>
 				</div>
 
-				<div class="form-input" v-if="['none'].includes($auth.user.job)">
+				<div class="form-input" v-if="['exclusive'].includes($auth.user.job)">
 					<label>
 						<font-awesome-icon :icon="['fas', 'gas-pump']" />
 						نوع الوقود

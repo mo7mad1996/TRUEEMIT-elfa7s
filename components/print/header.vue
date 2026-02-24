@@ -107,6 +107,17 @@
 				<div class="value">{{ car.gear || "-" }}</div>
 			</div>
 
+			<div class="item" v-if="['exclusive'].includes($auth.user.job)">
+				<label>
+					<template>
+						<div>نوع الوقود</div>
+						<div>Fuel Type</div>
+					</template>
+				</label>
+
+				<div class="value">{{ car.fuel || "-" }}</div>
+			</div>
+
 			<div class="item">
 				<label>
 					<template v-if="['exclusive'].includes($auth.user.job)">
