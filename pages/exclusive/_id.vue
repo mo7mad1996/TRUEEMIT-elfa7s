@@ -6,6 +6,8 @@
 		<Files :car="car" />
 		<Sections :car="car" />
 
+		<pre>{{ car }}</pre>
+
 		<div class="container sticky bottom-4">
 			<button :disabled="loading" @click="save" class="btn d-block mb-2 mt-4">
 				<Loader v-show="loading" />
@@ -108,7 +110,11 @@ export default {
 			if (!this.car) this.$router.push("/");
 
 			// if no sections
-			const sections = this.$auth.user.sections;
+			const sections = this.$auth.user.sections.map((s) => ({
+				...s,
+				items: s.items.map((i) => ({ ...i, description: "", image: "" })),
+			}));
+
 			if (this.car.sections.length == 0) this.car.sections = sections;
 		},
 	},
