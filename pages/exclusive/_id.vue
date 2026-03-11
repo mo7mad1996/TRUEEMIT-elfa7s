@@ -6,8 +6,6 @@
 		<Files :car="car" />
 		<Sections :car="car" />
 
-		<pre>{{ car }}</pre>
-
 		<div class="container sticky bottom-4">
 			<button :disabled="loading" @click="save" class="btn d-block mb-2 mt-4">
 				<Loader v-show="loading" />
