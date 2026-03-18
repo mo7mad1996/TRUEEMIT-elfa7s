@@ -138,7 +138,10 @@
 			</section>
 		</div>
 
-		<div class="text-[7px] leading-3 text-red-500 mt-2 flex justify-between p-2">
+		<div
+			class="text-[7px] leading-3 text-red-500 mt-2 flex justify-between p-2"
+			v-if="['exclusive'].includes($auth.user.job)"
+		>
 			<span class="text-right">
 				ضمان على الفحص شهر أو 1000 كيلو<br />
 				البدي 3 أيام<br />
