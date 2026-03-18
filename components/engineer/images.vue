@@ -38,7 +38,7 @@
 			</template>
 		</div>
 
-		<div
+		<!-- <div
 			class="text-[7px] leading-none text-red-500 mt-2 flex justify-between"
 			v-if="['exclusive'].includes($auth.user.job)"
 		>
@@ -52,7 +52,7 @@
 				Body warranty: 3 days<br />
 				According to terms and conditions
 			</span>
-		</div>
+		</div> -->
 	</section>
 </template>
 

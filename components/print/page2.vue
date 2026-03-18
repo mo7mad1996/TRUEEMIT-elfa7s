@@ -138,7 +138,7 @@
 			</section>
 		</div>
 
-		<div
+		<!-- <div
 			class="text-[7px] leading-3 text-red-500 mt-2 flex justify-between p-2"
 			v-if="['exclusive'].includes($auth.user.job)"
 		>
@@ -152,7 +152,7 @@
 				Body warranty: 3 days<br />
 				According to terms and conditions
 			</span>
-		</div>
+		</div> -->
 		<PrintFooter />
 	</div>
 </template>
