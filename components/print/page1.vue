@@ -89,7 +89,7 @@
 							</tbody>
 						</table>
 
-						<h6 class="text-xs opacity-60 p-1">
+						<!-- <h6 class="text-xs opacity-60 p-1">
 							<template v-if="['exclusive'].includes($auth.user.job)">
 								<div>الفايبر + الصدامات خارج الفحص</div>
 								<span class="dir-ltr"> Fiber and bumpers are excluded from inspection </span>
@@ -98,7 +98,7 @@
 								<span v-if="lang == 'en'"> Fiber and bumpers are excluded from inspection. </span>
 								<span v-else> الفايبر + الصدامات خارج الفحص </span>
 							</template>
-						</h6>
+						</h6> -->
 
 						<fieldset v-if="car.body.note">
 							<legend v-if="['exclusive'].includes($auth.user.job)">

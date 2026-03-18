@@ -1,117 +1,129 @@
 <template>
-  <section>
-    <div class="d-grid">
-      <div :class="`img-${n} img-container`" v-for="n in 5" :key="n">
-        <img class="main-car" :src="require(`~/assets/cars/${n}.png`)" />
+	<section>
+		<div class="d-grid">
+			<div :class="`img-${n} img-container`" v-for="n in 5" :key="n">
+				<img class="main-car" :src="require(`~/assets/cars/${n}.png`)" />
 
-        <div class="problem" v-for="(input, b) in $inputs" :key="b">
-          <img
-            v-if="car.body[input.en]"
-            :src="
-              require(`~/assets/cars/${n}-${input.en}-${
-                car.body[input.en]
-              }.png`)
-            "
-          />
-        </div>
-      </div>
-    </div>
+				<div class="problem" v-for="(input, b) in $inputs" :key="b">
+					<img
+						v-if="car.body[input.en]"
+						:src="require(`~/assets/cars/${n}-${input.en}-${car.body[input.en]}.png`)"
+					/>
+				</div>
+			</div>
+		</div>
 
-    <div class="text-center text-xs opacity-75">
-      <template v-if="['exclusive'].includes($auth.user.job)">
-        <div class="text-center text-xs opacity-75">
-          ملاحظة : علامة M تعني مرشوش و T تعني تعديل وعلامة MM تعني مرشوش و
-          معجون وعلامة MB تعني مغير ومرشوش
+		<div class="text-center text-[7px] opacity-75 !leading-none">
+			<template v-if="['exclusive'].includes($auth.user.job)">
+				<div class="text-center text-xs opacity-75">
+					ملاحظة : علامة M تعني مرشوش و T تعني تعديل وعلامة MM تعني مرشوش و معجون وعلامة MB تعني
+					مغير ومرشوش
 
-          <div class="dir-ltr">
-            Note: The letter M indicates Repainted, T stands for Repaired, MM
-            means Repainted and Filled, and MB indicates Replaced and Repainted.
-          </div>
-        </div>
-      </template>
+					<div class="dir-ltr">
+						Note: The letter M indicates Repainted, T stands for Repaired, MM means Repainted and
+						Filled, and MB indicates Replaced and Repainted.
+					</div>
+				</div>
+			</template>
 
-      <template v-else>
-        <span v-if="lang == 'ar'">
-          ملاحظة : علامة M تعني مرشوش و T تعني تعديل وعلامة MM تعني مرشوش و
-          معجون وعلامة MB تعني مغير ومرشوش
-        </span>
-        <span v-else>
-          Note: The letter M indicates Repainted, T stands for Repaired, MM
-          means Repainted and Filled, and MB indicates Replaced and Repainted.
-        </span>
-      </template>
-    </div>
-  </section>
+			<template v-else>
+				<span v-if="lang == 'ar'" class="!leading-none">
+					ملاحظة : علامة M تعني مرشوش و T تعني تعديل وعلامة MM تعني مرشوش و معجون وعلامة MB تعني
+					مغير ومرشوش
+				</span>
+				<span v-else class="!leading-none">
+					Note: The letter M indicates Repainted, T stands for Repaired, MM means Repainted and
+					Filled, and MB indicates Replaced and Repainted.
+				</span>
+			</template>
+		</div>
+
+		<div class="text-[7px] leading-none text-red-500 mt-2 flex justify-between">
+			<span class="text-right">
+				ضمان على الفحص شهر أو 1000 كيلو<br />
+				البدي 3 أيام<br />
+				حسب الشروط
+			</span>
+			<span class="text-left">
+				Inspection warranty: 1 month or 1000 km<br />
+				Body warranty: 3 days<br />
+				According to terms and conditions
+			</span>
+		</div>
+	</section>
 </template>
 
 <script>
 export default {
-  name: "Images",
-  props: ["car", "lang"],
+	name: "Images",
+	props: ["car", "lang"],
 };
 </script>
 
 <style lang="scss" scoped>
+.text-xs {
+	line-height: 1.3;
+}
 section {
-  display: flex;
-  flex-direction: column;
+	display: flex;
+	flex-direction: column;
 
-  .d-grid {
-    display: grid;
-    flex: 1;
-    grid-template-rows: repeat(4, 1fr);
-    grid-template-columns: repeat(2, 1fr);
-    width: 90%;
-    margin: auto;
+	.d-grid {
+		display: grid;
+		flex: 1;
+		grid-template-rows: repeat(4, 1fr);
+		grid-template-columns: repeat(2, 1fr);
+		width: 90%;
+		margin: auto;
 
-    .img-container {
-      position: relative;
-      filter: grayscale(1);
+		.img-container {
+			position: relative;
+			filter: grayscale(1);
 
-      &.img-1 {
-        grid-row: 1/2;
-        grid-column: 1/3;
-      }
-      &.img-2 {
-        grid-row: 2/3;
-        grid-column: 1/3;
-      }
-      &.img-3 {
-        grid-row: 3/4;
-        grid-column: 1/2;
-      }
-      &.img-4 {
-        grid-row: 3/4;
-        grid-column: 2/3;
-      }
-      &.img-5 {
-        grid-row: 4/5;
-        grid-column: 1/3;
-      }
+			&.img-1 {
+				grid-row: 1/2;
+				grid-column: 1/3;
+			}
+			&.img-2 {
+				grid-row: 2/3;
+				grid-column: 1/3;
+			}
+			&.img-3 {
+				grid-row: 3/4;
+				grid-column: 1/2;
+			}
+			&.img-4 {
+				grid-row: 3/4;
+				grid-column: 2/3;
+			}
+			&.img-5 {
+				grid-row: 4/5;
+				grid-column: 1/3;
+			}
 
-      .main-car {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-      }
-    }
-  }
-  .problem {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
+			.main-car {
+				width: 100%;
+				height: 100%;
+				object-fit: contain;
+			}
+		}
+	}
+	.problem {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
 
-    > img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
-  }
+		> img {
+			width: 100%;
+			height: 100%;
+			object-fit: contain;
+		}
+	}
 
-  .text-center {
-    color: #000000;
-    font-size: 0.6em;
-  }
+	.text-center {
+		color: #000000;
+		font-size: 0.6em;
+	}
 }
 </style>
