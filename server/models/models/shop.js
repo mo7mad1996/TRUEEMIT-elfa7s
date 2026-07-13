@@ -9,6 +9,7 @@ const Shop = new Schema({
   password: String,
   cr: String,
   address: String,
+  website_url: String,
   tiktok: String,
   twitter: String,
   types: [{ type: String }],

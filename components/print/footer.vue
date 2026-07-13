@@ -16,6 +16,10 @@
       </div>
 
       <div class="left">
+        <span v-if="$shop.website_url">
+          <font-awesome-icon :icon="['fas', 'globe']" />
+          {{ $shop.website_url }}
+        </span>
         <span v-if="$shop.twitter">
           <font-awesome-icon :icon="['fab', 'twitter']" />
           {{ $shop.twitter }}

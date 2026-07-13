@@ -33,6 +33,13 @@
           العنوان</label
         >
       </div>
+      <div class="form-input">
+        <input id="website_url" v-model="website_url" />
+        <label for="website_url">
+          <font-awesome-icon :icon="['fas', 'globe']" />
+          الموقع الإلكتروني</label
+        >
+      </div>
       <div class="form-input" for="logo">
         <input id="logo" type="file" @change="setPreview" ref="logo" />
         <img :src="preview" class="preview" v-if="preview" />
@@ -64,6 +71,7 @@ export default {
       phone: "",
       cr: "",
       address: "",
+      website_url: "",
     };
   },
   components: {

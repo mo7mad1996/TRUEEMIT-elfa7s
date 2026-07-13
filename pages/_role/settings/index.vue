@@ -80,6 +80,13 @@
         </div>
         <div class="form-input">
           <label>
+            <font-awesome-icon :icon="['fas', 'globe']" />
+            الموقع الإلكتروني
+          </label>
+          <input v-model="shop.website_url" />
+        </div>
+        <div class="form-input">
+          <label>
             <font-awesome-icon :icon="['fab', 'twitter']" />
             تويتر | X
           </label>
