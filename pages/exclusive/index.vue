@@ -42,6 +42,17 @@ export default {
 	},
 	methods: {
 		remove(id) {
+			// also remove it from the external server if it was attached
+			const car = (this.cars || []).find((c) => c._id == id);
+			const apiKey = this.$auth.user.api_key;
+			if (car?.server_id && apiKey) {
+				this.$axios
+					.$delete(`https://trueemit-api.vercel.app/cars/${car.server_id}`, {
+						headers: { "x-api-key": apiKey },
+					})
+					.catch((err) => console.error(err));
+			}
+
 			this.socket.emit("delete-car", id);
 			this.$emit("remove", id);
 		},

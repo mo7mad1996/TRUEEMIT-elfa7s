@@ -96,13 +96,13 @@ export default {
         );
 
         this.$axios
-          .$post("/cars-exclusive/append_image", formdata, {
+          .$post("https://trueemit-api.vercel.app/cars/images", formdata, {
             headers: {
               "Content-Type": "multipart/form-data",
             },
           })
-          .then(({ file }) => {
-            this.logo = file;
+          .then(({ url }) => {
+            this.logo = url;
           });
       } else {
         this.logo = "/logo/trueemit.png";

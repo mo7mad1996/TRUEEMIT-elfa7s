@@ -23,24 +23,31 @@
 				<div class="flex gap-2 my-2">
 					<div
 						class="flex-1 text-center p-4 bg-slate-100 rounded border hover:bg-slate-200 cursor-pointer"
+						:class="{ 'pointer-events-none opacity-60': uploading }"
 					>
-						<font-awesome-icon :icon="['fas', 'pencil']" v-if="item.image" />
+						<font-awesome-icon :icon="['fas', 'spinner']" spin v-if="uploading" />
+						<font-awesome-icon :icon="['fas', 'pencil']" v-else-if="item.image" />
 						<font-awesome-icon :icon="['fas', 'camera']" v-else />
 					</div>
-					<div
-						class="flex-1 text-center p-4 bg-red-100 rounded border hover:bg-red-200 cursor-pointer"
+					<button
+						type="button"
+						class="flex-1 text-center p-4 bg-red-100 rounded border hover:bg-red-200 cursor-pointer disabled:opacity-60"
 						v-if="item.image"
-						@click.prevent.stop="item.image = ''"
+						:disabled="deleting"
+						@click.prevent.stop="remove"
 					>
-						<font-awesome-icon :icon="['fas', 'close']" />
-					</div>
+						<font-awesome-icon :icon="['fas', 'spinner']" spin v-if="deleting" />
+						<font-awesome-icon :icon="['fas', 'close']" v-else />
+					</button>
 				</div>
 
 				<FileDropAble
+					ref="uploader"
 					class="!hidden"
 					:id="car._id"
 					@input="(image) => (item.image = image)"
 					@delete="() => (item.image = '')"
+					@loading="(v) => (uploading = v)"
 				>
 					<template> </template>
 				</FileDropAble>
@@ -58,6 +65,18 @@
 export default {
 	name: "Section",
 	props: ["item", "car"],
-	data: () => ({ edit: false }),
+	data: () => ({ edit: false, uploading: false, deleting: false }),
+	methods: {
+		async remove() {
+			if (this.deleting || !this.item.image) return;
+			this.deleting = true;
+			try {
+				// reuse the same upload system: actually delete the file from the server
+				await this.$refs.uploader.removeFile(this.item.image);
+			} finally {
+				this.deleting = false;
+			}
+		},
+	},
 };
 </script>

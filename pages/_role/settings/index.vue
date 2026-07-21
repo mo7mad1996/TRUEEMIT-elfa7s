@@ -176,6 +176,14 @@
           <input v-model="user.new_pass" type="password" />
         </div>
 
+        <div class="form-input" v-if="['exclusive'].includes($auth.user.job)">
+          <label>
+            <font-awesome-icon icon="fa-solid fa-key" />
+            مفتاح الـ API
+          </label>
+          <input v-model="user.api_key" />
+        </div>
+
         <!-- sections -->
         <section v-if="['exclusive'].includes($auth.user.job)" class="">
           <h3>الاقسام</h3>
@@ -342,6 +350,52 @@
         </button>
       </form>
     </section>
+
+    <!-- confirm password modal -->
+    <div
+      v-if="pwd.show"
+      class="overlay grid place-items-center"
+      style="z-index: 60"
+      @click="cancelPassword"
+    >
+      <form
+        class="bg-white rounded-xl p-6 w-[90%] max-w-sm shadow-lg flex flex-col gap-4"
+        @click.stop
+        @submit.prevent="confirmPassword"
+      >
+        <h3 class="text-center m-0">
+          <font-awesome-icon icon="fa-solid fa-lock" />
+          تأكيد كلمة المرور
+        </h3>
+
+        <div class="flex flex-col gap-2">
+          <label class="flex items-center gap-2 text-sm text-neutral-500">
+            <font-awesome-icon icon="fa-solid fa-lock" />
+            كلمة المرور الحاليه
+          </label>
+          <input
+            ref="pwdInput"
+            v-model="pwd.value"
+            type="password"
+            autocomplete="current-password"
+            placeholder="••••••••"
+            @keyup.esc="cancelPassword"
+            class="w-full border border-neutral-300 rounded-lg px-3 py-2 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+          />
+        </div>
+
+        <div class="flex gap-2">
+          <button type="submit" class="btn flex-1">تأكيد</button>
+          <button
+            type="button"
+            class="btn flex-1 !bg-neutral-200 !text-neutral-700 !border-neutral-200"
+            @click="cancelPassword"
+          >
+            إلغاء
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 </template>
 
@@ -355,6 +409,7 @@ export default {
       user: { ...this.$auth.user, new_pass: "", loading: false },
       shop: { ...this.$shop, loading: false },
       cars: { date: "", loading: false },
+      pwd: { show: false, value: "", resolve: null },
     };
   },
   head: () => ({
@@ -364,8 +419,29 @@ export default {
     ...mapActions({
       setAlert: "alert/add",
     }),
+    askPassword() {
+      return new Promise((resolve) => {
+        this.pwd.value = "";
+        this.pwd.resolve = resolve;
+        this.pwd.show = true;
+        this.$nextTick(() => this.$refs.pwdInput && this.$refs.pwdInput.focus());
+      });
+    },
+    confirmPassword() {
+      const resolve = this.pwd.resolve;
+      this.pwd.show = false;
+      this.pwd.resolve = null;
+      if (resolve) resolve(this.pwd.value);
+    },
+    cancelPassword() {
+      const resolve = this.pwd.resolve;
+      this.pwd.show = false;
+      this.pwd.resolve = null;
+      if (resolve) resolve(null);
+    },
     async check_pass() {
-      const pass = prompt("كلمة المرور الحاليه");
+      const pass = await this.askPassword();
+      if (pass === null) return false; // cancelled
       return this.$axios.$post("/users/check_pass", {
         password: pass || "",
         _id: this.user._id,
@@ -379,10 +455,10 @@ export default {
         // if user has logo
         if (["exclusive"].includes(this.$auth.user.job))
           if (this.new_logo) {
-            const { file } = await this.saveFile(`users/${this.user._id}`);
+            const { url } = await this.saveFile(`users/${this.user._id}`);
 
-            this.user.logo = file;
-            this.$auth.user.logo = file;
+            this.user.logo = url;
+            this.$auth.user.logo = url;
           }
 
         // update user
@@ -413,7 +489,7 @@ export default {
 
           if (path) formData.append("path", path);
 
-          return this.$axios.$post("/cars-exclusive/append_image", formData, {
+          return this.$axios.$post("https://trueemit-api.vercel.app/cars/images", formData, {
             headers: {
               "Content-Type": "multipart/form-data",
             },
@@ -430,8 +506,8 @@ export default {
         if (!ok) return this.setAlert({ text: "كلمة المرور خطأ", error: true });
 
         if (this.new_logo) {
-          const { file } = await this.saveFile();
-          this.shop.logo = file;
+          const { url } = await this.saveFile();
+          this.shop.logo = url;
         }
 
         await this.$axios.$post("/trueemit/update_client", this.shop);

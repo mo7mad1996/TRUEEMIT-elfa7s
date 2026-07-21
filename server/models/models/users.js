@@ -7,6 +7,7 @@ const user = new Schema({
 	logo: String,
 	password: String,
 	job: String,
+	api_key: { type: String, default: "" },
 
 	sections: [
 		{

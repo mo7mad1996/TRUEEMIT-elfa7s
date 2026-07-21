@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 const car = new Schema(
 	{
 		date: { type: Date, default: Date.now },
+		server_id: { type: String, default: "" },
 		type: { type: String, default: "" },
 		car_id: { type: String, default: "" },
 		vin_no: { type: String, default: "" },

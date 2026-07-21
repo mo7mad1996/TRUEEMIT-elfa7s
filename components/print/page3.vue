@@ -28,7 +28,6 @@ export default {
 
 <style lang="scss" scoped>
 .page {
-	height: auto;
 	page-break-inside: avoid;
 	break-inside: avoid;
 }

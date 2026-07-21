@@ -26,12 +26,23 @@
 					</div>
 					<h3 class="drop-title">أسقِط الملفات هنا</h3>
 					<p class="drop-subtitle underline">"أو انقر للتصفح"</p>
-					<input type="file" @change="handleFileSelect" multiple class="file-input" />
+					<input
+						type="file"
+						@change="handleFileSelect"
+						multiple
+						class="file-input"
+						:disabled="loading"
+					/>
+				</div>
+
+				<div v-if="loading" class="upload-loading">
+					<font-awesome-icon :icon="['fas', 'spinner']" spin class="text-3xl" />
+					<span>جاري رفع الصور...</span>
 				</div>
 			</div>
 		</div>
 
-		<slot v-bind="{ files, removeFile }" />
+		<slot v-bind="{ files, removeFile, deleting }" />
 
 		<div
 			v-if="isDragOver"
@@ -73,6 +84,7 @@ export default {
 			files: [],
 			dragCounter: 0,
 			loading: false,
+			deleting: [],
 		};
 	},
 	methods: {
@@ -111,24 +123,37 @@ export default {
 			}
 		},
 
-		appendFiles(files) {
-			Array.from(files).forEach(async (file) => {
-				// create formData
-				let formData = new FormData();
-				formData.append("file", file, file.filename);
-				formData.append("path", "cars/" + this.id);
+		async appendFiles(files) {
+			const list = Array.from(files);
+			if (!list.length) return;
 
-				// send request
-				const res = await this.appendFile(formData);
+			this.loading = true;
+			this.$emit("loading", true);
+			try {
+				await Promise.all(
+					list.map(async (file) => {
+						// create formData
+						let formData = new FormData();
+						formData.append("file", file, file.filename);
 
-				// update dom
-				this.$emit("input", res.file);
-				this.files.push(res.file);
-			});
+						// send request
+						const res = await this.appendFile(formData);
+
+						// update dom
+						this.$emit("input", res.url);
+						this.files.push(res.url);
+					})
+				);
+			} catch (err) {
+				console.error(err);
+			} finally {
+				this.loading = false;
+				this.$emit("loading", false);
+			}
 		},
 
 		async appendFile(formData = new FormData()) {
-			return this.$axios.$post(`/cars-exclusive/append_image`, formData, {
+			return this.$axios.$post(`https://trueemit-api.vercel.app/cars/images`, formData, {
 				headers: {
 					"Content-Type": "multipart/form-data",
 				},
@@ -136,9 +161,20 @@ export default {
 		},
 
 		async removeFile(fileName) {
-			await this.$axios.$post("/cars-exclusive/remove_image", { fileName });
-			this.$emit("delete", fileName);
-			this.files = this.file.filter((i) => i != fileName);
+			if (this.deleting.includes(fileName)) return;
+			this.deleting.push(fileName);
+			try {
+				await this.$axios.$delete("https://trueemit-api.vercel.app/cars/images", {
+					data: { url: fileName },
+					headers: { "Content-Type": "application/json" },
+				});
+				this.$emit("delete", fileName);
+				this.files = this.files.filter((i) => i != fileName);
+			} catch (err) {
+				console.error(err);
+			} finally {
+				this.deleting = this.deleting.filter((i) => i != fileName);
+			}
 		},
 
 		// Window-level drag and drop handlers
@@ -216,6 +252,21 @@ export default {
 
 .drop-content {
 	pointer-events: none;
+}
+
+.upload-loading {
+	position: absolute;
+	inset: 0;
+	z-index: 5;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 0.6em;
+	background-color: rgba(255, 255, 255, 0.85);
+	backdrop-filter: blur(2px);
+	color: #007bff;
+	font-weight: 600;
 }
 
 .drop-icon {

@@ -20,7 +20,7 @@
 					<img
 						v-if="$auth.user.logo"
 						:src="$auth.user.logo"
-						class="h-28 mx-auto mb-5 object-contain block"
+						class="h-24 mx-auto object-contain block"
 					/>
 				</div>
 			</div>
@@ -189,6 +189,8 @@ header {
 		width: 100%;
 	}
 
+	@apply flex flex-col gap-2;
+
 	.top {
 		display: flex;
 
@@ -212,8 +214,8 @@ header {
 			}
 
 			.logo {
-				height: 120px;
-				margin: 0 auto 20px;
+				height: 110px;
+				margin: 0 auto;
 				display: block;
 			}
 		}
@@ -230,17 +232,17 @@ header {
 			flex-direction: column;
 			justify-content: space-between;
 			border: 1px solid #000;
-			padding: 5px 0;
+			padding: 3px 0;
 			gap: 5px;
 
 			label {
-				font-size: 0.7em;
-
+				font-size: 0.65em;
 				color: #000;
 			}
 
 			.value {
 				color: var(--color-blue-3);
+				font-size: 0.9em;
 			}
 		}
 	}
