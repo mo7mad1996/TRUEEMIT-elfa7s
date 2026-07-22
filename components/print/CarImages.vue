@@ -7,7 +7,18 @@
 			<div class="page3 break">
 				<div v-for="image in car?.car_images" :key="image.image">
 					<div class="bg-soft">
-						<img :src="image.image" class="" />
+						<div class="img-wrap">
+							<img :src="image.image" class="" />
+							<a
+								:href="image.image"
+								target="_blank"
+								rel="noopener"
+								class="zoom-btn"
+								title="فتح الصورة"
+							>
+								<ZoomIcon />
+							</a>
+						</div>
 						<p v-if="image.description">{{ image.description }}</p>
 					</div>
 				</div>
@@ -20,11 +31,12 @@
 <script>
 import PrintHeader from "@/components/print/header";
 import PrintFooter from "@/components/print/footer";
+import ZoomIcon from "@/components/print/ZoomIcon";
 
 export default {
 	name: "Page3",
 	props: ["car", "lang"],
-	components: { PrintHeader, PrintFooter },
+	components: { PrintHeader, PrintFooter, ZoomIcon },
 };
 </script>
 
@@ -57,12 +69,42 @@ export default {
 			background: #958b8b2e;
 		}
 
+		.img-wrap {
+			position: relative;
+			display: block;
+		}
+
 		img {
 			border-radius: 5px;
 			width: 100%;
 			display: block;
 			height: 200px;
 			object-fit: cover;
+		}
+
+		.zoom-btn {
+			position: absolute;
+			top: 8px;
+			right: 8px;
+			width: 26px;
+			height: 26px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			border-radius: 50%;
+			background: rgba(0, 0, 0, 0.55);
+			color: #fff;
+			font-size: 12px;
+			text-decoration: none;
+			transition: background 0.2s;
+
+			// keep the badge colors when the PDF is printed with printBackground:false
+			-webkit-print-color-adjust: exact;
+			print-color-adjust: exact;
+
+			&:hover {
+				background: rgba(0, 0, 0, 0.8);
+			}
 		}
 
 		p {

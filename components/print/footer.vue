@@ -1,5 +1,6 @@
 <template>
-	<footer class="footer text-center border-t p-2 bg-neutral-50" v-if="$shop.address">
+	<footer class="footer text-center bg-neutral-50" v-if="$shop.address">
+		<hr class="m-0 border-black" />
 		<div class="flex">
 			<div class="right">
 				<span>

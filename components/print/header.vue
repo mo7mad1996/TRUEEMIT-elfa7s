@@ -189,7 +189,7 @@ header {
 		width: 100%;
 	}
 
-	@apply flex flex-col gap-2;
+	@apply flex flex-col gap-2 mb-2;
 
 	.top {
 		display: flex;

@@ -59,7 +59,18 @@
 										</div>
 
 										<div v-if="item.image" class="w-32 shrink-0">
-											<img :src="item.image" class="w-full h-auto rounded border" />
+											<div class="img-wrap">
+												<img :src="item.image" class="w-full h-auto rounded border" />
+												<a
+													:href="item.image"
+													target="_blank"
+													rel="noopener"
+													class="zoom-btn"
+													title="فتح الصورة"
+												>
+													<ZoomIcon />
+												</a>
+											</div>
 										</div>
 									</div>
 								</div>
@@ -77,15 +88,44 @@
 <script>
 import PrintHeader from "@/components/print/header";
 import PrintFooter from "@/components/print/footer";
+import ZoomIcon from "@/components/print/ZoomIcon";
 
 export default {
 	name: "Page4",
 	props: ["car", "lang"],
-	components: { PrintHeader, PrintFooter },
+	components: { PrintHeader, PrintFooter, ZoomIcon },
 };
 </script>
 
 <style lang="scss" scoped>
+.img-wrap {
+	position: relative;
+	display: block;
+}
+
+.zoom-btn {
+	position: absolute;
+	top: 6px;
+	right: 6px;
+	width: 24px;
+	height: 24px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 50%;
+	background: rgba(0, 0, 0, 0.55);
+	color: #fff;
+	text-decoration: none;
+
+	// keep the badge colors when the PDF is printed with printBackground:false
+	-webkit-print-color-adjust: exact;
+	print-color-adjust: exact;
+
+	&:hover {
+		background: rgba(0, 0, 0, 0.8);
+	}
+}
+
 /* تأكد من أن كل سكشن يبدأ في صفحة جديدة */
 .section-to-print {
 	// page-break-before: always;

@@ -1,7 +1,7 @@
 <template>
 	<div class="page">
 		<PrintHeader :car="car" :lang="lang" />
-		<div style="display: table-row-group">
+		<div>
 			<div class="page1">
 				<div class="flex gap-0.5">
 					<main class="flex-1 max-w-1/2">
@@ -116,7 +116,7 @@
 								<span v-else>Notes</span>
 							</legend>
 
-							<p v-html="$nltobr(car.body.note)"></p>
+							<div class="lines" v-html="$nltobr(car.body.note)"></div>
 						</fieldset>
 					</main>
 
@@ -153,7 +153,7 @@
 						<span v-else>Chassis</span>
 					</h4>
 
-					<p v-html="$nltobr(car.chassis)" v-if="car.chassis"></p>
+					<div class="lines" v-html="$nltobr(car.chassis)" v-if="car.chassis"></div>
 				</footer>
 			</div>
 		</div>
@@ -264,8 +264,8 @@ footer {
 	display: flex;
 	flex-direction: column;
 	height: 100%;
-	gap: 10px;
-	margin: -2em 0 0 0;
+	gap: 0;
+	margin: 0;
 
 	.flex {
 		display: flex;

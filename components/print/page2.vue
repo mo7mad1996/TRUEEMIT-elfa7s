@@ -61,7 +61,7 @@
 					<font-awesome-icon :icon="['fas', 'computer']" />
 					<span class="squire"></span>
 				</h4>
-				<p v-html="$nltobr(car.computer)" v-if="car.computer"></p>
+				<div class="lines" v-html="$nltobr(car.computer)" v-if="car.computer"></div>
 			</div>
 
 			<!-- الاكسسورات -->
@@ -87,7 +87,7 @@
 					<font-awesome-icon :icon="['fas', 'gears']" />
 					<span class="squire"></span>
 				</h4>
-				<p v-if="car.accessories" v-html="$nltobr(car.accessories)"></p>
+				<div class="lines" v-if="car.accessories" v-html="$nltobr(car.accessories)"></div>
 			</div>
 
 			<!-- الميداني -->
@@ -104,7 +104,7 @@
 					<font-awesome-icon :icon="['fas', 'car']" />
 					<span class="squire"></span>
 				</h4>
-				<p v-if="car.ground" v-html="$nltobr(car.ground)"></p>
+				<div class="lines" v-if="car.ground" v-html="$nltobr(car.ground)"></div>
 			</div>
 
 			<!-- الميكانيكا -->
@@ -133,7 +133,7 @@
 						</h4>
 					</template>
 
-					<p v-html="$nltobr(car.mechanical)" v-if="car.mechanical"></p>
+					<div class="lines" v-html="$nltobr(car.mechanical)" v-if="car.mechanical"></div>
 				</div>
 			</section>
 		</div>
