@@ -1,6 +1,6 @@
 <template>
   <div class="container simple_form">
-    <div class="form-input">
+    <div class="form-input" v-if="car.service != 'فحص أساسي'">
       <label>
         <font-awesome-icon :icon="['fas', 'computer']" />
         فحص الكمبيوتر</label
@@ -8,7 +8,7 @@
       <textarea v-model="car.computer" data-max="7"></textarea>
       <!-- @keydown="$check_max_lines" -->
     </div>
-    <div class="form-input">
+    <div class="form-input" v-if="car.service != 'فحص أساسي'">
       <label>
         <font-awesome-icon :icon="['fas', 'gears']" />
         فحص الاكسسورات</label

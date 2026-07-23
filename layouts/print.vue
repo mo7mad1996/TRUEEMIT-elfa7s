@@ -2,14 +2,14 @@
 	<div class="bg min-h-screen" ref="p">
 		<clientOnly>
 			<div class="fixed py-2 top-0 z-50 flex justify-center items-center w-full print:hidden gap-2">
-				<!-- <button
+				<button
 					class="btn !bg-neutral-800 hover:!bg-neutral-700 !border-neutral-800 !text-neutral-300 font-light"
 					@click="print"
 				>
 					طباعة
 
 					<font-awesome-icon icon="fa-solid fa-print" />
-				</button> -->
+				</button>
 
 				<button
 					class="btn !bg-neutral-800 hover:!bg-neutral-700 !border-neutral-800 !text-neutral-300 font-light disabled:opacity-50"
@@ -50,7 +50,7 @@ export default {
 	},
 	methods: {
 		print() {
-			this.downloadPdf();
+			window.print();
 		},
 		async downloadPdf() {
 			if (this.pdfLoading) return;
