@@ -45,7 +45,7 @@
 			<!-- الكمبيوتر -->
 			<div
 				class="section"
-				v-if="!["فحص أساسي", 'صيانة'].includes(car.service)"
+				v-if="!['فحص أساسي', 'صيانة'].includes(car.service)"
 				:class="{
 					one: this.$auth.user.job != 'exclusive',
 				}"
