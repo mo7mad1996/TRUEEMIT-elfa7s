@@ -1,7 +1,11 @@
 <template>
 	<div>
 		<Page1 :car="car" :lang="lang" v-if="!(car.service == 'محركات' || car.service == 'صيانة')" />
-		<Page2 :car="car" :lang="lang" />
+		<Page2
+			:car="car"
+			:lang="lang"
+			v-if="[car.computer, car.accessories, car.ground, car.mechanical].join('').trim()"
+		/>
 		<car-images
 			:lang="lang"
 			:car="car"
