@@ -46,6 +46,10 @@ export default {
 	head() {
 		return { title: this.car.car_id };
 	},
+	mounted() {
+		// hand the car to the print layout (server attach / detach buttons)
+		this.$emit("car", this.car);
+	},
 };
 </script>
 

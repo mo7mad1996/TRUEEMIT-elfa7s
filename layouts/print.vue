@@ -29,10 +29,12 @@
 					<div class="transition-all" :class="{ 'text-neutral-600': lang == 'en' }">عربي</div>
 					<div class="transition-all" :class="{ 'text-neutral-600': lang == 'ar' }">ENGLISH</div>
 				</button>
+
+				<ServerActions v-if="car && $auth.user.job == 'exclusive'" :car="car" />
 			</div>
 
 			<div ref="target_pdf">
-				<NuxtChild :lang="lang" />
+				<NuxtChild :lang="lang" @car="car = $event" />
 			</div>
 
 			<img class="logo-print" :src="$shop.logo" v-if="!['exclusive'].includes($auth.user.job)" />
@@ -41,11 +43,15 @@
 </template>
 
 <script>
+import ServerActions from "@/components/print/ServerActions";
+
 export default {
+	components: { ServerActions },
 	data() {
 		return {
 			lang: "ar",
 			pdfLoading: false,
+			car: null,
 		};
 	},
 	methods: {
