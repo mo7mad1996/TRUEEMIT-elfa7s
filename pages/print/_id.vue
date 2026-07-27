@@ -21,6 +21,11 @@
 			:car="car"
 			v-if="car.sections && car.sections.length && $auth.user.job == 'exclusive'"
 		/>
+		<car-videos
+			:lang="lang"
+			:car="car"
+			v-if="car.videos && car.videos.length && $auth.user.job == 'exclusive'"
+		/>
 	</div>
 </template>
 
@@ -30,6 +35,7 @@ import Page1 from "@/components/print/page1";
 import Page2 from "@/components/print/page2";
 import Page3 from "@/components/print/page3";
 import Page4 from "@/components/print/Page4";
+import CarVideos from "@/components/print/CarVideos";
 
 export default {
 	async asyncData({ params, $axios, $auth }) {
@@ -40,7 +46,7 @@ export default {
 
 		return { car };
 	},
-	components: { CarImages, Page1, Page2, Page3, Page4 },
+	components: { CarImages, CarVideos, Page1, Page2, Page3, Page4 },
 	layout: "print",
 	props: ["lang"],
 	head() {

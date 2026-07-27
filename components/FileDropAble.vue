@@ -31,13 +31,14 @@
 						@change="handleFileSelect"
 						multiple
 						class="file-input"
+						:accept="accept"
 						:disabled="loading"
 					/>
 				</div>
 
 				<div v-if="loading" class="upload-loading">
 					<font-awesome-icon :icon="['fas', 'spinner']" spin class="text-3xl" />
-					<span>جاري رفع الصور...</span>
+					<span>{{ loadingText || "جاري رفع الصور..." }}</span>
 				</div>
 			</div>
 		</div>
@@ -77,7 +78,9 @@
 <script>
 export default {
 	name: "FileDropAble",
-	props: ["id"],
+	// accept / loadingText let the same uploader serve images and videos —
+	// the endpoint itself takes any file
+	props: ["id", "accept", "loadingText"],
 	data() {
 		return {
 			isDragOver: false,

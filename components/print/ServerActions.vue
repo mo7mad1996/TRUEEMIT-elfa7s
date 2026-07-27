@@ -13,19 +13,21 @@
 			</div>
 		</button>
 
-		<button
-			v-if="car.server_id"
-			:disabled="detaching"
-			@click="deleteFromServer"
-			class="btn !bg-red-700 hover:!bg-red-600 !border-red-700 font-light"
-		>
-			<Loader v-show="detaching" />
+		<transition name="fade">
+			<button
+				v-if="serverId"
+				:disabled="detaching"
+				@click="deleteFromServer"
+				class="btn !bg-red-700 hover:!bg-red-600 !border-red-700 font-light"
+			>
+				<Loader v-show="detaching" />
 
-			<div v-show="!detaching">
-				حذف من السيرفر
-				<font-awesome-icon :icon="['fas', 'cloud-arrow-down']" />
-			</div>
-		</button>
+				<div v-show="!detaching">
+					حذف من السيرفر
+					<font-awesome-icon :icon="['fas', 'cloud-arrow-down']" />
+				</div>
+			</button>
+		</transition>
 	</div>
 </template>
 
@@ -34,7 +36,14 @@ import { mapActions } from "vuex";
 
 export default {
 	props: ["car"],
-	data: () => ({ attaching: false, detaching: false }),
+	data: () => ({ attaching: false, detaching: false, localServerId: null }),
+	computed: {
+		// local state wins so the delete button appears / disappears
+		// immediately after attaching or detaching
+		serverId() {
+			return this.localServerId !== null ? this.localServerId : this.car?.server_id || "";
+		},
+	},
 	methods: {
 		...mapActions({ setAlert: "alert/add" }),
 
@@ -48,7 +57,7 @@ export default {
 					error: true,
 				});
 
-			if (!this.car.saved) return this.setAlert({ text: "احفظ السيارة أولاً", error: true });
+			if (!this.car?._id) return this.setAlert({ text: "احفظ السيارة أولاً", error: true });
 
 			const c = this.car;
 			const payload = {
@@ -102,6 +111,10 @@ export default {
 					image: i.image || "",
 					description: i.description || "",
 				})),
+				videos: (c.videos || []).map((v) => ({
+					video: v.video || "",
+					description: v.description || "",
+				})),
 				sections: (c.sections || []).map((s) => ({
 					title: s.title || "",
 					title_en: s.title_en || "",
@@ -126,6 +139,7 @@ export default {
 
 				// persist the returned server id on the local car
 				this.$set(this.car, "server_id", serverId);
+				this.localServerId = serverId;
 				await this.$axios.$post("/cars-exclusive/update", this.car);
 
 				this.setAlert({ text: "تم الإرفاق الى السيرفر" });
@@ -150,16 +164,17 @@ export default {
 					error: true,
 				});
 
-			if (!this.car.server_id) return;
+			if (!this.serverId) return;
 
 			this.detaching = true;
 			try {
-				await this.$axios.$delete(`https://trueemit-api.vercel.app/cars/${this.car.server_id}`, {
+				await this.$axios.$delete(`https://trueemit-api.vercel.app/cars/${this.serverId}`, {
 					headers: { "x-api-key": apiKey },
 				});
 
 				// clear the stored server id locally
 				this.$set(this.car, "server_id", "");
+				this.localServerId = "";
 				await this.$axios.$post("/cars-exclusive/update", this.car);
 
 				this.setAlert({ text: "تم الحذف من السيرفر" });
@@ -176,3 +191,16 @@ export default {
 	},
 };
 </script>
+
+<style lang="scss" scoped>
+.fade-enter-active,
+.fade-leave-active {
+	transition: opacity 0.25s, transform 0.25s;
+}
+
+.fade-enter,
+.fade-leave-to {
+	opacity: 0;
+	transform: scale(0.9);
+}
+</style>

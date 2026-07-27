@@ -63,6 +63,13 @@ const car = new Schema(
 			},
 		],
 
+		videos: [
+			{
+				video: { type: String, default: "" },
+				description: { type: String, default: "" },
+			},
+		],
+
 		sections: [
 			{
 				title: { type: String, default: "" },

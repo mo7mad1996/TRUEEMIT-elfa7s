@@ -4,6 +4,7 @@
 		<FirstPage :car="car" v-if="car?.service != 'محركات'" />
 		<secondPage :car="car" />
 		<Files :car="car" />
+		<Videos :car="car" />
 		<Sections :car="car" />
 
 		<div class="container sticky bottom-4 flex gap-4 justify-center">
@@ -41,6 +42,7 @@ import EngineerHeader from "@/components/engineer/header";
 import SecondPage from "@/components/engineer/SecondPage";
 import FirstPage from "@/components/engineer/First_page";
 import Files from "@/components/engineer/Files";
+import Videos from "@/components/engineer/Videos";
 import Sections from "@/components/engineer/Sections";
 
 import { mapActions } from "vuex";
@@ -144,6 +146,7 @@ export default {
 		SecondPage,
 		FirstPage,
 		Files,
+		Videos,
 		Sections,
 	},
 };

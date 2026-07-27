@@ -38,15 +38,20 @@
 			</div>
 
 			<img class="logo-print" :src="$shop.logo" v-if="!['exclusive'].includes($auth.user.job)" />
+
+			<div class="print:hidden">
+				<Alert />
+			</div>
 		</clientOnly>
 	</div>
 </template>
 
 <script>
+import Alert from "@/components/layout/alert";
 import ServerActions from "@/components/print/ServerActions";
 
 export default {
-	components: { ServerActions },
+	components: { Alert, ServerActions },
 	data() {
 		return {
 			lang: "ar",
@@ -89,7 +94,13 @@ export default {
 
 				// Keep the in-flow shop footer (footer.vue) — it renders as a
 				// table-footer-group inside each .page, so it shows in the PDF.
-				const content = stripScripts(this.$refs.target_pdf).outerHTML;
+				const contentNode = stripScripts(this.$refs.target_pdf);
+
+				// videos are hidden by the print styles anyway (a link button takes
+				// their place) — drop them so Puppeteer doesn't wait on media loads
+				contentNode.querySelectorAll("video").forEach((v) => v.remove());
+
+				const content = contentNode.outerHTML;
 
 				const html =
 					`<!DOCTYPE html><html ${htmlAttrs}>` +
