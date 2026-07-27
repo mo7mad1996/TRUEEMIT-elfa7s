@@ -11,6 +11,11 @@
 			:car="car"
 			v-if="car.car_images && car.car_images.length && $auth.user.job == 'exclusive'"
 		/>
+		<car-videos
+			:lang="lang"
+			:car="car"
+			v-if="car.videos && car.videos.length && $auth.user.job == 'exclusive'"
+		/>
 		<Page3
 			:lang="lang"
 			:car="car"
@@ -20,11 +25,6 @@
 			:lang="lang"
 			:car="car"
 			v-if="car.sections && car.sections.length && $auth.user.job == 'exclusive'"
-		/>
-		<car-videos
-			:lang="lang"
-			:car="car"
-			v-if="car.videos && car.videos.length && $auth.user.job == 'exclusive'"
 		/>
 	</div>
 </template>
