@@ -18,6 +18,7 @@
                 class="h-20 bg-neutral-200 w-auto rounded-lg"
                 :src="
                   new_logo ||
+                  shop.logo ||
                   $auth.user.logo ||
                   $shop.logo ||
                   '/logo/trueemit.png'
@@ -26,7 +27,7 @@
 
               <button
                 class="absolute top-0 left-0 rounded-full bg-red-50 text-red-700 flex items-center justify-center p-2"
-                @click.prevent="new_logo = ''"
+                @click.prevent="clearFile"
                 v-if="new_logo"
                 title="حذف"
               >
@@ -48,6 +49,21 @@
             </div>
           </div>
         </label>
+
+        <div class="form-input">
+          <label>
+            <font-awesome-icon :icon="['fas', 'link']" />
+            رابط اللوجو
+          </label>
+          <input
+            v-model="shop.logo"
+            dir="ltr"
+            placeholder="https://example.com/logo.png"
+          />
+          <small class="text-xs text-neutral-400 px-2">
+            الصق رابط الصوره أو اختر ملف من الأعلى (الملف المرفوع يستبدل الرابط)
+          </small>
+        </div>
 
         <div class="form-input">
           <label>
@@ -523,6 +539,10 @@ export default {
     preview() {
       const [file] = this.$refs.file.files;
       if (file) this.new_logo = URL.createObjectURL(file);
+    },
+    clearFile() {
+      this.new_logo = "";
+      if (this.$refs.file) this.$refs.file.value = "";
     },
 
     async deleteCars() {
