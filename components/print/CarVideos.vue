@@ -7,7 +7,7 @@
 
 			<div class="videos break">
 				<div v-for="(item, n) in car?.videos" :key="n">
-					<div class="bg-soft">
+					<a :href="item.video" target="_blank" rel="noopener" class="bg-soft">
 						<div class="video-wrap">
 							<!-- على الشاشة: مشغل الفيديو -->
 							<video
@@ -24,15 +24,9 @@
 								<span>فيديو</span>
 							</div>
 
-							<a
-								:href="item.video"
-								target="_blank"
-								rel="noopener"
-								class="zoom-btn"
-								title="فتح الفيديو"
-							>
+							<div class="zoom-btn" title="فتح الفيديو">
 								<ZoomIcon />
-							</a>
+							</div>
 						</div>
 
 						<!-- زر خارجي لمشاهدة الفيديو (يعمل كرابط داخل الـ PDF) -->
@@ -42,7 +36,7 @@
 						</a>
 
 						<p v-if="item.description">{{ item.description }}</p>
-					</div>
+					</a>
 				</div>
 			</div>
 		</div>
