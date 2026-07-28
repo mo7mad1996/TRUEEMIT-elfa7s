@@ -76,6 +76,14 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
+
+// the api/proxy answers with 413 { code: "413", message: "Request Entity Too Large" }
+// when the file is bigger than the allowed body size. when the 413 comes from the
+// edge (no cors headers) axios only sees a network error, so anything bigger than
+// this is reported as "too large" too instead of a meaningless generic error.
+const TOO_LARGE_HINT = 4 * 1024 * 1024;
+
 export default {
 	name: "FileDropAble",
 	// accept / loadingText let the same uploader serve images and videos —
@@ -91,6 +99,8 @@ export default {
 		};
 	},
 	methods: {
+		...mapActions({ setAlert: "alert/add" }),
+
 		handleDragEnter(e) {
 			e.preventDefault();
 			this.dragCounter++;
@@ -132,6 +142,9 @@ export default {
 
 			this.loading = true;
 			this.$emit("loading", true);
+			// every file is handled on its own so one rejected file
+			// does not cancel the ones that can still be uploaded
+			const errors = [];
 			try {
 				await Promise.all(
 					list.map(async (file) => {
@@ -139,20 +152,49 @@ export default {
 						let formData = new FormData();
 						formData.append("file", file, file.filename);
 
-						// send request
-						const res = await this.appendFile(formData);
+						try {
+							// send request
+							const res = await this.appendFile(formData);
 
-						// update dom
-						this.$emit("input", res.url);
-						this.files.push(res.url);
+							// update dom
+							this.$emit("input", res.url);
+							this.files.push(res.url);
+						} catch (err) {
+							console.error(err);
+							errors.push(this.uploadErrorText(err, file));
+						}
 					})
 				);
-			} catch (err) {
-				console.error(err);
 			} finally {
 				this.loading = false;
 				this.$emit("loading", false);
+
+				if (errors.length) {
+					const text = errors.join("\n");
+					this.setAlert({ text, error: true });
+					this.$emit("error", text);
+				}
 			}
+		},
+
+		// turns an upload failure into a readable arabic message
+		uploadErrorText(err, file) {
+			const res = err?.response;
+			const status = Number(res?.status || res?.data?.code || 0);
+			const name = file?.name ? ` "${file.name}"` : "";
+
+			const tooLarge = status == 413 || (!res && file?.size > TOO_LARGE_HINT);
+			if (tooLarge)
+				return `حجم الملف${name} كبير جدًا${this.fileSize(file)} — الرجاء ضغطه أو اختيار ملف أصغر`;
+
+			if (!res) return `تعذر الاتصال بالخادم، لم يتم رفع الملف${name}`;
+
+			return `حدث خطأ أثناء رفع الملف${name}، حاول مرة أخرى`;
+		},
+
+		fileSize(file) {
+			if (!file?.size) return "";
+			return ` (${(file.size / (1024 * 1024)).toFixed(1)} م.ب)`;
 		},
 
 		async appendFile(formData = new FormData()) {
@@ -175,6 +217,7 @@ export default {
 				this.files = this.files.filter((i) => i != fileName);
 			} catch (err) {
 				console.error(err);
+				this.setAlert({ text: "تعذر حذف الملف، حاول مرة أخرى", error: true });
 			} finally {
 				this.deleting = this.deleting.filter((i) => i != fileName);
 			}

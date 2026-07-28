@@ -50,7 +50,7 @@ export default {
   gap: 1em;
 
   p {
-    white-space: preserve-breaks;
+    white-space: pre-line;
     text-align: center;
   }
 
