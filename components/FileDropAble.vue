@@ -150,7 +150,9 @@ export default {
 					list.map(async (file) => {
 						// create formData
 						let formData = new FormData();
-						formData.append("file", file, file.filename);
+						// file.name, not file.filename (undefined) — the api builds the
+						// blob path from it, so this is what keeps the .mp4 / .jpg extension
+						formData.append("file", file, file.name);
 
 						try {
 							// send request
