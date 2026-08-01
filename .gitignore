@@ -1,7 +1,8 @@
 node_modules
-.nuxt 
+.nuxt
 .vscode
 .env
 server/upload/*
 !server/upload/.gitkeep
 TRUEEMIT-elfa7s-main
+secret
