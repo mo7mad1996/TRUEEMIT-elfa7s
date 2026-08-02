@@ -16,7 +16,7 @@
       <textarea v-model="car.accessories" data-max="7"></textarea>
       <!-- @keydown="$check_max_lines" -->
     </div>
-    <div class="form-input" v-if="$auth.user.job != 'exclusive'">
+    <div class="form-input" v-if="viewJob != 'exclusive'">
       <label>
         <font-awesome-icon :icon="['fas', 'car']" />
         الفحص الميداني</label
@@ -24,7 +24,7 @@
       <textarea v-model="car.ground" data-max="5"></textarea>
       <!-- @keydown="$check_max_lines" -->
     </div>
-    <div class="form-input" v-if="$auth.user.job != 'exclusive'">
+    <div class="form-input" v-if="viewJob != 'exclusive'">
       <label>
         <font-awesome-icon :icon="['fas', 'wrench']" />
         {{

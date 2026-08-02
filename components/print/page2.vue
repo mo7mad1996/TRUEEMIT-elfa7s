@@ -4,7 +4,7 @@
 
 		<div class="page2">
 			<ul v-if="car.service == 'صيانة'">
-				<template v-if="['exclusive'].includes($auth.user.job)">
+				<template v-if="['exclusive'].includes(viewJob)">
 					<li>
 						- الفحص عباره عن فحص القطع الاستهلاكيه التي بحاجة غيار + تهريبات الزيوت .
 						<br />
@@ -47,10 +47,10 @@
 				class="section"
 				v-if="!['فحص أساسي', 'صيانة'].includes(car.service)"
 				:class="{
-					one: this.$auth.user.job != 'exclusive',
+					one: viewJob != 'exclusive',
 				}"
 			>
-				<h4 v-if="['exclusive'].includes($auth.user.job)">
+				<h4 v-if="['exclusive'].includes(viewJob)">
 					<font-awesome-icon :icon="['fas', 'computer']" />
 					<span> فحص الكمبيوتر </span>
 					<span>(Computer scan)</span>
@@ -68,14 +68,14 @@
 			<div
 				class="section"
 				:class="{
-					five: this.$auth.user.job != 'exclusive',
+					five: viewJob != 'exclusive',
 				}"
 				v-if="
 					car.service == 'VIP' || car.service == 'محركات'
 					// || car.service == 'شامل'
 				"
 			>
-				<h4 v-if="['exclusive'].includes($auth.user.job)">
+				<h4 v-if="['exclusive'].includes(viewJob)">
 					<font-awesome-icon :icon="['fas', 'gears']" />
 
 					<span> فحص الاكسسورات </span>
@@ -91,8 +91,8 @@
 			</div>
 
 			<!-- الميداني -->
-			<div class="section three" v-if="this.$auth.user.job != 'exclusive'">
-				<h4 v-if="['exclusive'].includes($auth.user.job)">
+			<div class="section three" v-if="viewJob != 'exclusive'">
+				<h4 v-if="['exclusive'].includes(viewJob)">
 					<font-awesome-icon :icon="['fas', 'car']" />
 
 					<span>الفحص الميداني</span>
@@ -108,9 +108,9 @@
 			</div>
 
 			<!-- الميكانيكا -->
-			<section class="section two" v-if="this.$auth.user.job != 'exclusive'">
+			<section class="section two" v-if="viewJob != 'exclusive'">
 				<div class="service">
-					<h4 v-if="['exclusive'].includes($auth.user.job)">
+					<h4 v-if="['exclusive'].includes(viewJob)">
 						<font-awesome-icon :icon="['fas', 'wrench']" />
 
 						<span>فحص ميكانيكا</span>
@@ -140,7 +140,7 @@
 
 		<!-- <div
 			class="text-[7px] leading-3 text-red-500 mt-2 flex justify-between p-2"
-			v-if="['exclusive'].includes($auth.user.job)"
+			v-if="['exclusive'].includes(viewJob)"
 		>
 			<span class="text-right">
 				ضمان على الفحص شهر أو 1000 كيلو<br />

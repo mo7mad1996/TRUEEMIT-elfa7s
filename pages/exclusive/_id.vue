@@ -34,6 +34,14 @@
 			</button>
 		</div>
 	</div>
+	<div v-else-if="notFound" class="container text-center pt-12 flex flex-col items-center gap-4">
+		<p class="font-bold">لم يتم العثور على السيارة</p>
+
+		<button @click="$router.push('/exclusive/cars')" class="btn d-block red">
+			السيارات
+			<font-awesome-icon :icon="['fas', 'arrow-left']" />
+		</button>
+	</div>
 	<div v-else class="text-center font-bold pt-12">جاري تحميل بيانات السيارة</div>
 </template>
 
@@ -52,7 +60,13 @@ export default {
 	middleware: "exclusive",
 	props: ["cars", "socket", "updateCars"],
 	head: () => ({ title: " فحص السياره" }),
-	data: () => ({ car: null, loading: false }),
+	data: () => ({
+		car: null,
+		loading: false,
+		notFound: false,
+		fetching: false,
+		triedDB: false,
+	}),
 	methods: {
 		...mapActions({ setAlert: "alert/add" }),
 
@@ -101,15 +115,35 @@ export default {
 				.finally(() => (this.loading = false));
 		},
 
-		getCar() {
-			// wait if no cars
-			if (!this.cars) return;
-			if (!this.cars.length) return this.$router.push("/");
+		async getCar() {
+			const id = this.$route.params.id;
 
-			this.car = this.cars.filter((car) => car._id == this.$route.params.id)[0];
+			// a car that is still being worked on lives in the realtime list
+			const draft = (this.cars || []).find((car) => car._id == id);
 
-			// if no car go home
-			if (!this.car) this.$router.push("/");
+			if (draft) {
+				this.car = draft;
+				this.notFound = false;
+			}
+			// an already saved car is only in the database — open it for editing
+			else if (!this.car && !this.fetching && !this.triedDB) {
+				this.fetching = true;
+				this.triedDB = true;
+
+				try {
+					const saved = await this.$axios.$get("/cars-exclusive/" + id);
+					this.car = { ...saved, saved: true, updated: false };
+					skipCheck = true;
+				} catch (err) {
+					// it may still be a draft the socket has not delivered yet,
+					// the watcher below picks it up and clears this
+					this.notFound = true;
+				} finally {
+					this.fetching = false;
+				}
+			}
+
+			if (!this.car) return;
 
 			// if no sections
 			const sections = this.$auth.user.sections.map((s) => ({
@@ -118,12 +152,12 @@ export default {
 			}));
 
 			if (this.car.sections.length == 0) this.car.sections = sections;
+
+			this.socket.emit("join-room", this.car._id);
 		},
 	},
 	mounted() {
 		this.getCar();
-
-		if (this.car) this.socket.emit("join-room", this.car._id);
 
 		// socket
 		this.socket.on("delete-car", () => this.setAlert({ text: "شخص ما حذف السيارة", error: true }));

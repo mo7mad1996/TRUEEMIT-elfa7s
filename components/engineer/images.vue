@@ -14,7 +14,7 @@
 		</div>
 
 		<div class="text-center text-[7px] opacity-75 !leading-none">
-			<template v-if="['exclusive'].includes($auth.user.job)">
+			<template v-if="['exclusive'].includes(viewJob)">
 				<div class="text-center text-xs opacity-75">
 					ملاحظة : علامة M تعني مرشوش و T تعني تعديل وعلامة MM تعني مرشوش و معجون وعلامة MB تعني
 					مغير ومرشوش
@@ -48,7 +48,7 @@
 
 		<!-- <div
 			class="text-[7px] leading-none text-red-500 mt-2 flex justify-between"
-			v-if="['exclusive'].includes($auth.user.job)"
+			v-if="['exclusive'].includes(viewJob)"
 		>
 			<span class="text-right">
 				ضمان على الفحص شهر أو 1000 كيلو<br />

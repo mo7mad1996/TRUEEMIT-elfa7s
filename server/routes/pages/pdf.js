@@ -1,9 +1,3 @@
-// Puppeteer 25 streams the PDF via the global ReadableStream (Web Streams API),
-// which isn't a global in older Node runtimes — polyfill it from stream/web.
-if (typeof globalThis.ReadableStream === "undefined") {
-	globalThis.ReadableStream = require("stream/web").ReadableStream;
-}
-
 module.exports = (router) => {
 	router.post("/:id", async (req, res) => {
 		const puppeteer = await import("puppeteer");

@@ -4,6 +4,8 @@ const Schema = mongoose.Schema;
 const car = new Schema(
 	{
 		date: { type: Date, default: Date.now },
+		// the exclusive user who created the car — each user only sees his own
+		user: { type: mongoose.Schema.Types.ObjectId, ref: "Users", default: null, index: true },
 		server_id: { type: String, default: "" },
 		type: { type: String, default: "" },
 		car_id: { type: String, default: "" },

@@ -20,6 +20,12 @@
 import Charts from "@/components/manager/charts";
 
 export default {
+  // `base` picks the collection (/cars or /cars-exclusive) and `user` narrows
+  // an exclusive report down to a single company
+  props: {
+    base: { type: String, default: "/cars" },
+    user: { type: String, default: "" },
+  },
   data() {
     const date = new Date();
 
@@ -36,6 +42,9 @@ export default {
     end() {
       this.getData(this.start, this.end);
     },
+    user() {
+      this.getData(this.start, this.end);
+    },
   },
   methods: {
     async getData(s, e) {
@@ -50,7 +59,8 @@ export default {
 
       // request
       const data = await this.$axios.$get(
-        `/cars/special/${start_timestamp}/${end_timestamp}`
+        `${this.base}/special/${start_timestamp}/${end_timestamp}`,
+        { params: this.user ? { user: this.user } : {} }
       );
 
       this.cars = data;

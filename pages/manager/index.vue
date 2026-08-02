@@ -46,6 +46,11 @@ export default {
           to: "/manager/cars",
         },
         {
+          icon: "fa-solid fa-building",
+          title: "الشركات الخاصه",
+          to: "/manager/exclusive",
+        },
+        {
           icon: "chart-line",
           title: "الاحصائيات",
           to: "/manager/statistics",

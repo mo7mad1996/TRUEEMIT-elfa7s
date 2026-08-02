@@ -39,6 +39,10 @@
 
       <Special />
     </section>
+
+    <h3 class="mt-12">إحصائيات الشركات الخاصه</h3>
+
+    <ExclusiveStats :owners="owners" :cars="exclusive" />
   </div>
 </template>
 
@@ -46,16 +50,28 @@
 // components
 import Charts from "@/components/manager/charts";
 import Special from "@/components/manager/Special";
+import ExclusiveStats from "@/components/manager/ExclusiveStats";
+
+const periods = [1, 3, 7, 30, 365];
 
 export default {
   async asyncData({ $axios }) {
-    const last1 = await $axios.$get("/cars/last/1");
-    const last3 = await $axios.$get("/cars/last/3");
-    const last7 = await $axios.$get("/cars/last/7");
-    const last30 = await $axios.$get("/cars/last/30");
-    const last_year = await $axios.$get("/cars/last/365");
+    const [last1, last3, last7, last30, last_year] = await Promise.all(
+      periods.map((d) => $axios.$get(`/cars/last/${d}`))
+    );
 
-    return { last1, last3, last7, last30, last_year };
+    // the exclusive report — the owner of each car comes with it so the
+    // numbers can be split per company on the client
+    const owners = await $axios.$get("/cars-exclusive/owners");
+    const exclusive_cars = await Promise.all(
+      periods.map((d) => $axios.$get(`/cars-exclusive/last/${d}`))
+    );
+
+    const exclusive = Object.fromEntries(
+      periods.map((d, n) => [d, exclusive_cars[n]])
+    );
+
+    return { last1, last3, last7, last30, last_year, owners, exclusive };
   },
   middleware: "manager",
   head() {
@@ -64,6 +80,7 @@ export default {
   components: {
     Charts,
     Special,
+    ExclusiveStats,
   },
 
   // $moment(user.lastLogin).fromNow()

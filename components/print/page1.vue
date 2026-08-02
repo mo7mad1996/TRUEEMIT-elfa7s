@@ -6,7 +6,7 @@
 				<div class="flex gap-0.5">
 					<main class="flex-1 max-w-1/2">
 						<h4 class="text-center">
-							<template v-if="['exclusive'].includes($auth.user.job)"> </template>
+							<template v-if="['exclusive'].includes(viewJob)"> </template>
 							<template v-else>
 								<font-awesome-icon :icon="['fas', 'car-on']" />
 								<span v-if="lang == 'en'">Body </span>
@@ -17,7 +17,7 @@
 							<thead>
 								<th>
 									<h4
-										v-if="['exclusive'].includes($auth.user.job)"
+										v-if="['exclusive'].includes(viewJob)"
 										class="text-center text-zinc-700 text-sm h-full flex flex-col justify-between"
 									>
 										<font-awesome-icon :icon="['fas', 'car-on']" />
@@ -34,10 +34,10 @@
 									:class="{
 										'text-[10px] text-bt text-left px-1 pb-1 table-cell justify-center': [
 											'exclusive',
-										].includes($auth.user.job),
+										].includes(viewJob),
 									}"
 								>
-									<template v-if="['exclusive'].includes($auth.user.job)">
+									<template v-if="['exclusive'].includes(viewJob)">
 										<div>{{ val.ar }}</div>
 
 										<div class="text-gray-400">{{ val.en }}</div>
@@ -55,7 +55,7 @@
 									class="text-gray-700 odd:bg-neutral-200 odd:!text-neutral-900"
 								>
 									<td
-										v-if="['exclusive'].includes($auth.user.job)"
+										v-if="['exclusive'].includes(viewJob)"
 										class="text-[10px] text-gray-400 odd:!text-neutral-900"
 									>
 										<div class="flex justify-between">
@@ -90,7 +90,7 @@
 						</table>
 
 						<!-- <h6 class="text-xs opacity-60 p-1">
-							<template v-if="['exclusive'].includes($auth.user.job)">
+							<template v-if="['exclusive'].includes(viewJob)">
 								<div>الفايبر + الصدامات خارج الفحص</div>
 								<span class="dir-ltr"> Fiber and bumpers are excluded from inspection </span>
 							</template>
@@ -101,7 +101,7 @@
 						</h6> -->
 
 						<fieldset v-if="car.body.note">
-							<legend v-if="['exclusive'].includes($auth.user.job)">
+							<legend v-if="['exclusive'].includes(viewJob)">
 								<h4 class="flex justify-between items-center px-1 text-zinc-700 text-sm">
 									<span> ملاحظه</span>
 									<font-awesome-icon :icon="['fas', 'clipboard']" />
@@ -123,7 +123,7 @@
 					<div class="line"></div>
 
 					<aside class="flex-1">
-						<template v-if="['exclusive'].includes($auth.user.job)">
+						<template v-if="['exclusive'].includes(viewJob)">
 							<h4 class="flex justify-between items-center px-1 text-zinc-700 text-sm">
 								<span> الرسم التوضيحي </span>
 								<font-awesome-icon :icon="['fas', 'compass-drafting']" />
@@ -142,7 +142,7 @@
 				</div>
 
 				<footer>
-					<h4 v-if="['exclusive'].includes($auth.user.job)">
+					<h4 v-if="['exclusive'].includes(viewJob)">
 						<font-awesome-icon :icon="['fas', 'toolbox']" />
 						<span> فحص الشاصى </span>
 						<span>(Chassis)</span>

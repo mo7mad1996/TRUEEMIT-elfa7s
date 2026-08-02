@@ -44,7 +44,7 @@
 					<input class="mt-2" v-model="car.service" v-if="services.indexOf(car.service) == -1" />
 				</div>
 
-				<div class="form-input" v-if="['exclusive'].includes($auth.user.job)">
+				<div class="form-input" v-if="['exclusive'].includes(viewJob)">
 					<label>
 						<font-awesome-icon :icon="['fas', 'hand-fist']" />
 						السلندرات
@@ -52,7 +52,7 @@
 					<input v-model="car.engine" />
 				</div>
 
-				<div class="form-input" v-if="['exclusive'].includes($auth.user.job)">
+				<div class="form-input" v-if="['exclusive'].includes(viewJob)">
 					<label>
 						<font-awesome-icon :icon="['fas', 'gears']" />
 						نوع القير
@@ -64,7 +64,7 @@
 					</select>
 				</div>
 
-				<div class="form-input" v-if="['exclusive'].includes($auth.user.job)">
+				<div class="form-input" v-if="['exclusive'].includes(viewJob)">
 					<label>
 						<font-awesome-icon :icon="['fas', 'gas-pump']" />
 						نوع الوقود
@@ -76,7 +76,7 @@
 					</select>
 				</div>
 
-				<div class="form-input" v-if="['exclusive'].includes($auth.user.job)">
+				<div class="form-input" v-if="['exclusive'].includes(viewJob)">
 					<label>
 						<font-awesome-icon :icon="['far', 'calendar']" />
 						الموديل (تاريخ الصنع)

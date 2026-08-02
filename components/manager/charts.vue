@@ -80,7 +80,15 @@
 
 <script>
 export default {
-  props: ["x", "y", "data", "time"],
+  props: {
+    x: { default: () => [] },
+    y: { default: () => [] },
+    data: { default: () => [] },
+    time: { default: null },
+    // client payments belong to the shop, not to a single exclusive company —
+    // the exclusive report turns them off so revenue is not counted twice
+    pays_enabled: { type: Boolean, default: true },
+  },
   name: "Charts",
   data: () => ({
     labels: ["أجل", "كاش", "شبكة", ""],
@@ -185,6 +193,8 @@ export default {
       }
     },
     init() {
+      if (!this.pays_enabled) return (this.pays = []);
+
       if (this.time)
         this.$axios
           .$get("/clients/pays/" + this.time)

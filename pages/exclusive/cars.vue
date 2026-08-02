@@ -30,7 +30,7 @@
             <tr
               v-for="car in cars"
               :key="car._id"
-              @click="$router.push(`/print/${car._id}?no_print`)"
+              @click="$router.push(`/exclusive/${car._id}`)"
             >
               <td v-for="column in columns" :key="column.en" :class="column.en">
                 {{ car[column.en] || "-" }}

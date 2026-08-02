@@ -37,7 +37,7 @@
 				<NuxtChild :lang="lang" @car="car = $event" />
 			</div>
 
-			<img class="logo-print" :src="$shop.logo" v-if="!['exclusive'].includes($auth.user.job)" />
+			<img class="logo-print" :src="$shop.logo" v-if="!['exclusive'].includes(viewJob)" />
 
 			<div class="print:hidden">
 				<Alert />

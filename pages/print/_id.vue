@@ -9,22 +9,22 @@
 		<car-images
 			:lang="lang"
 			:car="car"
-			v-if="car.car_images && car.car_images.length && $auth.user.job == 'exclusive'"
+			v-if="car.car_images && car.car_images.length && viewJob == 'exclusive'"
 		/>
 		<car-videos
 			:lang="lang"
 			:car="car"
-			v-if="car.videos && car.videos.length && $auth.user.job == 'exclusive'"
+			v-if="car.videos && car.videos.length && viewJob == 'exclusive'"
 		/>
 		<Page3
 			:lang="lang"
 			:car="car"
-			v-if="car.images && car.images.length && $auth.user.job == 'exclusive'"
+			v-if="car.images && car.images.length && viewJob == 'exclusive'"
 		/>
 		<Page4
 			:lang="lang"
 			:car="car"
-			v-if="car.sections && car.sections.length && $auth.user.job == 'exclusive'"
+			v-if="car.sections && car.sections.length && viewJob == 'exclusive'"
 		/>
 	</div>
 </template>
@@ -38,9 +38,12 @@ import Page4 from "@/components/print/Page4";
 import CarVideos from "@/components/print/CarVideos";
 
 export default {
-	async asyncData({ params, $axios, $auth }) {
+	async asyncData({ params, query, $axios, $auth }) {
+		// `?as=exclusive` lets the manager print an exclusive report
+		const job = query.as || $auth.user?.job;
+
 		const car =
-			$auth.user?.job == "exclusive"
+			job == "exclusive"
 				? await $axios.$get("/cars-exclusive/" + params.id)
 				: await $axios.$get("/cars/" + params.id);
 

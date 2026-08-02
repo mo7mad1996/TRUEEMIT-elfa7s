@@ -2,7 +2,7 @@
 	<header>
 		<div class="top">
 			<div>
-				<template v-if="$auth.user.job != 'exclusive'">
+				<template v-if="viewJob != 'exclusive'">
 					<div v-if="car.payment">
 						حالة السداد : {{ car.payment == "أجل" ? "اخرى" : car.payment }}.
 					</div>
@@ -18,8 +18,8 @@
 				</template>
 				<div v-else>
 					<img
-						v-if="$auth.user.logo"
-						:src="$auth.user.logo"
+						v-if="ownerLogo"
+						:src="ownerLogo"
 						class="h-24 mx-auto object-contain block"
 					/>
 				</div>
@@ -44,7 +44,7 @@
 		<div class="bottom">
 			<div class="item">
 				<label>
-					<template v-if="['exclusive'].includes($auth.user.job)">
+					<template v-if="['exclusive'].includes(viewJob)">
 						<div>نوع السياره</div>
 						<div>Type of car</div>
 					</template>
@@ -60,7 +60,7 @@
 
 			<div class="item">
 				<label>
-					<template v-if="['exclusive'].includes($auth.user.job)">
+					<template v-if="['exclusive'].includes(viewJob)">
 						<div>رقم اللوحه</div>
 						<div>Plate number</div>
 					</template>
@@ -74,7 +74,7 @@
 
 				<div class="value">{{ car.car_id || "-" }}</div>
 			</div>
-			<div class="item" v-if="['exclusive'].includes($auth.user.job)">
+			<div class="item" v-if="['exclusive'].includes(viewJob)">
 				<label>
 					<template>
 						<div>السلندرات</div>
@@ -85,7 +85,7 @@
 				<div class="value">{{ car.engine || "-" }}</div>
 			</div>
 
-			<div class="item" v-if="['exclusive'].includes($auth.user.job)">
+			<div class="item" v-if="['exclusive'].includes(viewJob)">
 				<label>
 					<template>
 						<div>تاريخ الصنع</div>
@@ -96,7 +96,7 @@
 				<div class="value">{{ car.model || "-" }}</div>
 			</div>
 
-			<div class="item" v-if="['exclusive'].includes($auth.user.job)">
+			<div class="item" v-if="['exclusive'].includes(viewJob)">
 				<label>
 					<template>
 						<div>نوع القير</div>
@@ -107,7 +107,7 @@
 				<div class="value">{{ car.gear || "-" }}</div>
 			</div>
 
-			<div class="item" v-if="['exclusive'].includes($auth.user.job)">
+			<div class="item" v-if="['exclusive'].includes(viewJob)">
 				<label>
 					<template>
 						<div>نوع الوقود</div>
@@ -120,7 +120,7 @@
 
 			<div class="item">
 				<label>
-					<template v-if="['exclusive'].includes($auth.user.job)">
+					<template v-if="['exclusive'].includes(viewJob)">
 						<div>رقم الشاصى</div>
 						<div>Chassis number</div>
 					</template>
@@ -137,7 +137,7 @@
 
 			<div class="item">
 				<label>
-					<template v-if="['exclusive'].includes($auth.user.job)">
+					<template v-if="['exclusive'].includes(viewJob)">
 						<div>قراءة العداد</div>
 						<div>Meter reading</div>
 					</template>
@@ -154,7 +154,7 @@
 
 			<div class="item">
 				<label>
-					<template v-if="['exclusive'].includes($auth.user.job)">
+					<template v-if="['exclusive'].includes(viewJob)">
 						<div>الخدمة المقدمه</div>
 						<div>Service provided</div>
 					</template>
@@ -179,6 +179,13 @@ export default {
 	name: "PrintHeader",
 	props: ["car", "lang"],
 	components: { BarCode },
+	computed: {
+		// the logo of the exclusive company that owns the report — when the
+		// manager opens the report the car carries its populated owner
+		ownerLogo() {
+			return this.car?.user?.logo || this.$auth.user.logo;
+		},
+	},
 };
 </script>
 

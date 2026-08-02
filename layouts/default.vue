@@ -75,6 +75,8 @@ export default {
 
         auth: {
           role: this.$auth.user.job,
+          // exclusive users get their own room, so the server needs the id
+          user: this.$auth.user._id,
         },
       });
 
