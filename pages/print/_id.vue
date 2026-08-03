@@ -4,7 +4,11 @@
 		<Page2
 			:car="car"
 			:lang="lang"
-			v-if="[car.computer, car.accessories, car.ground, car.mechanical].join('').trim()"
+			v-if="
+				[car.computer, car.computer_pdf, car.accessories, car.ground, car.mechanical]
+					.join('')
+					.trim()
+			"
 		/>
 		<car-images
 			:lang="lang"

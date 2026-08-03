@@ -18,6 +18,8 @@ const car = new Schema(
 		odometer: { type: String, default: "" },
 		mechanical: { type: String, default: "" },
 		computer: { type: String, default: "" },
+		// url of the computer scan pdf uploaded to the trueemit api
+		computer_pdf: { type: String, default: "" },
 		ground: { type: String, default: "" },
 		body: {
 			hood: { type: Number, default: 0 },

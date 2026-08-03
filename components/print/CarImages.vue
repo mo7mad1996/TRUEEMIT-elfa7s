@@ -7,18 +7,12 @@
 			<div class="page3 break">
 				<div v-for="image in car?.car_images" :key="image.image">
 					<div class="bg-soft">
-						<div class="img-wrap">
+						<a :href="image.image" target="_blank" rel="noopener" class="img-wrap">
 							<img :src="image.image" class="" />
-							<a
-								:href="image.image"
-								target="_blank"
-								rel="noopener"
-								class="zoom-btn"
-								title="فتح الصورة"
-							>
+							<span class="zoom-btn" title="فتح الصورة">
 								<ZoomIcon />
-							</a>
-						</div>
+							</span>
+						</a>
 						<p v-if="image.description">{{ image.description }}</p>
 					</div>
 				</div>

@@ -62,6 +62,19 @@
 					<span class="squire"></span>
 				</h4>
 				<div class="lines" v-html="$nltobr(car.computer)" v-if="car.computer"></div>
+
+				<!-- زر يفتح ملف فحص الكمبيوتر (يعمل كرابط داخل الـ PDF) -->
+				<a
+					v-if="car.computer_pdf"
+					:href="car.computer_pdf"
+					target="_blank"
+					rel="noopener"
+					class="pdf-btn"
+				>
+					<font-awesome-icon :icon="['fas', 'file-pdf']" />
+					<span v-if="['exclusive'].includes(viewJob) || lang == 'ar'">عرض فحص الكمبيوتر</span>
+					<span v-else>View computer scan</span>
+				</a>
 			</div>
 
 			<!-- الاكسسورات -->
@@ -198,6 +211,31 @@ export default {
 			font-size: 0.8em;
 			margin-top: 10px;
 			list-style: none;
+		}
+	}
+
+	.pdf-btn {
+		margin: 5px 0 0;
+		padding: 5px 10px;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5em;
+		border-radius: 5px;
+		border: 1px solid #1e3a5f;
+		background: #e8eef5;
+		color: #1e3a5f;
+		font-size: 0.8em;
+		font-weight: 600;
+		text-decoration: none;
+
+		// keep the button colors in the PDF (printBackground:false)
+		-webkit-print-color-adjust: exact;
+		print-color-adjust: exact;
+
+		svg {
+			display: block;
+			width: 1em;
 		}
 	}
 

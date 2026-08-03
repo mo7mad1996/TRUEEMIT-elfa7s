@@ -74,6 +74,7 @@ export default {
 				odometer: c.odometer || "",
 				mechanical: c.mechanical || "",
 				computer: c.computer || "",
+				computer_pdf: c.computer_pdf || "",
 				ground: c.ground || "",
 				body: {
 					hood: c.body?.hood || 0,
