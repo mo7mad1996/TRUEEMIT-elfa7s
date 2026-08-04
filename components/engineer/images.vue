@@ -24,9 +24,11 @@
 						Filled, and MB indicates Replaced and Repainted.
 					</div>
 
-					<div>فحص البدي يعتمد على قراءة نسبة الطلاء فقط.</div>
+					<div>فحص البدي لا يشمل النظر</div>
 
-					<div class="dir-ltr">The body inspection relies on the paint thickness reading only.</div>
+					<div class="dir-ltr">
+						The body inspection does not include the appearance of the paint.
+					</div>
 				</div>
 			</template>
 
@@ -35,13 +37,13 @@
 					ملاحظة : علامة M تعني مرشوش و T تعني تعديل وعلامة MM تعني مرشوش و معجون وعلامة MB تعني
 					مغير ومرشوش
 					<br />
-					فحص البدي يعتمد على قراءة نسبة الطلاء فقط.
+					فحص البدي لا يشمل النظر
 				</span>
 				<span v-else class="!leading-none">
 					Note: The letter M indicates Repainted, T stands for Repaired, MM means Repainted and
 					Filled, and MB indicates Replaced and Repainted.
 					<br />
-					The body inspection relies on the paint thickness reading only.
+					The body inspection does not include the appearance of the paint.
 				</span>
 			</template>
 		</div>
