@@ -89,7 +89,7 @@ export default {
 					show: ["engineer", "manager"].includes(job),
 					action() {
 						this.$axios.$post("/trueemit/update", {
-							url: `https://github.com/mo7mad1996/TRUEEMIT-elfa7s/archive/refs/heads/main.zip`,
+							url: `https://github.com/mo7mad1996/TRUEEMIT-elfa7s/archive/refs/heads/thiqah.zip`,
 						});
 					},
 				},
