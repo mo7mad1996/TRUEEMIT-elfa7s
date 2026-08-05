@@ -70,7 +70,7 @@
 						نوع الوقود
 					</label>
 					<select v-model="car.fuel">
-						<option v-for="(s, n) in ['بنزين', 'ديزيل', 'كهرباء']" :key="n" :value="s">
+						<option v-for="(s, n) in ['بنزين', 'ديزيل', 'كهرباء', 'هايبرد']" :key="n" :value="s">
 							{{ s }}
 						</option>
 					</select>
