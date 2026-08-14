@@ -76,7 +76,7 @@ export default {
 		},
 
 		save() {
-			if (!this.car.payment || !this.car.cost) {
+			if (!this.car.payment || !this.car.cost?.toString().length) {
 				window.scrollTo({ top: 0, behavior: "smooth" });
 				return this.setAlert({ text: "تاكد من بيانات الدفع", error: true });
 			}

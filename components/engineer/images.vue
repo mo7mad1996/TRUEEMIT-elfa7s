@@ -24,11 +24,11 @@
 						Filled, and MB indicates Replaced and Repainted.
 					</div>
 
-					<div>فحص البدي لا يشمل النظر</div>
+					<!-- <div>فحص البدي لا يشمل النظر</div>
 
 					<div class="dir-ltr">
 						The body inspection does not include the appearance of the paint.
-					</div>
+					</div> -->
 				</div>
 			</template>
 
@@ -36,14 +36,16 @@
 				<span v-if="lang == 'ar'" class="!leading-none">
 					ملاحظة : علامة M تعني مرشوش و T تعني تعديل وعلامة MM تعني مرشوش و معجون وعلامة MB تعني
 					مغير ومرشوش
-					<br />
+					<!-- <br />
 					فحص البدي لا يشمل النظر
+					-->
 				</span>
 				<span v-else class="!leading-none">
 					Note: The letter M indicates Repainted, T stands for Repaired, MM means Repainted and
 					Filled, and MB indicates Replaced and Repainted.
-					<br />
+					<!-- <br />
 					The body inspection does not include the appearance of the paint.
+					-->
 				</span>
 			</template>
 		</div>

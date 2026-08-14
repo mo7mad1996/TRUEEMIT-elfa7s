@@ -77,7 +77,7 @@ export default {
 			// nothing changed — show the report instead
 			if (!this.dirty) return open(`/print/${this.$route.params.id}?pdf&as=exclusive`);
 
-			if (!this.car.payment || !this.car.cost) {
+			if (!this.car.payment || !this.car.cost?.toString().length) {
 				window.scrollTo({ top: 0, behavior: "smooth" });
 				return this.setAlert({ text: "تاكد من بيانات الدفع", error: true });
 			}
