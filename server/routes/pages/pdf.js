@@ -22,7 +22,7 @@ module.exports = (router) => {
 
 			const pdf = await page.pdf({
 				format: "A4",
-				printBackground: false,
+				printBackground: true,
 				margin: {
 					top: "0.5in",
 					bottom: "0in",
