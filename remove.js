@@ -15,7 +15,7 @@ const files = [
 
 // leftover extracted folders: TRUEEMIT-elfa7s-<branch>
 fs.readdirSync(".").forEach((name) => {
-	if (/^project-/.test(name)) files.push(name);
+	if (/^TRUEEMIT-elfa7s-/.test(name)) files.push(name);
 });
 
 files.forEach((name) => {

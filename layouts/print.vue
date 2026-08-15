@@ -3,10 +3,11 @@
 		<clientOnly>
 			<div class="fixed py-2 top-0 z-50 flex justify-center items-center w-full print:hidden gap-2">
 				<button
-					class="btn !bg-neutral-800 hover:!bg-neutral-700 !border-neutral-800 !text-neutral-300 font-light"
+					class="btn !bg-neutral-800 hover:!bg-neutral-700 !border-neutral-800 !text-neutral-300 font-light disabled:opacity-50"
+					:disabled="printing"
 					@click="print"
 				>
-					طباعة
+					{{ printing ? "جاري التحضير..." : "طباعة" }}
 
 					<font-awesome-icon icon="fa-solid fa-print" />
 				</button>
@@ -56,12 +57,69 @@ export default {
 		return {
 			lang: "ar",
 			pdfLoading: false,
+			printing: false,
 			car: null,
 		};
 	},
 	methods: {
-		print() {
-			window.print();
+		async print() {
+			if (this.printing) return;
+			this.printing = true;
+
+			try {
+				// window.print() is blocking: whatever is in the DOM at that exact
+				// moment is what the preview shows. The report lives inside
+				// <clientOnly> and loads its images over the network, so printing
+				// too early produced an empty preview that had to be cancelled.
+				await this.waitForContent();
+				window.print();
+			} finally {
+				this.printing = false;
+			}
+		},
+
+		// resolves once the report is actually rendered and its images are decoded
+		async waitForContent(timeout = 8000) {
+			const deadline = Date.now() + timeout;
+			const frame = () => new Promise((r) => requestAnimationFrame(() => r()));
+
+			await this.$nextTick();
+
+			// 1| wait for <clientOnly> + NuxtChild to put the report in the DOM
+			//    (the report pages render in the same patch as their wrapper)
+			while (Date.now() < deadline) {
+				const el = this.$refs.target_pdf;
+				if (el && el.firstElementChild) break;
+				await frame();
+			}
+
+			// 2| wait for images / fonts, but never hang on a broken or slow one
+			//    (scan the whole layout: the print-only shop logo lives outside the report)
+			const el = this.$refs.p;
+			const pending = [];
+
+			if (el)
+				el.querySelectorAll("img").forEach((img) => {
+					if (img.complete && img.naturalWidth) return;
+
+					pending.push(
+						new Promise((resolve) => {
+							img.addEventListener("load", resolve, { once: true });
+							img.addEventListener("error", resolve, { once: true });
+						}),
+					);
+				});
+
+			if (document.fonts && document.fonts.ready) pending.push(document.fonts.ready);
+
+			await Promise.race([
+				Promise.all(pending),
+				new Promise((resolve) => setTimeout(resolve, Math.max(0, deadline - Date.now()))),
+			]);
+
+			// 3| let the browser lay the pages out before the print dialog freezes it
+			await frame();
+			await frame();
 		},
 		async downloadPdf() {
 			if (this.pdfLoading) return;
