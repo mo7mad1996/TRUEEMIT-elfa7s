@@ -101,7 +101,7 @@ export default {
 				accessories: c.accessories || "",
 				representative: c.representative || "",
 				payment: c.payment || "",
-				cost: c.cost || 0,
+				cost: c.cost,
 				cost_disabled: c.cost_disabled || false,
 				is_payed: c.is_payed || false,
 				images: (c.images || []).map((i) => ({
