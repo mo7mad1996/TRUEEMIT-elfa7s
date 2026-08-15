@@ -9,9 +9,14 @@ const files = [
   "store",
   ".git",
   ".gitignore",
-  "TRUEEMIT-elfa7s-main",
+  "temp-repo.zip",
   "remove.js",
 ];
+
+// leftover extract folder, named after the branch: TRUEEMIT-elfa7s-<branch>
+fs.readdirSync(".").forEach((name) => {
+  if (/^TRUEEMIT-elfa7s-/.test(name)) files.push(name);
+});
 
 files.forEach((name) => {
   fs.removeSync(name);

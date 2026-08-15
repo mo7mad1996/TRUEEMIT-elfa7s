@@ -88,9 +88,7 @@ export default {
 					icon: "cloud-arrow-down",
 					show: ["engineer", "manager"].includes(job),
 					action() {
-						this.$axios.$post("/trueemit/update", {
-							url: `https://github.com/mo7mad1996/TRUEEMIT-elfa7s/archive/refs/heads/main.zip`,
-						});
+						this.updateApp();
 					},
 				},
 				{
@@ -104,6 +102,8 @@ export default {
 					},
 				},
 			],
+			updating: false,
+			update_branch: "main",
 			time: {
 				full: "",
 				am_pm: "",
@@ -123,6 +123,40 @@ export default {
 			}
 
 			this.closeMenu();
+		},
+
+		async updateApp() {
+			if (this.updating) return;
+
+			if (!confirm("سيتم تحميل النسخة الجديدة وإعادة تشغيل البرنامج. هل تريد المتابعة؟")) return;
+
+			this.updating = true;
+			this.setAlert({ text: "جاري تحميل التحديث... لا تغلق البرنامج" });
+
+			try {
+				// the server tears itself down right after answering, so the
+				// request must not be allowed to hang forever without feedback
+				const res = await this.$axios.$post(
+					"/trueemit/update",
+					{
+						url: `https://github.com/mo7mad1996/TRUEEMIT-elfa7s/archive/refs/heads/${this.update_branch}.zip`,
+					},
+					{ timeout: 5 * 60 * 1000 },
+				);
+
+				if (res && res.ok === false) throw new Error(res.text || "فشل التحديث");
+
+				this.setAlert({
+					text: "تم التحديث. جاري التثبيت وإعادة التشغيل، انتظر حتى تفتح النافذة الجديدة.",
+				});
+			} catch (err) {
+				const text = err?.response?.data?.text || err?.message || "تعذر تحديث البرنامج";
+
+				this.setAlert({ text, error: true });
+				console.error("update failed:", err?.response?.data || err);
+			} finally {
+				this.updating = false;
+			}
 		},
 
 		updateTime() {
