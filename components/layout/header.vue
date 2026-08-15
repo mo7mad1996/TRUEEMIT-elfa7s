@@ -127,6 +127,8 @@ export default {
 		async updateApp() {
 			if (this.updating) return;
 
+			if (!confirm("سيتم تحميل النسخة الجديدة وإعادة تشغيل البرنامج. هل تريد المتابعة؟")) return;
+
 			this.updating = true;
 			this.setAlert({ text: "جاري تحميل التحديث... لا تغلق البرنامج" });
 
