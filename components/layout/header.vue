@@ -1,4 +1,3 @@
-a
 <template>
 	<header class="pt-1 sticky top-0 left-0 z-50 backdrop-blur-sm mx-auto container">
 		<div
@@ -88,9 +87,7 @@ export default {
 					icon: "cloud-arrow-down",
 					show: ["engineer", "manager"].includes(job),
 					action() {
-						this.$axios.$post("/trueemit/update", {
-							url: `https://github.com/mo7mad1996/TRUEEMIT-elfa7s/archive/refs/heads/thiqah.zip`,
-						});
+						this.updateApp();
 					},
 				},
 				{
@@ -104,6 +101,8 @@ export default {
 					},
 				},
 			],
+			updating: false,
+			update_branch: "thiqah",
 			time: {
 				full: "",
 				am_pm: "",
@@ -123,6 +122,34 @@ export default {
 			}
 
 			this.closeMenu();
+		},
+
+		async updateApp() {
+			if (this.updating) return;
+
+			if (!confirm("سيتم تحميل النسخة الجديدة وإعادة تشغيل البرنامج. هل تريد المتابعة؟")) return;
+
+			this.updating = true;
+			this.setAlert({ text: "جاري تحميل التحديث... لا تغلق البرنامج" });
+
+			try {
+				const res = await this.$axios.$post("/trueemit/update", {
+					url: `https://github.com/mo7mad1996/TRUEEMIT-elfa7s/archive/refs/heads/${this.update_branch}.zip`,
+				});
+
+				if (res && res.ok === false) throw new Error(res.text || "فشل التحديث");
+
+				this.setAlert({
+					text: "تم تحميل التحديث. جاري التثبيت وإعادة التشغيل، انتظر حتى تفتح النافذة الجديدة.",
+				});
+			} catch (err) {
+				const text = err?.response?.data?.text || err?.message || "تعذر تحديث البرنامج";
+
+				this.setAlert({ text, error: true });
+				console.error("update failed:", err);
+			} finally {
+				this.updating = false;
+			}
 		},
 
 		updateTime() {

@@ -4,7 +4,8 @@ const fsExtra = require("fs-extra");
 const fs = require("fs");
 const path = require("path");
 const yauzl = require("yauzl");
-const { execFile } = require("node:child_process");
+const { spawn } = require("node:child_process");
+const { pipeline } = require("node:stream/promises");
 
 const mongoose = require("mongoose");
 const Shop = mongoose.model("Shop");
@@ -100,48 +101,59 @@ module.exports = (router, app) => {
   });
 
   router.post("/update", async (req, res) => {
+    // variables
+    const extractPath = path.resolve(__dirname, "../../..");
+    const uploadDir = path.resolve(__dirname, "../..", "upload");
+    const zipPath = path.join(extractPath, "temp-repo.zip");
+    const installFile = path.join(extractPath, "install.bat");
+
     try {
-      // variables
       const { url } = req.body;
-      const extractPath = path.join(__dirname, "../../..");
-      const uploadDir = path.join(__dirname, "../..", "upload");
-      const zipPath = path.join(__dirname, "../../..", "temp-repo.zip");
-      const installFile = path.join(__dirname, "../../..", "install.bat");
+      if (!url) return res.status(400).json({ ok: false, text: "رابط التحديث غير موجود" });
 
-      if (process.env.NODE_ENV !== "development") {
-        // 1| download a new version zip
-        await downloadFile(url, zipPath);
+      if (process.env.NODE_ENV === "development")
+        return res.json({ ok: true, update_file: 4, dev: true });
 
-        // 2| unzip file
-        await extractZip(zipPath, extractPath);
+      // 1| download a new version zip
+      console.log("[update] downloading", url);
+      await downloadFile(url, zipPath);
 
-        copyDirContents(
-          // 3| copy old images and files
-          uploadDir,
-          path.join(extractPath, "TRUEEMIT-elfa7s-main/server/upload")
-        );
+      // 2| unzip file -> the archive root name depends on the branch
+      //    (e.g. thiqah.zip => TRUEEMIT-elfa7s-thiqah), so we read it from the zip
+      console.log("[update] extracting", zipPath);
+      const rootName = await extractZip(zipPath, extractPath);
+      const newVersionPath = path.join(extractPath, rootName);
 
-        // 4| clean the base dir and skip [files / dirs]
-        cleanDirectory(extractPath, ["TRUEEMIT-elfa7s-main", "node_modules"]);
+      if (!fs.existsSync(newVersionPath))
+        throw new Error(`Extracted folder not found: ${newVersionPath}`);
 
-        // 5| get the new code
-        copyDirContents(
-          path.join(extractPath, "TRUEEMIT-elfa7s-main"),
-          extractPath
-        );
+      // 3| copy old images and files
+      copyDirContents(uploadDir, path.join(newVersionPath, "server", "upload"));
 
-        // 6| stop current server
-        global.server.close();
+      // 4| clean the base dir and skip [files / dirs]
+      cleanDirectory(extractPath, [rootName, "node_modules"]);
 
-        // 7| start install and build new code
-        startFile(installFile, () => {
-          res.json({ update_file: 4 });
-          console.clear();
-          process.exit(0);
-        });
-      } else res.json({ update_file: 4 });
+      // 5| get the new code
+      copyDirContents(newVersionPath, extractPath);
+      fs.rmSync(newVersionPath, { recursive: true, force: true });
+
+      // 6| answer the client before the server goes down
+      res.json({ ok: true, update_file: 4 });
+
+      // 7| stop current server
+      try {
+        global.server?.close();
+      } catch (e) {
+        console.error("[update] close server:", e.message);
+      }
+
+      // 8| start install and build new code, then quit this process
+      startFile(installFile, extractPath);
+      setTimeout(() => process.exit(0), 1500);
     } catch (err) {
-      console.error(err);
+      console.error("[update] failed:", err);
+      if (!res.headersSent)
+        res.status(500).json({ ok: false, text: `فشل التحديث: ${err.message}` });
     }
   });
 
@@ -159,59 +171,105 @@ process.on("SIGTERM", () => {
 
 // Helper function to download file
 async function downloadFile(url, filePath) {
-  const response = await fetch(url);
+  const response = await fetch(url, { redirect: "follow" });
 
   if (!response.ok) {
-    throw new Error(`Failed to download: ${response.statusText}`);
+    throw new Error(`Failed to download: ${response.status} ${response.statusText}`);
   }
 
-  const fileStream = fs.createWriteStream(filePath);
-  response.body.pipe(fileStream);
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
 
-  return new Promise((resolve, reject) => {
-    fileStream.on("finish", resolve);
-    fileStream.on("error", reject);
-  });
+  // pipeline waits for the file to be fully flushed AND rejects on any
+  // error of either side (the old code only listened to the write stream)
+  await pipeline(response.body, fs.createWriteStream(filePath));
+
+  const { size } = fs.statSync(filePath);
+  if (!size) throw new Error("Downloaded file is empty");
+
+  return filePath;
 }
 
 // Helper function to extract ZIP file
+// resolves with the name of the archive root folder (TRUEEMIT-elfa7s-<branch>)
 function extractZip(zipPath, extractPath) {
   return new Promise((resolve, reject) => {
     yauzl.open(zipPath, { lazyEntries: true }, (err, zipfile) => {
       if (err) return reject(err);
 
-      zipfile.readEntry();
+      const base = path.resolve(extractPath);
+      let rootName = null;
+      let settled = false;
+
+      const fail = (e) => {
+        if (settled) return;
+        settled = true;
+        try {
+          zipfile.close();
+        } catch (_) {}
+        reject(e);
+      };
+
+      zipfile.on("error", fail);
+
       zipfile.on("entry", (entry) => {
-        const entryPath = path.join(extractPath, entry.fileName);
+        const entryPath = path.resolve(base, entry.fileName);
+
+        // zip-slip guard
+        if (entryPath !== base && !entryPath.startsWith(base + path.sep))
+          return fail(new Error(`Unsafe zip entry: ${entry.fileName}`));
+
+        if (!rootName) rootName = entry.fileName.split("/")[0];
 
         if (/\/$/.test(entry.fileName)) {
           // Directory entry
-          fs.mkdirSync(entryPath, { recursive: true });
+          try {
+            fs.mkdirSync(entryPath, { recursive: true });
+          } catch (e) {
+            return fail(e);
+          }
           zipfile.readEntry();
         } else {
           // File entry
-          fs.mkdirSync(path.dirname(entryPath), { recursive: true });
+          try {
+            fs.mkdirSync(path.dirname(entryPath), { recursive: true });
+          } catch (e) {
+            return fail(e);
+          }
+
           zipfile.openReadStream(entry, (err, readStream) => {
-            if (err) return reject(err);
+            if (err) return fail(err);
+
+            readStream.on("error", fail);
 
             const writeStream = fs.createWriteStream(entryPath);
-            readStream.pipe(writeStream);
+            writeStream.on("error", fail);
             writeStream.on("close", () => {
-              zipfile.readEntry();
+              if (!settled) zipfile.readEntry();
             });
+
+            readStream.pipe(writeStream);
           });
         }
       });
 
       zipfile.on("end", () => {
-        resolve();
+        if (settled) return;
+        settled = true;
+        if (!rootName) return reject(new Error("Zip file is empty"));
+        resolve(rootName);
       });
+
+      zipfile.readEntry();
     });
   });
 }
 
 // Helper function to copy directory contents
 function copyDirContents(src, dest) {
+  if (!fs.existsSync(src)) return;
+
+  fs.mkdirSync(dest, { recursive: true });
+
   const items = fs.readdirSync(src);
 
   items.forEach((item) => {
@@ -245,16 +303,27 @@ function cleanDirectory(dir, skip = []) {
   });
 }
 
-function startFile(file, cb) {
-  if (fs.existsSync(file)) {
-    execFile(file, (err) => {
-      if (err) {
-        console.error(err);
-        setTimeout(() => startFile(file, cb), 2000);
-      } else cb();
-    });
-    return true;
-  } else {
-    setTimeout(() => startFile(file, cb), 2000);
-  }
+// Helper function to launch install.bat in its own detached console.
+// It must be detached: install.bat ends with start.bat (the new server), so it
+// never returns — waiting for it would keep the old process alive forever.
+// Node >= 18.20 also refuses to spawn .bat/.cmd without a shell.
+function startFile(file, cwd) {
+  if (!fs.existsSync(file)) throw new Error(`Install file not found: ${file}`);
+
+  const command =
+    process.platform === "win32"
+      ? `start "TRUEEMIT Update" /D "${cwd}" "${file}"`
+      : `"${file}"`;
+
+  const child = spawn(command, {
+    cwd,
+    shell: true,
+    detached: true,
+    stdio: "ignore",
+  });
+
+  child.on("error", (err) => console.error("[update] startFile:", err));
+  child.unref();
+
+  return true;
 }

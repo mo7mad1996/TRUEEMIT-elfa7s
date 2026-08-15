@@ -51,7 +51,7 @@ const car = new Schema(
 		client: { type: mongoose.Schema.Types.ObjectId, ref: "clients" },
 		representative: { type: String, default: "" },
 		payment: { type: String, default: "" },
-		cost: { type: Number, default: 0 },
+		cost: { type: Number },
 		cost_disabled: { type: Boolean, default: false },
 		is_payed: { type: Boolean, default: false },
 		images: [
