@@ -13,41 +13,6 @@
 			</div>
 		</div>
 
-		<div class="text-center text-[7px] opacity-75 !leading-none">
-			<template v-if="['exclusive'].includes(viewJob)">
-				<div class="text-center text-xs opacity-75">
-					ملاحظة : علامة M تعني مرشوش و T تعني تعديل وعلامة MM تعني مرشوش و معجون وعلامة MB تعني
-					مغير ومرشوش
-
-					<div class="dir-ltr">
-						Note: The letter M indicates Repainted, T stands for Repaired, MM means Repainted and
-						Filled, and MB indicates Replaced and Repainted.
-					</div>
-
-					<!-- <div>فحص البدي لا يشمل النظر</div>
-
-					<div class="dir-ltr">
-						The body inspection does not include the appearance of the paint.
-					</div> -->
-				</div>
-			</template>
-
-			<template v-else>
-				<span v-if="lang == 'ar'" class="!leading-none">
-					ملاحظة: علامة M تعني مرشوش، وعلامة T تعني تعديل، وعلامة MB تعني مغير ومرشوش.
-					<!-- <br />
-					فحص البدي لا يشمل النظر
-					-->
-				</span>
-				<span v-else class="!leading-none">
-					Note: M means Painted, T means Modified, and MB means Replaced and Painted.
-					<!-- <br />
-					The body inspection does not include the appearance of the paint.
-					-->
-				</span>
-			</template>
-		</div>
-
 		<!-- <div
 			class="text-[7px] leading-none text-red-500 mt-2 flex justify-between"
 			v-if="['exclusive'].includes(viewJob)"

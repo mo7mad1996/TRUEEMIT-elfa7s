@@ -41,34 +41,36 @@
 								<tr
 									v-for="(input, v) in $inputs"
 									:key="v"
-									class="text-gray-700 odd:bg-neutral-200 odd:!text-neutral-900"
+									class="row text-gray-700 odd:bg-neutral-200 odd:!text-neutral-900"
+									:class="
+										valueOf(input.en) ? (isGood(input.en) ? '!bg-green-50' : '!bg-red-50') : ''
+									"
 								>
 									<td
 										v-if="['exclusive'].includes(viewJob)"
 										class="text-gray-400 odd:!text-neutral-900"
 									>
-										<div class="flex justify-between">
-											<span>
-												{{ input.ar }}
-											</span>
+										<div
+											:class="isGood(input.en) ? 'text-green-600' : 'text-red-600'"
+											class="flex justify-between"
+										>
+											<span> {{ input.ar }} </span>
 
-											<span>
-												{{ input.lang_en }}
-											</span>
-										</div>
-									</td>
-
-									<td class="pr-1" v-else>
-										<div v-if="lang == 'ar'">
-											{{ input.ar }}
-										</div>
-										<div v-else>
-											{{ input.lang_en }}
+											<span> {{ input.lang_en }} </span>
 										</div>
 									</td>
 
 									<td
-										class="text-center p-0.5 font-semibold"
+										class="pr-1"
+										:class="isGood(input.en) ? 'text-green-600' : 'text-red-600'"
+										v-else
+									>
+										<div v-if="lang == 'ar'">{{ input.ar }}</div>
+										<div v-else>{{ input.lang_en }}</div>
+									</td>
+
+									<td
+										class="text-center p-0.5 my-1 text-sm"
 										:class="
 											valueOf(input.en)
 												? isGood(input.en)
@@ -207,6 +209,12 @@ main {
 	table {
 		width: 100%;
 		font-size: 16px;
+
+		// keep the row background (سليم / غير سليم) when the report is printed
+		tr.row {
+			-webkit-print-color-adjust: exact;
+			print-color-adjust: exact;
+		}
 
 		td {
 			position: relative;
