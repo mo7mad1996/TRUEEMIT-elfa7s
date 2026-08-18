@@ -16,10 +16,7 @@
 						<table class="w-full">
 							<thead>
 								<th>
-									<h4
-										v-if="['exclusive'].includes(viewJob)"
-										class="text-center text-zinc-700 text-sm h-full flex flex-col justify-between"
-									>
+									<h4 v-if="['exclusive'].includes(viewJob)" class="text-zinc-700 flex gap-3">
 										<font-awesome-icon :icon="['fas', 'car-on']" />
 
 										<div>فحص البودي</div>
@@ -27,23 +24,15 @@
 										<div>Body</div>
 									</h4>
 								</th>
-								<th
-									v-for="(val, n) in values"
-									:key="n"
-									class="text-gray-700 text-center text-[10px] px-1 pb-1"
-									:class="{
-										'text-[10px] text-bt text-left px-1 pb-1 table-cell justify-center': [
-											'exclusive',
-										].includes(viewJob),
-									}"
-								>
+								<th class="text-zinc-700 flex gap-3">
 									<template v-if="['exclusive'].includes(viewJob)">
-										<div>{{ val.ar }}</div>
+										<div>الحالة</div>
 
-										<div class="text-gray-400">{{ val.en }}</div>
+										<div>Condition</div>
 									</template>
 									<template v-else>
-										{{ val[lang] }}
+										<span v-if="lang == 'ar'">الحالة</span>
+										<span v-else>Condition</span>
 									</template>
 								</th>
 							</thead>
@@ -56,7 +45,7 @@
 								>
 									<td
 										v-if="['exclusive'].includes(viewJob)"
-										class="text-[10px] text-gray-400 odd:!text-neutral-900"
+										class="text-gray-400 odd:!text-neutral-900"
 									>
 										<div class="flex justify-between">
 											<span>
@@ -78,12 +67,15 @@
 										</div>
 									</td>
 
-									<td class="text-center" v-for="(_, val) in values" :key="val">
-										<font-awesome-icon
-											:icon="['fas', 'check']"
-											class="!text-sky-700 !rounded !text-md"
-											v-if="car.body[input.en] == val"
-										/>
+									<td class="text-center p-0.5">
+										<template v-if="valueOf(input.en)">
+											<template v-if="['exclusive'].includes(viewJob)">
+												{{ valueOf(input.en).ar }}
+											</template>
+											<template v-else>
+												{{ valueOf(input.en)[lang] }}
+											</template>
+										</template>
 									</td>
 								</tr>
 							</tbody>
@@ -181,6 +173,13 @@ export default {
 			],
 		};
 	},
+	methods: {
+		valueOf(key) {
+			const v = this.car.body[key];
+			if (v === null || v === undefined || v === "") return null;
+			return this.values[Number(v)] || null;
+		},
+	},
 	components: { PrintHeader, PrintFooter, Images },
 };
 </script>
@@ -204,18 +203,6 @@ main {
 			&:first-of-type {
 				white-space: nowrap;
 				font-size: 0.7em;
-			}
-
-			&:not(:first-of-type):after {
-				content: "";
-				position: absolute;
-				top: 50%;
-				left: 50%;
-				height: 1.2em;
-				width: 1.2em;
-				display: block;
-				@apply border rounded border-blue-950;
-				transform: translate(-50%, -50%);
 			}
 		}
 	}
