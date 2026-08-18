@@ -34,15 +34,13 @@
 
 			<template v-else>
 				<span v-if="lang == 'ar'" class="!leading-none">
-					ملاحظة : علامة M تعني مرشوش و T تعني تعديل وعلامة MM تعني مرشوش و معجون وعلامة MB تعني
-					مغير ومرشوش
+					ملاحظة: علامة M تعني مرشوش، وعلامة T تعني تعديل، وعلامة MB تعني مغير ومرشوش.
 					<!-- <br />
 					فحص البدي لا يشمل النظر
 					-->
 				</span>
 				<span v-else class="!leading-none">
-					Note: The letter M indicates Repainted, T stands for Repaired, MM means Repainted and
-					Filled, and MB indicates Replaced and Repainted.
+					Note: M means Painted, T means Modified, and MB means Replaced and Painted.
 					<!-- <br />
 					The body inspection does not include the appearance of the paint.
 					-->

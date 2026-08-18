@@ -67,7 +67,16 @@
 										</div>
 									</td>
 
-									<td class="text-center p-0.5">
+									<td
+										class="text-center p-0.5 font-semibold"
+										:class="
+											valueOf(input.en)
+												? isGood(input.en)
+													? 'text-green-600'
+													: 'text-red-600'
+												: ''
+										"
+									>
 										<template v-if="valueOf(input.en)">
 											<template v-if="['exclusive'].includes(viewJob)">
 												{{ valueOf(input.en).ar }}
@@ -178,6 +187,12 @@ export default {
 			const v = this.car.body[key];
 			if (v === null || v === undefined || v === "") return null;
 			return this.values[Number(v)] || null;
+		},
+		// "سليم" is the first entry in values, anything else means the part is not intact
+		isGood(key) {
+			const v = this.car.body[key];
+			if (v === null || v === undefined || v === "") return false;
+			return Number(v) === 0;
 		},
 	},
 	components: { PrintHeader, PrintFooter, Images },
