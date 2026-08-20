@@ -179,8 +179,8 @@ export default {
 				{ ar: "سليم", en: "In Good Condition" },
 				{ ar: "معدل", en: "Repaired" },
 				{ ar: "مرشوش", en: "Repainted" },
-				{ ar: "رش ومعجون", en: "Repainted  Filled" },
 				{ ar: "مغير ومرشوش", en: "Replaced  Repainted" },
+				{ ar: "رش ومعجون", en: "Repainted  Filled" },
 			],
 		};
 	},
