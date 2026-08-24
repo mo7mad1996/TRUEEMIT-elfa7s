@@ -7,15 +7,15 @@
 				<div class="check-input" v-for="(input, n) in $inputs" :key="n">
 					<span>{{ input.ar }}</span>
 					<div class="inputs">
-						<div class="input" v-for="(text, v) in values" :key="v">
+						<div class="input" v-for="item in values" :key="item.value">
 							<input
 								type="radio"
-								:value="v"
+								:value="item.value"
 								:name="input.en"
 								v-model="car.body[input.en]"
-								:id="v + input.en"
+								:id="item.value + input.en"
 							/>
-							<label :for="v + input.en">{{ text }}</label>
+							<label :for="item.value + input.en">{{ item.title }}</label>
 						</div>
 					</div>
 				</div>
@@ -52,12 +52,14 @@ export default {
 	props: ["car"],
 	data() {
 		return {
+			// value is stored in car.body[...] and must stay stable — it feeds the
+			// print page labels and the `-<value>.png` clarification images
 			values: [
-				"سليم",
-				"معدل",
-				"مرشوش",
-				"مغير ومرشوش",
-				// "رش ومعجون",
+				{ title: "سليم", value: 0 },
+				{ title: "معدل", value: 1 },
+				{ title: "مرشوش", value: 2 },
+				// { title: "رش ومعجون", value: 3 },
+				{ title: "مغير ومرشوش", value: 4 },
 			],
 		};
 	},

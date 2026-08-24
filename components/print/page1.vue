@@ -175,12 +175,13 @@ export default {
 	props: ["car", "lang"],
 	data() {
 		return {
+			// value must match the value stored by the engineer form (First_page.vue)
 			values: [
-				{ ar: "سليم", en: "In Good Condition" },
-				{ ar: "معدل", en: "Repaired" },
-				{ ar: "مرشوش", en: "Repainted" },
-				{ ar: "مغير ومرشوش", en: "Replaced  Repainted" },
-				{ ar: "رش ومعجون", en: "Repainted  Filled" },
+				{ value: 0, ar: "سليم", en: "In Good Condition" },
+				{ value: 1, ar: "معدل", en: "Repaired" },
+				{ value: 2, ar: "مرشوش", en: "Repainted" },
+				{ value: 3, ar: "رش ومعجون", en: "Repainted  Filled" },
+				{ value: 4, ar: "مغير ومرشوش", en: "Replaced  Repainted" },
 			],
 		};
 	},
@@ -188,13 +189,12 @@ export default {
 		valueOf(key) {
 			const v = this.car.body[key];
 			if (v === null || v === undefined || v === "") return null;
-			return this.values[Number(v)] || null;
+			return this.values.find((item) => String(item.value) === String(v)) || null;
 		},
-		// "سليم" is the first entry in values, anything else means the part is not intact
+		// only "سليم" means the part is intact, anything else means it is not
 		isGood(key) {
-			const v = this.car.body[key];
-			if (v === null || v === undefined || v === "") return false;
-			return Number(v) === 0;
+			const item = this.valueOf(key);
+			return item ? item.value === 0 : false;
 		},
 	},
 	components: { PrintHeader, PrintFooter, Images },
