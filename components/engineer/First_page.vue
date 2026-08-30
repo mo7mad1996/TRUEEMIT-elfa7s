@@ -58,7 +58,7 @@ export default {
 				{ title: "سليم", value: 0 },
 				{ title: "معدل", value: 1 },
 				{ title: "مرشوش", value: 2 },
-				// { title: "رش ومعجون", value: 3 },
+				{ title: "رش ومعجون", value: 3 },
 				{ title: "مغير ومرشوش", value: 4 },
 			],
 		};
