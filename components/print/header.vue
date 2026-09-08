@@ -96,6 +96,21 @@
 				<div class="value">{{ car.model || "-" }}</div>
 			</div>
 
+			<!-- نوع الدفع — خاص بمستخدمي exclusive وبخدمة الفحص الأساسي فقط -->
+			<div
+				class="item"
+				v-if="['exclusive'].includes(viewJob) && car.service == 'فحص أساسي'"
+			>
+				<label>
+					<template>
+						<div>نوع الدفع</div>
+						<div>Drive type</div>
+					</template>
+				</label>
+
+				<div class="value">{{ car.drive || "-" }}</div>
+			</div>
+
 			<div class="item" v-if="['exclusive'].includes(viewJob)">
 				<label>
 					<template>

@@ -11,6 +11,8 @@ const car = new Schema(
 		engine: { type: String, default: "" },
 		gear: { type: String, default: "" },
 		fuel: { type: String, default: "" },
+		// نوع الدفع — only filled for the "فحص أساسي" service
+		drive: { type: String, default: "" },
 
 		model: { type: String, default: "" },
 

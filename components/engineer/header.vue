@@ -44,6 +44,22 @@
 					<input class="mt-2" v-model="car.service" v-if="services.indexOf(car.service) == -1" />
 				</div>
 
+				<!-- نوع الدفع — خاص بمستخدمي exclusive وبخدمة الفحص الأساسي فقط -->
+				<div
+					class="form-input"
+					v-if="['exclusive'].includes(viewJob) && car.service == 'فحص أساسي'"
+				>
+					<label>
+						<font-awesome-icon :icon="['fas', 'truck-monster']" />
+						نوع الدفع
+					</label>
+					<select v-model="car.drive">
+						<option v-for="(s, n) in drives" :key="n" :value="s">
+							{{ s }}
+						</option>
+					</select>
+				</div>
+
 				<div class="form-input" v-if="['exclusive'].includes(viewJob)">
 					<label>
 						<font-awesome-icon :icon="['fas', 'hand-fist']" />
@@ -173,6 +189,7 @@ export default {
 			"كمبيوتر",
 			"فحص أساسي",
 		],
+		drives: ["دفع امامي", "دفع خلفي", "دفع رباعي"],
 		payment: ["كاش", "شبكة", "أجل"],
 		clients: [],
 	}),
