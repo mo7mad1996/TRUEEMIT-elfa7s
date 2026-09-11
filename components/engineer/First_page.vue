@@ -60,6 +60,8 @@ export default {
 				{ title: "مرشوش", value: 2 },
 				{ title: "رش ومعجون", value: 3 },
 				{ title: "مغير ومرشوش", value: 4 },
+				{ title: "غير مفحوص", value: 5 },
+
 			],
 		};
 	},

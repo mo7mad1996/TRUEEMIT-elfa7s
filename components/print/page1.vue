@@ -182,6 +182,7 @@ export default {
 				{ value: 2, ar: "مرشوش", en: "Repainted" },
 				{ value: 3, ar: "رش ومعجون", en: "Repainted  Filled" },
 				{ value: 4, ar: "مغير ومرشوش", en: "Replaced  Repainted" },
+				{ ar: "غير مفحوص", en: "Not Inspected", value: 5 },
 			],
 		};
 	},
