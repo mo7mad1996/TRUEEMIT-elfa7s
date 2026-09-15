@@ -6,8 +6,8 @@
 
 				<div class="problem" v-for="(input, b) in $inputs" :key="b">
 					<img
-						v-if="car.body[input.en]"
-						:src="require(`~/assets/cars/${n}-${input.en}-${+car.body[input.en] % 5}.png`)"
+						v-if="overlayOf(input.en)"
+						:src="require(`~/assets/cars/${n}-${input.en}-${overlayOf(input.en)}.png`)"
 					/>
 				</div>
 			</div>
@@ -35,6 +35,14 @@
 export default {
 	name: "Images",
 	props: ["car", "lang"],
+	methods: {
+		// Overlay images only exist for values 1..4 (repaired → replaced & repainted).
+		// 0 = in good condition and 5 = not inspected have no overlay.
+		overlayOf(key) {
+			const v = +this.car.body[key];
+			return v >= 1 && v <= 4 ? v : 0;
+		},
+	},
 };
 </script>
 
