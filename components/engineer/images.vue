@@ -7,7 +7,7 @@
 				<div class="problem" v-for="(input, b) in $inputs" :key="b">
 					<img
 						v-if="car.body[input.en]"
-						:src="require(`~/assets/cars/${n}-${input.en}-${car.body[input.en] % 4}.png`)"
+						:src="require(`~/assets/cars/${n}-${input.en}-${+car.body[input.en] % 5}.png`)"
 					/>
 				</div>
 			</div>
