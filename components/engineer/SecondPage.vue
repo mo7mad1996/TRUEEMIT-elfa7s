@@ -10,7 +10,8 @@
     </div>
 
     <!-- ملف فحص الكمبيوتر — يُرفع على الـ api ويظهر كزر في التقرير -->
-    <div class="form-input" v-if="car.service != 'فحص أساسي'">
+    <!-- متاح مع الفحص الأساسي أيضاً حتى لو كان حقل فحص الكمبيوتر نفسه مخفياً -->
+    <div class="form-input">
       <label>
         <font-awesome-icon :icon="['fas', 'file-pdf']" />
         فحص الكمبيوتر PDF</label

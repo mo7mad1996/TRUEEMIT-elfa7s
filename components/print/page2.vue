@@ -43,9 +43,10 @@
 			</ul>
 
 			<!-- الكمبيوتر -->
+			<!-- مع الفحص الأساسي لا يظهر القسم الا اذا تم ارفاق ملف فحص الكمبيوتر -->
 			<div
 				class="section"
-				v-if="!['فحص أساسي', 'صيانة'].includes(car.service)"
+				v-if="car.service != 'صيانة' && (car.service != 'فحص أساسي' || car.computer_pdf)"
 				:class="{
 					one: viewJob != 'exclusive',
 				}"
