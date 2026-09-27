@@ -60,6 +60,18 @@
 					</select>
 				</div>
 
+				<!-- سعة المحرك — خاص بمستخدمي exclusive وبخدمة الفحص الأساسي فقط -->
+				<div
+					class="form-input"
+					v-if="['exclusive'].includes(viewJob) && car.service == 'فحص أساسي'"
+				>
+					<label>
+						<font-awesome-icon :icon="['fas', 'oil-can']" />
+						سعة المحرك
+					</label>
+					<input v-model="car.engine_capacity" />
+				</div>
+
 				<div class="form-input" v-if="['exclusive'].includes(viewJob)">
 					<label>
 						<font-awesome-icon :icon="['fas', 'hand-fist']" />

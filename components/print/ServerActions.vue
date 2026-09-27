@@ -70,6 +70,7 @@ export default {
 				gear: c.gear || "",
 				fuel: c.fuel || "",
 				drive: c.drive || "",
+				engine_capacity: c.engine_capacity || "",
 				model: c.model || "",
 				service: c.service || "",
 				odometer: c.odometer || "",

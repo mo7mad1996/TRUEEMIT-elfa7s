@@ -111,6 +111,21 @@
 				<div class="value">{{ car.drive || "-" }}</div>
 			</div>
 
+			<!-- سعة المحرك — خاص بمستخدمي exclusive وبخدمة الفحص الأساسي فقط -->
+			<div
+				class="item"
+				v-if="['exclusive'].includes(viewJob) && car.service == 'فحص أساسي'"
+			>
+				<label>
+					<template>
+						<div>سعة المحرك</div>
+						<div>Engine size</div>
+					</template>
+				</label>
+
+				<div class="value">{{ car.engine_capacity || "-" }}</div>
+			</div>
+
 			<div class="item" v-if="['exclusive'].includes(viewJob)">
 				<label>
 					<template>

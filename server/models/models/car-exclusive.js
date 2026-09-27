@@ -16,6 +16,8 @@ const car = new Schema(
 		fuel: { type: String, default: "" },
 		// نوع الدفع — only filled for the "فحص أساسي" service
 		drive: { type: String, default: "" },
+		// سعة المحرك — only filled for the "فحص أساسي" service
+		engine_capacity: { type: String, default: "" },
 
 		model: { type: String, default: "" },
 
