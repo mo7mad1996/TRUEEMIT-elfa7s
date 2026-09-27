@@ -44,11 +44,8 @@
 					<input class="mt-2" v-model="car.service" v-if="services.indexOf(car.service) == -1" />
 				</div>
 
-				<!-- نوع الدفع — خاص بمستخدمي exclusive وبخدمة الفحص الأساسي فقط -->
-				<div
-					class="form-input"
-					v-if="['exclusive'].includes(viewJob) && car.service == 'فحص أساسي'"
-				>
+				<!-- نوع الدفع — خاص بمستخدمي exclusive وبخدمات الفحص الأساسي فقط -->
+				<div class="form-input" v-if="hasField('drive')">
 					<label>
 						<font-awesome-icon :icon="['fas', 'truck-monster']" />
 						نوع الدفع
@@ -60,11 +57,8 @@
 					</select>
 				</div>
 
-				<!-- سعة المحرك — خاص بمستخدمي exclusive وبخدمة الفحص الأساسي فقط -->
-				<div
-					class="form-input"
-					v-if="['exclusive'].includes(viewJob) && car.service == 'فحص أساسي'"
-				>
+				<!-- سعة المحرك — خاص بمستخدمي exclusive وبخدمات الفحص الأساسي فقط -->
+				<div class="form-input" v-if="hasField('engine_capacity')">
 					<label>
 						<font-awesome-icon :icon="['fas', 'oil-can']" />
 						سعة المحرك
@@ -72,7 +66,8 @@
 					<input v-model="car.engine_capacity" />
 				</div>
 
-				<div class="form-input" v-if="['exclusive'].includes(viewJob)">
+				<!-- السلندرات — لا تظهر مع "فحص أساسي" -->
+				<div class="form-input" v-if="hasField('engine')">
 					<label>
 						<font-awesome-icon :icon="['fas', 'hand-fist']" />
 						السلندرات
@@ -80,31 +75,31 @@
 					<input v-model="car.engine" />
 				</div>
 
-				<div class="form-input" v-if="['exclusive'].includes(viewJob)">
+				<div class="form-input" v-if="hasField('gear')">
 					<label>
 						<font-awesome-icon :icon="['fas', 'gears']" />
 						نوع القير
 					</label>
 					<select v-model="car.gear">
-						<option v-for="(s, n) in ['يدوي (عادي)', 'اتوماتيك']" :key="n" :value="s">
+						<option v-for="(s, n) in gears" :key="n" :value="s">
 							{{ s }}
 						</option>
 					</select>
 				</div>
 
-				<div class="form-input" v-if="['exclusive'].includes(viewJob)">
+				<div class="form-input" v-if="hasField('fuel')">
 					<label>
 						<font-awesome-icon :icon="['fas', 'gas-pump']" />
 						نوع الوقود
 					</label>
 					<select v-model="car.fuel">
-						<option v-for="(s, n) in ['بنزين', 'ديزيل', 'كهرباء', 'هايبرد']" :key="n" :value="s">
+						<option v-for="(s, n) in fuels" :key="n" :value="s">
 							{{ s }}
 						</option>
 					</select>
 				</div>
 
-				<div class="form-input" v-if="['exclusive'].includes(viewJob)">
+				<div class="form-input" v-if="hasField('model')">
 					<label>
 						<font-awesome-icon :icon="['far', 'calendar']" />
 						الموديل (تاريخ الصنع)
@@ -180,28 +175,17 @@
 
 <script>
 import BarCode from "@/components/engineer/barcode";
+import { SERVICE_LIST } from "@/plugins/service-fields";
 
 export default {
 	props: ["car"],
 	name: "EngineerHeader",
 	components: { BarCode },
 	data: () => ({
-		services: [
-			"VIP",
-			"شامل",
-			"محركات",
-			"بودي",
-			"ماكينه",
-			"قير",
-			"ماكينه وقير",
-			"شاص",
-			"ارباج",
-			"ماكينة قير شاص ارباج",
-			"صيانة",
-			"كمبيوتر",
-			"فحص أساسي",
-		],
+		services: SERVICE_LIST,
 		drives: ["امامي", "خلفي", "رباعي"],
+		gears: ["يدوي (عادي)", "اتوماتيك"],
+		fuels: ["بنزين", "ديزيل", "كهرباء", "هايبرد"],
 		payment: ["كاش", "شبكة", "أجل"],
 		clients: [],
 	}),

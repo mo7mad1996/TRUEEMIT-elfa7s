@@ -1,6 +1,6 @@
 <template>
   <div class="container simple_form">
-    <div class="form-input" v-if="car.service != 'فحص أساسي'">
+    <div class="form-input" v-if="hasField('computer')">
       <label>
         <font-awesome-icon :icon="['fas', 'computer']" />
         فحص الكمبيوتر</label
@@ -11,7 +11,7 @@
 
     <!-- ملف فحص الكمبيوتر — يُرفع على الـ api ويظهر كزر في التقرير -->
     <!-- متاح مع الفحص الأساسي أيضاً حتى لو كان حقل فحص الكمبيوتر نفسه مخفياً -->
-    <div class="form-input">
+    <div class="form-input" v-if="hasField('computer_pdf')">
       <label>
         <font-awesome-icon :icon="['fas', 'file-pdf']" />
         فحص الكمبيوتر PDF</label
@@ -59,7 +59,7 @@
       </FileDropAble>
     </div>
 
-    <div class="form-input" v-if="car.service != 'فحص أساسي'">
+    <div class="form-input" v-if="hasField('accessories')">
       <label>
         <font-awesome-icon :icon="['fas', 'gears']" />
         فحص الاكسسورات</label
@@ -67,7 +67,7 @@
       <textarea v-model="car.accessories" data-max="7"></textarea>
       <!-- @keydown="$check_max_lines" -->
     </div>
-    <div class="form-input" v-if="viewJob != 'exclusive'">
+    <div class="form-input" v-if="hasField('ground')">
       <label>
         <font-awesome-icon :icon="['fas', 'car']" />
         الفحص الميداني</label
@@ -75,11 +75,11 @@
       <textarea v-model="car.ground" data-max="5"></textarea>
       <!-- @keydown="$check_max_lines" -->
     </div>
-    <div class="form-input" v-if="viewJob != 'exclusive'">
+    <div class="form-input" v-if="hasField('mechanical')">
       <label>
         <font-awesome-icon :icon="['fas', 'wrench']" />
         {{
-          car.service == "صيانة"
+          isService($services.MAINTENANCE)
             ? "فحص القطع الاستهلاكيه والتهريبات"
             : "فحص ميكانيكا"
         }}</label
@@ -93,7 +93,7 @@
 <script>
 export default {
   props: ["car"],
-  name: "SecoundPage",
+  name: "SecondPage",
   methods: {
     // only one file is kept — a new upload replaces the previous url
     setComputerPdf(url) {

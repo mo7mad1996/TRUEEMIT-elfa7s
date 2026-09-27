@@ -9,7 +9,7 @@
 
     <div @change="saved = false" @input="saved = false" class="mt-4">
       <EngineerHeader :car="car" />
-      <First_page :car="car" v-if="car?.service != 'محركات'" />
+      <First_page :car="car" v-if="hasField('body')" />
       <SecondPage :car="car" />
 
       <div class="container">

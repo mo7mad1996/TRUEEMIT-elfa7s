@@ -1,15 +1,7 @@
 <template>
 	<div>
-		<Page1 :car="car" :lang="lang" v-if="!(car.service == 'محركات' || car.service == 'صيانة')" />
-		<Page2
-			:car="car"
-			:lang="lang"
-			v-if="
-				[car.computer, car.computer_pdf, car.accessories, car.ground, car.mechanical]
-					.join('')
-					.trim()
-			"
-		/>
+		<Page1 :car="car" :lang="lang" v-if="hasField('body')" />
+		<Page2 :car="car" :lang="lang" v-if="hasPage2" />
 		<car-images
 			:lang="lang"
 			:car="car"
@@ -40,6 +32,7 @@ import Page2 from "@/components/print/page2";
 import Page3 from "@/components/print/page3";
 import Page4 from "@/components/print/Page4";
 import CarVideos from "@/components/print/CarVideos";
+import { PAGE2_FIELDS } from "@/plugins/service-fields";
 
 export default {
 	async asyncData({ params, query, $axios, $auth }) {
@@ -56,6 +49,12 @@ export default {
 	components: { CarImages, CarVideos, Page1, Page2, Page3, Page4 },
 	layout: "print",
 	props: ["lang"],
+	computed: {
+		// page 2 is printed only when a field it shows for this service is filled
+		hasPage2() {
+			return PAGE2_FIELDS.some((f) => this.hasField(f) && String(this.car[f] || "").trim());
+		},
+	},
 	head() {
 		return { title: this.car.car_id };
 	},

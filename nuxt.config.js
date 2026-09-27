@@ -53,6 +53,7 @@ module.exports = {
     { src: "~/plugins/fontawesome.js" },
     { src: "~/plugins/filter.js" },
     { src: "~/plugins/view-job.js" },
+    { src: "~/plugins/service-fields.js" },
     { src: "~/plugins/check_max_lines.js" },
     { src: "~/plugins/shop.js" },
     { src: "~/plugins/inputs.js" },

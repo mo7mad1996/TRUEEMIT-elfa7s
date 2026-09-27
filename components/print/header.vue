@@ -74,78 +74,14 @@
 
 				<div class="value">{{ car.car_id || "-" }}</div>
 			</div>
-			<div class="item" v-if="['exclusive'].includes(viewJob)">
+			<!-- حقول خاصة بمستخدمي exclusive — تظهر حسب نوع الخدمة -->
+			<div class="item" v-for="field in exclusiveFields" :key="field.key">
 				<label>
-					<template>
-						<div>السلندرات</div>
-						<div>Engine capacity</div>
-					</template>
+					<div>{{ field.ar }}</div>
+					<div>{{ field.en }}</div>
 				</label>
 
-				<div class="value">{{ car.engine || "-" }}</div>
-			</div>
-
-			<div class="item" v-if="['exclusive'].includes(viewJob)">
-				<label>
-					<template>
-						<div>تاريخ الصنع</div>
-						<div>Model</div>
-					</template>
-				</label>
-
-				<div class="value">{{ car.model || "-" }}</div>
-			</div>
-
-			<!-- نوع الدفع — خاص بمستخدمي exclusive وبخدمة الفحص الأساسي فقط -->
-			<div
-				class="item"
-				v-if="['exclusive'].includes(viewJob) && car.service == 'فحص أساسي'"
-			>
-				<label>
-					<template>
-						<div>نوع الدفع</div>
-						<div>Drive type</div>
-					</template>
-				</label>
-
-				<div class="value">{{ car.drive || "-" }}</div>
-			</div>
-
-			<!-- سعة المحرك — خاص بمستخدمي exclusive وبخدمة الفحص الأساسي فقط -->
-			<div
-				class="item"
-				v-if="['exclusive'].includes(viewJob) && car.service == 'فحص أساسي'"
-			>
-				<label>
-					<template>
-						<div>سعة المحرك</div>
-						<div>Engine size</div>
-					</template>
-				</label>
-
-				<div class="value">{{ car.engine_capacity || "-" }}</div>
-			</div>
-
-			<div class="item" v-if="['exclusive'].includes(viewJob)">
-				<label>
-					<template>
-						<div>نوع القير</div>
-						<div>Gear Type</div>
-					</template>
-				</label>
-
-				<div class="value">{{ car.gear || "-" }}</div>
-			</div>
-
-			<div class="item" v-if="['exclusive'].includes(viewJob)">
-				<label>
-					<template>
-						<div>نوع الوقود</div>
-						<div>Fuel Type</div>
-					</template>
-				</label>
-
-				<div class="value">{{ car.fuel || "-" }}</div>
+				<div class="value">{{ car[field.key] || "-" }}</div>
 			</div>
 
 			<div class="item">
@@ -209,7 +145,22 @@ export default {
 	name: "PrintHeader",
 	props: ["car", "lang"],
 	components: { BarCode },
+	data: () => ({
+		// car fields printed only for exclusive users, `hasField` decides per service
+		fields: [
+			{ key: "engine", ar: "السلندرات", en: "Engine capacity" },
+			{ key: "model", ar: "تاريخ الصنع", en: "Model" },
+			{ key: "drive", ar: "نوع الدفع", en: "Drive type" },
+			{ key: "engine_capacity", ar: "سعة المحرك", en: "Engine size" },
+			{ key: "gear", ar: "نوع القير", en: "Gear Type" },
+			{ key: "fuel", ar: "نوع الوقود", en: "Fuel Type" },
+		],
+	}),
 	computed: {
+		exclusiveFields() {
+			return this.fields.filter((f) => this.hasField(f.key));
+		},
+
 		// the logo of the exclusive company that owns the report — when the
 		// manager opens the report the car carries its populated owner
 		ownerLogo() {

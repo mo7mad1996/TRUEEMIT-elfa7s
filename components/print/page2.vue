@@ -1,57 +1,28 @@
 <template>
-	<div class="page" :class="!(car.service == 'محركات' || car.service == 'صيانة') && 'break'">
+	<div class="page" :class="hasField('body') && 'break'">
 		<PrintHeader :car="car" :lang="lang" />
 
 		<div class="page2">
-			<ul v-if="car.service == 'صيانة'">
-				<template v-if="['exclusive'].includes(viewJob)">
-					<li>
-						- الفحص عباره عن فحص القطع الاستهلاكيه التي بحاجة غيار + تهريبات الزيوت .
+			<!-- ملاحظات الصيانة -->
+			<ul v-if="isService($services.MAINTENANCE)">
+				<li v-for="(note, n) in maintenanceNotes" :key="n">
+					<template v-if="viewJob == 'exclusive'">
+						- {{ note.ar }}
 						<br />
-						- Inspection covers consumable parts that need replacement + oil leaks.
-					</li>
-
-					<li>
-						- لم يتم فحص الاجزاء المفكوكه للمكينه + القير - لم يتم فحص الشواصي .
-						<br />
-						- Engine and transmission disassembled parts were not inspected + chassis not inspected.
-					</li>
-
-					<li>
-						- لم يتم فحص البدي - لم يتم فحص الكمبيوتر + الارباقات .
-						<br />
-
-						- Body not inspected + computer and airbags not inspected.
-					</li>
-				</template>
-				<template v-else>
-					<li v-if="lang === 'ar'">
-						- الفحص عباره عن فحص القطع الاستهلاكيه التي بحاجة غيار + تهريبات الزيوت .
-					</li>
-					<li v-else>- Inspection covers consumable parts that need replacement + oil leaks.</li>
-
-					<li v-if="lang === 'ar'">
-						- لم يتم فحص الاجزاء المفكوكه للمكينه + القير - لم يتم فحص الشواصي .
-					</li>
-					<li v-else>
-						- Engine and transmission disassembled parts were not inspected + chassis not inspected.
-					</li>
-
-					<li v-if="lang === 'ar'">- لم يتم فحص البدي - لم يتم فحص الكمبيوتر + الارباقات .</li>
-					<li v-else>- Body not inspected + computer and airbags not inspected.</li>
-				</template>
+						- {{ note.en }}
+					</template>
+					<template v-else>- {{ lang === "ar" ? note.ar : note.en }}</template>
+				</li>
 			</ul>
 
 			<!-- الكمبيوتر -->
 			<!-- مع الفحص الأساسي لا يظهر القسم الا اذا تم ارفاق ملف فحص الكمبيوتر -->
 			<div
 				class="section"
-				v-if="car.service != 'صيانة' && (car.service != 'فحص أساسي' || car.computer_pdf)"
-				:class="{
-					one: viewJob != 'exclusive',
-				}"
+				v-if="hasField('computer') || (hasField('computer_pdf') && car.computer_pdf)"
+				:class="{ one: viewJob != 'exclusive' }"
 			>
-				<h4 v-if="['exclusive'].includes(viewJob)">
+				<h4 v-if="viewJob == 'exclusive'">
 					<font-awesome-icon :icon="['fas', 'computer']" />
 					<span> فحص الكمبيوتر </span>
 					<span>(Computer scan)</span>
@@ -73,25 +44,15 @@
 					class="pdf-btn"
 				>
 					<font-awesome-icon :icon="['fas', 'file-pdf']" />
-					<span v-if="['exclusive'].includes(viewJob) || lang == 'ar'">عرض فحص الكمبيوتر</span>
+					<span v-if="viewJob == 'exclusive' || lang == 'ar'">عرض فحص الكمبيوتر</span>
 					<span v-else>View computer scan</span>
 				</a>
 			</div>
 
 			<!-- الاكسسورات -->
-			<div
-				class="section"
-				:class="{
-					five: viewJob != 'exclusive',
-				}"
-				v-if="
-					car.service == 'VIP' || car.service == 'محركات'
-					// || car.service == 'شامل'
-				"
-			>
-				<h4 v-if="['exclusive'].includes(viewJob)">
+			<div class="section" :class="{ five: viewJob != 'exclusive' }" v-if="hasField('accessories')">
+				<h4 v-if="viewJob == 'exclusive'">
 					<font-awesome-icon :icon="['fas', 'gears']" />
-
 					<span> فحص الاكسسورات </span>
 					<span>(Check accessories)</span>
 				</h4>
@@ -105,14 +66,8 @@
 			</div>
 
 			<!-- الميداني -->
-			<div class="section three" v-if="viewJob != 'exclusive'">
-				<h4 v-if="['exclusive'].includes(viewJob)">
-					<font-awesome-icon :icon="['fas', 'car']" />
-
-					<span>الفحص الميداني</span>
-					<span>(Field examination)</span>
-				</h4>
-				<h4 v-else>
+			<div class="section three" v-if="hasField('ground')">
+				<h4>
 					<span v-if="lang == 'ar'"> الفحص الميداني </span>
 					<span v-else> Field examination</span>
 					<font-awesome-icon :icon="['fas', 'car']" />
@@ -122,30 +77,13 @@
 			</div>
 
 			<!-- الميكانيكا -->
-			<section class="section two" v-if="viewJob != 'exclusive'">
+			<section class="section two" v-if="hasField('mechanical')">
 				<div class="service">
-					<h4 v-if="['exclusive'].includes(viewJob)">
+					<h4>
+						<span>{{ lang == "ar" ? mechanicalTitle.ar : mechanicalTitle.en }}</span>
 						<font-awesome-icon :icon="['fas', 'wrench']" />
-
-						<span>فحص ميكانيكا</span>
-						<span>(Mechanical inspection)</span>
+						<span class="squire"></span>
 					</h4>
-					<template v-else>
-						<h4>
-							<span v-if="lang == 'ar'">
-								{{ car.service == "صيانة" ? "فحص القطع الاستهلاكيه والتهريبات" : "فحص ميكانيكا" }}
-							</span>
-							<span v-else>
-								{{
-									car.service === "صيانة"
-										? "Consumables and leak inspection"
-										: "Mechanical inspection"
-								}}
-							</span>
-							<font-awesome-icon :icon="['fas', 'wrench']" />
-							<span class="squire"></span>
-						</h4>
-					</template>
 
 					<div class="lines" v-html="$nltobr(car.mechanical)" v-if="car.mechanical"></div>
 				</div>
@@ -179,6 +117,29 @@ export default {
 	name: "Page2",
 	props: ["car", "lang"],
 	components: { PrintHeader, PrintFooter },
+	data: () => ({
+		maintenanceNotes: [
+			{
+				ar: "الفحص عباره عن فحص القطع الاستهلاكيه التي بحاجة غيار + تهريبات الزيوت .",
+				en: "Inspection covers consumable parts that need replacement + oil leaks.",
+			},
+			{
+				ar: "لم يتم فحص الاجزاء المفكوكه للمكينه + القير - لم يتم فحص الشواصي .",
+				en: "Engine and transmission disassembled parts were not inspected + chassis not inspected.",
+			},
+			{
+				ar: "لم يتم فحص البدي - لم يتم فحص الكمبيوتر + الارباقات .",
+				en: "Body not inspected + computer and airbags not inspected.",
+			},
+		],
+	}),
+	computed: {
+		mechanicalTitle() {
+			return this.isService(this.$services.MAINTENANCE)
+				? { ar: "فحص القطع الاستهلاكيه والتهريبات", en: "Consumables and leak inspection" }
+				: { ar: "فحص ميكانيكا", en: "Mechanical inspection" };
+		},
+	},
 };
 </script>
 

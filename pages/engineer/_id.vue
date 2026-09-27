@@ -1,7 +1,7 @@
 <template>
 	<div v-if="car">
 		<EngineerHeader :car="car" />
-		<FirstPage :car="car" v-if="car?.service != 'محركات'" />
+		<FirstPage :car="car" v-if="hasField('body')" />
 		<SecondPage :car="car" />
 
 		<div class="container sticky bottom-4">
