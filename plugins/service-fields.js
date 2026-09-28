@@ -20,10 +20,10 @@ export const SERVICES = Object.freeze({
 	ENGINE_GEAR_CHASSIS_AIRBAG: "ماكينة قير شاص ارباج",
 	MAINTENANCE: "صيانة",
 	COMPUTER: "كمبيوتر",
-	// الفحص الأساسي بدون السلندرات
-	BASIC: "فحص أساسي",
-	// نفس الفحص الأساسي مع السلندرات
-	BASIC_FULL: "أساسي",
+	// الفحص الأساسي مع السلندرات وسعة المحرك
+	BASIC_FULL: "فحص أساسي",
+	// نفس الفحص الأساسي بالسلندرات بدون سعة المحرك
+	BASIC: "أساسي",
 });
 
 // the options of the service select, in display order
@@ -39,10 +39,11 @@ const isExclusive = (job) => job == "exclusive";
 const rules = {
 	// ---------- header (exclusive only) ----------
 	// السلندرات
-	engine: (s, job) => isExclusive(job) && s != BASIC,
-	// نوع الدفع + سعة المحرك
+	engine: (_, job) => isExclusive(job),
+	// نوع الدفع
 	drive: (s, job) => isExclusive(job) && BASICS.includes(s),
-	engine_capacity: (s, job) => isExclusive(job) && BASICS.includes(s),
+	// سعة المحرك — مع "فحص أساسي" فقط
+	engine_capacity: (s, job) => isExclusive(job) && s == BASIC_FULL,
 	// نوع القير + نوع الوقود + الموديل
 	gear: (_, job) => isExclusive(job),
 	fuel: (_, job) => isExclusive(job),

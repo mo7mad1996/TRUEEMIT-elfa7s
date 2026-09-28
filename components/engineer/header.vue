@@ -66,7 +66,7 @@
 					<input v-model="car.engine_capacity" />
 				</div>
 
-				<!-- السلندرات — لا تظهر مع "فحص أساسي" -->
+				<!-- السلندرات — لا تظهر مع "أساسي" -->
 				<div class="form-input" v-if="hasField('engine')">
 					<label>
 						<font-awesome-icon :icon="['fas', 'hand-fist']" />
