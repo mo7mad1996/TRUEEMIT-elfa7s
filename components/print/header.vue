@@ -74,16 +74,7 @@
 
 				<div class="value">{{ car.car_id || "-" }}</div>
 			</div>
-			<div class="item" v-if="['exclusive'].includes(viewJob)">
-				<label>
-					<template>
-						<div>السلندرات</div>
-						<div>Engine capacity</div>
-					</template>
-				</label>
 
-				<div class="value">{{ car.engine || "-" }}</div>
-			</div>
 
 			<div class="item" v-if="['exclusive'].includes(viewJob)">
 				<label>

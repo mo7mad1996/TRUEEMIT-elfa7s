@@ -44,13 +44,7 @@
 					<input class="mt-2" v-model="car.service" v-if="services.indexOf(car.service) == -1" />
 				</div>
 
-				<div class="form-input" v-if="['exclusive'].includes(viewJob)">
-					<label>
-						<font-awesome-icon :icon="['fas', 'hand-fist']" />
-						السلندرات
-					</label>
-					<input v-model="car.engine" />
-				</div>
+
 
 				<div class="form-input" v-if="['exclusive'].includes(viewJob)">
 					<label>
