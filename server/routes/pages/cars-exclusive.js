@@ -6,6 +6,7 @@ const fs = require("fs");
 const path = require("path");
 
 const { attachUser, allow } = require("../../utils/auth");
+const { buildCarFilter, parsePaging } = require("../../utils/carQuery");
 
 const uploadDir = path.join(__dirname, "../..", "upload");
 
@@ -190,10 +191,24 @@ module.exports = (router) => {
 		res.json(car);
 	});
 
+	// paginated + filterable list, still scoped to the requester's own cars.
+	// Returns { data, total, page, pages, limit }.
 	router.get("/", allow("exclusive", "manager"), async (req, res) => {
-		const cars = await Car.find(scope(req)).sort({ _id: -1 });
+		const filter = scope(req, buildCarFilter(req.query));
+		const { page, limit, skip, all } = parsePaging(req.query);
 
-		res.json(cars);
+		const list = Car.find(filter).sort({ _id: -1 });
+		if (!all) list.skip(skip).limit(limit);
+
+		const [total, data] = await Promise.all([Car.countDocuments(filter), list]);
+
+		res.json({
+			data,
+			total,
+			page,
+			pages: all ? 1 : Math.max(1, Math.ceil(total / limit)),
+			limit: all ? total : limit,
+		});
 	});
 
 	router.get("/last/:days", allow("exclusive", "manager"), async (req, res) => {
@@ -205,6 +220,7 @@ module.exports = (router) => {
 		const cars = await Car.find(scope(req, { date: { $gt: d } })).select([
 			"cost",
 			"payment",
+			"service",
 			"date",
 			"user",
 			"createdAt",
@@ -230,7 +246,7 @@ module.exports = (router) => {
 			// Find cars within the date range
 			const cars = await Car.find(
 				scope(req, { date: { $gte: startTimestamp, $lte: endTimestamp } }),
-			).select(["cost", "payment", "date", "user", "createdAt"]);
+			).select(["cost", "payment", "service", "date", "user", "createdAt"]);
 
 			// Send the result as JSON
 			res.json(cars);

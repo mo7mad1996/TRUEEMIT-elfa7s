@@ -4,6 +4,7 @@
 			<h1 class="my-4 opacity-60">صور السيارة</h1>
 
 			<FileDropAble
+				accept="image/*"
 				:id="car._id"
 				@input="(image) => (car.car_images = [...car?.car_images, { image, description: '' }])"
 				@delete="

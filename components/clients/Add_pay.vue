@@ -6,12 +6,12 @@
           <h3>إستلام مبلغ</h3>
         </div>
 
-        <div class="form-input">
-          <input id="createdAt" v-model="createdAt" type="date" />
+        <div class="dp-field">
           <label for="createdAt">
             <font-awesome-icon :icon="['far', 'calendar-check']" />
             بتاريخ
           </label>
+          <DatePicker id="createdAt" v-model="createdAt" />
         </div>
 
         <div class="form-input">
@@ -106,6 +106,22 @@ export default {
 .error {
   color: red;
   font-weight: bold;
+}
+
+// date field (floating-label pattern doesn't fit the DatePicker component)
+.dp-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 1em;
+
+  label {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    font-size: 0.9em;
+    color: #333;
+  }
 }
 
 .overlay {

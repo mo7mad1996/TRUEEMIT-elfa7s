@@ -200,6 +200,8 @@ export default {
 		},
 
 		async appendFile(formData = new FormData()) {
+			// uploaded to the external trueemit server so the stored urls are
+			// reachable from outside the shop network (needed for the report sync)
 			return this.$axios.$post(`https://trueemit-api.vercel.app/cars/images`, formData, {
 				headers: {
 					"Content-Type": "multipart/form-data",

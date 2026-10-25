@@ -54,22 +54,37 @@ a
 				</Transition>
 			</div>
 		</div>
+
+		<QrPopup v-if="qr" @close="qr = false" />
 	</header>
 </template>
 
 <script>
 import { mapActions } from "vuex";
+import QrPopup from "@/components/layout/QrPopup";
 
 export default {
 	name: "LayoutHeader",
+
+	components: { QrPopup },
 
 	data() {
 		const job = this.$auth?.user?.job;
 
 		return {
 			menu: false,
+			qr: false,
 			links: [
 				{ to: "/", title: "الرئيسية", icon: "fa-solid fa-home", show: true },
+				{
+					to: "",
+					title: "رابط البرنامج",
+					icon: "fa-solid fa-qrcode",
+					show: true,
+					action() {
+						this.qr = true;
+					},
+				},
 				{
 					to: `/${job}/cars`,
 					title: "السيارات",
@@ -103,7 +118,7 @@ export default {
 				},
 			],
 			updating: false,
-			update_branch: "main",
+			update_branch: "main-eg",
 			time: {
 				full: "",
 				am_pm: "",

@@ -19,8 +19,12 @@
 
 <script>
 import Alert from "@/components/layout/alert";
+// same diff/apply rules the socket server uses, so patches never drift
+import { clone, diffCars, applyPatches } from "@/server/IO/patch";
+
+// baseline the deep watcher diffs against — what we have already told the
+// server about (or received from it). Kept per module, like before.
 let lastData = [];
-let updating = false;
 
 export default {
   components: { Alert },
@@ -97,10 +101,20 @@ export default {
     // socket
     this.connect();
 
-    // get cars
+    // full snapshot (sent once on connect) — rebase the baseline so the
+    // watcher below does not diff it straight back to the server
     this.socket.on("cars", (data) => {
-      if (updating) return;
       this.cars = data;
+      lastData = clone(data);
+    });
+
+    // an incoming patch from another client — apply it to the live list and
+    // to the baseline, so the watcher sees no local diff and does not echo it
+    this.socket.on("patch-cars", (patches) => {
+      applyPatches(this.cars, patches, (obj, key, value) =>
+        this.$set(obj, key, value)
+      );
+      applyPatches(lastData, patches);
     });
   },
 
@@ -112,13 +126,13 @@ export default {
   watch: {
     cars: {
       handler(data) {
-        const hasDiff = JSON.stringify(data) != JSON.stringify(lastData);
+        // only the fields that actually changed go over the wire, as a few
+        // small patches — never the whole draft list
+        const patches = diffCars(lastData, data);
+        if (!patches.length) return;
 
-        lastData = JSON.parse(JSON.stringify(data));
-        if (hasDiff && !updating) {
-          updating = true;
-          this.socket.emit("update-cars", data, () => (updating = false));
-        }
+        lastData = clone(data);
+        this.socket.emit("patch-cars", patches);
       },
       deep: true,
     },

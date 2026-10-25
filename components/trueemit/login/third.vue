@@ -78,35 +78,26 @@ export default {
     Loader,
   },
   methods: {
-    setPreview() {
+    async setPreview() {
       const [file] = this.$refs.logo.files;
-      if (file) {
-        this.preview = URL.createObjectURL(file);
-      }
+      if (file) this.preview = await this.toBase64(file);
     },
-    submit() {
+    // read the file as a base64 data url so the logo can be kept inline on the
+    // shop document instead of being uploaded as a file anywhere
+    toBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    },
+    async submit() {
       this.submited = true;
 
-      if (Array.from(this.$refs.logo.files).length) {
-        let formdata = new FormData();
-        formdata.append(
-          "file",
-          this.$refs.logo.files[0],
-          this.$refs.logo.files[0].filename
-        );
-
-        this.$axios
-          .$post("https://trueemit-api.vercel.app/cars/images", formdata, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          })
-          .then(({ url }) => {
-            this.logo = url;
-          });
-      } else {
-        this.logo = "/logo/trueemit.png";
-      }
+      const [file] = this.$refs.logo.files;
+      // keep the logo inline as a base64 data url, falling back to the default
+      this.logo = file ? await this.toBase64(file) : "/logo/trueemit.png";
     },
   },
   watch: {

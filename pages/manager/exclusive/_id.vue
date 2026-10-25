@@ -14,7 +14,7 @@
         :key="n"
         v-model="filter.value"
         placeholder="بحث..."
-        @input="setCars"
+        @input="onSearch"
       />
 
       <button
@@ -50,20 +50,30 @@
       </table>
     </div>
 
-    <p v-if="!middleware_cars.length" class="text-center opacity-60 mt-8">
+    <p v-if="!total" class="text-center opacity-60 mt-8">
       لم يقم هذا المستخدم بحفظ اي سياره بعد.
     </p>
 
-    <div class="buttons" v-if="middleware_cars.length >= limit">
+    <div class="buttons" v-if="pages > 1">
       <button @click="page--" :disabled="page < 2" class="btn">
         <font-awesome-icon :icon="['fas', 'forward']" />
         السابق
       </button>
       <span title="رقم الصفحه">{{ page }}</span>
-      <button @click="page++" :disabled="cars.length < limit" class="btn">
+      <button @click="page++" :disabled="page >= pages" class="btn">
         التالي
         <font-awesome-icon :icon="['fas', 'backward']" />
       </button>
+    </div>
+
+    <div class="per-page" v-if="total" title="عدد السيارات في الصفحة">
+      <span>لكل صفحة</span>
+      <select v-model.number="limit">
+        <option :value="10">10</option>
+        <option :value="20">20</option>
+        <option :value="50">50</option>
+        <option :value="100">100</option>
+      </select>
     </div>
   </div>
 </template>
@@ -76,16 +86,17 @@ export default {
 
     if (!owner) return error({ statusCode: 404, message: "المستخدم غير موجود" });
 
-    const cars = await $axios.$get("/cars-exclusive", {
-      params: { user: params.id },
+    // the server does the filtering + paging; the first page is loaded here
+    const res = await $axios.$get("/cars-exclusive", {
+      params: { user: params.id, page: 1, limit: 20 },
     });
 
-    const DB_cars = cars.map((car) => ({
+    const cars = res.data.map((car) => ({
       ...car,
       date: $moment(car.date).format("DD/MM/YYYY"),
     }));
 
-    return { owner, DB_cars };
+    return { owner, cars, total: res.total, pages: res.pages };
   },
   middleware: "manager",
   head() {
@@ -96,7 +107,9 @@ export default {
       limit: 20,
       page: 1,
       filters: [{ value: "" }],
-      middleware_cars: [],
+      cars: [],
+      total: 0,
+      pages: 1,
       columns: [
         { en: "vin_no", ar: "رقم الشاصى" },
         { en: "car_id", ar: "رقم اللوحه" },
@@ -108,27 +121,42 @@ export default {
     };
   },
   methods: {
-    setCars() {
-      this.middleware_cars = this.$filter(
-        this.DB_cars,
-        this.filters,
-        // blocked
-        Object.keys(this.DB_cars[0] || {}).filter(
-          (el) => !this.columns.map((el) => el.en).includes(el)
-        )
-      );
+    // pull the current page for this owner with the active search terms
+    async fetchCars() {
+      const res = await this.$axios.$get("/cars-exclusive", {
+        params: {
+          user: this.$route.params.id,
+          page: this.page,
+          limit: this.limit,
+          search: this.filters.map((f) => f.value).filter((v) => v && v.trim()),
+        },
+      });
+
+      this.cars = res.data.map((car) => ({
+        ...car,
+        date: this.$moment(car.date).format("DD/MM/YYYY"),
+      }));
+      this.total = res.total;
+      this.pages = res.pages;
+    },
+    // debounce typing so we don't query on every keystroke
+    onSearch() {
+      clearTimeout(this._searchTimer);
+      this._searchTimer = setTimeout(() => {
+        if (this.page !== 1) this.page = 1; // the watcher refetches
+        else this.fetchCars();
+      }, 300);
     },
   },
-  computed: {
-    cars() {
-      return [...this.middleware_cars].splice(
-        this.limit * (this.page - 1),
-        this.limit
-      );
+  watch: {
+    page() {
+      this.fetchCars();
     },
-  },
-  mounted() {
-    this.middleware_cars = Array.from(this.DB_cars);
+    // a new page size starts from the first page
+    limit() {
+      if (this.page !== 1) this.page = 1; // the watcher refetches
+      else this.fetchCars();
+    },
   },
 };
 </script>
@@ -143,6 +171,25 @@ h2 {
 
 .cost {
   color: #3a78d7;
+}
+
+.per-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 1.5em;
+  font-size: 0.9em;
+  color: #555;
+
+  select {
+    padding: 8px 10px;
+    border: 1px solid #e3e3ea;
+    border-radius: 8px;
+    background: #fff;
+    font: inherit;
+    cursor: pointer;
+  }
 }
 
 .buttons {

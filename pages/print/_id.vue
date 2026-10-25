@@ -44,7 +44,10 @@ import CarVideos from "@/components/print/CarVideos";
 export default {
 	async asyncData({ params, query, $axios, $auth }) {
 		// `?as=exclusive` lets the manager print an exclusive report
-		const job = query.as || $auth.user?.job;
+		let job = $auth.user?.job;
+		if (query.as && job == "manager") {
+			job = query.as;
+		}
 
 		const car =
 			job == "exclusive"

@@ -2,6 +2,8 @@ const mongoose = require("mongoose");
 const Car = mongoose.model("Car");
 const Clients = mongoose.model("clients");
 
+const { buildCarFilter, parsePaging } = require("../../utils/carQuery");
+
 module.exports = (router) => {
 	router.get("/add_new_one", (req, res) => {
 		const car = new Car(),
@@ -42,10 +44,23 @@ module.exports = (router) => {
 		res.json(car);
 	});
 
+	// paginated + filterable list. Returns { data, total, page, pages, limit }.
 	router.get("/", async (req, res) => {
-		const cars = await Car.find().sort({ _id: -1 });
+		const filter = buildCarFilter(req.query);
+		const { page, limit, skip, all } = parsePaging(req.query);
 
-		res.json(cars);
+		const list = Car.find(filter).sort({ _id: -1 });
+		if (!all) list.skip(skip).limit(limit);
+
+		const [total, data] = await Promise.all([Car.countDocuments(filter), list]);
+
+		res.json({
+			data,
+			total,
+			page,
+			pages: all ? 1 : Math.max(1, Math.ceil(total / limit)),
+			limit: all ? total : limit,
+		});
 	});
 
 	router.get("/last/:days", async (req, res) => {
@@ -57,6 +72,7 @@ module.exports = (router) => {
 		const cars = await Car.find({ date: { $gt: d } }).select([
 			"cost",
 			"payment",
+			"service",
 			"date",
 			"createdAt",
 		]);
@@ -81,7 +97,7 @@ module.exports = (router) => {
 			// Find cars within the date range
 			const cars = await Car.find({
 				date: { $gte: startTimestamp, $lte: endTimestamp },
-			}).select(["cost", "payment", "date", "createdAt"]);
+			}).select(["cost", "payment", "service", "date", "createdAt"]);
 
 			// Send the result as JSON
 			res.json(cars);

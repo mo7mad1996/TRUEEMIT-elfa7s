@@ -357,7 +357,7 @@
             <font-awesome-icon icon="fa-solid fa-lock" />
             حذف ما قبل
           </label>
-          <input v-model="cars.date" type="date" />
+          <DatePicker v-model="cars.date" />
         </div>
 
         <button type="submit" class="btn red" :disabled="cars.loading">
@@ -468,13 +468,12 @@ export default {
         const ok = await this.check_pass();
         if (!ok) return this.setAlert({ text: "كلمة المرور خطأ", error: true });
 
-        // if user has logo
+        // if user has logo — new_logo is already a base64 data url (see
+        // preview), stored inline on the user document, no upload needed
         if (["exclusive"].includes(this.$auth.user.job))
           if (this.new_logo) {
-            const { url } = await this.saveFile(`users/${this.user._id}`);
-
-            this.user.logo = url;
-            this.$auth.user.logo = url;
+            this.user.logo = this.new_logo;
+            this.$auth.user.logo = this.new_logo;
           }
 
         // update user
@@ -493,38 +492,15 @@ export default {
         this.user.loading = false;
       }
     },
-    async saveFile(path = null) {
-      try {
-        if (Array.from(this.$refs.file.files).length) {
-          let formData = new FormData();
-          formData.append(
-            "file",
-            this.$refs.file.files[0],
-            this.$refs.file.files[0].filename
-          );
-
-          if (path) formData.append("path", path);
-
-          return this.$axios.$post("https://trueemit-api.vercel.app/cars/images", formData, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          });
-        }
-      } catch (err) {
-        console.error(err);
-      }
-    },
     async update__shop() {
       try {
         this.shop.loading = true;
         const ok = await this.check_pass();
         if (!ok) return this.setAlert({ text: "كلمة المرور خطأ", error: true });
 
-        if (this.new_logo) {
-          const { url } = await this.saveFile();
-          this.shop.logo = url;
-        }
+        // new_logo is already a base64 data url (see preview) — store it
+        // inline on the shop document, no upload needed
+        if (this.new_logo) this.shop.logo = this.new_logo;
 
         await this.$axios.$post("/trueemit/update_client", this.shop);
         await this.$shop.refresh();
@@ -536,9 +512,17 @@ export default {
         this.shop.loading = false;
       }
     },
+    // read the chosen logo as a base64 data url — it is small and rarely
+    // changes, so it is kept inline on the shop/user document (and used as-is
+    // for the preview) instead of being uploaded as a file anywhere
     preview() {
       const [file] = this.$refs.file.files;
-      if (file) this.new_logo = URL.createObjectURL(file);
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.new_logo = reader.result;
+      };
+      reader.readAsDataURL(file);
     },
     clearFile() {
       this.new_logo = "";
