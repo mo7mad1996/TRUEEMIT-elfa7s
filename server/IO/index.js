@@ -1,3 +1,5 @@
+const { applyPatches } = require("./patch");
+
 // initial value
 let NormalCars = [];
 
@@ -40,13 +42,14 @@ class CarSocketHandler {
 	managerEvents() {}
 
 	engineerEvents() {
-		// send cars
+		// send the current drafts once, as a full snapshot
 		this.socket.emit("cars", NormalCars);
 
-		// update cars
-		this.socket.on("update-cars", (data, cb = () => {}) => {
-			NormalCars = data;
-			this.socket.broadcast.to(this.room).emit("cars", NormalCars);
+		// a draft changed — apply the tiny patch to the shared list and relay
+		// only that patch to the others in the room (never the whole list)
+		this.socket.on("patch-cars", (patches, cb = () => {}) => {
+			applyPatches(NormalCars, patches);
+			this.socket.broadcast.to(this.room).emit("patch-cars", patches);
 			cb();
 		});
 
@@ -76,10 +79,14 @@ class CarSocketHandler {
 		// send cars — only the ones this user is working on
 		this.socket.emit("cars", this.cars);
 
-		// update cars
-		this.socket.on("update-cars", (data, cb = () => {}) => {
-			this.cars = data;
-			this.socket.broadcast.to(this.room).emit("cars", this.cars);
+		// a draft changed — patch this user's private list and relay only the
+		// patch to his other open tabs / devices in the same room
+		this.socket.on("patch-cars", (patches, cb = () => {}) => {
+			let list = ExclusiveCars.get(this.user);
+			if (!list) ExclusiveCars.set(this.user, (list = []));
+
+			applyPatches(list, patches);
+			this.socket.broadcast.to(this.room).emit("patch-cars", patches);
 			cb();
 		});
 

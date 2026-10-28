@@ -3,15 +3,15 @@
     <div class="row">
       <div class="form-input">
         <label for="start">من</label>
-        <input type="date" v-model="start" id="start" />
+        <DatePicker v-model="start" id="start" />
       </div>
       <div class="form-input">
         <label for="end">إلى</label>
-        <input type="date" v-model="end" id="end" />
+        <DatePicker v-model="end" id="end" />
       </div>
     </div>
 
-    <Charts v-if="cars" :data="cars" :x="charts.x" :y="charts.y" />
+    <Charts v-if="cars" :data="filtered" :x="charts.x" :y="charts.y" />
   </section>
 </template>
 
@@ -25,6 +25,9 @@ export default {
   props: {
     base: { type: String, default: "/cars" },
     user: { type: String, default: "" },
+    // optional report-wide filters from the statistics page
+    service: { type: String, default: "" },
+    payment: { type: String, default: "" },
   },
   data() {
     const date = new Date();
@@ -67,6 +70,14 @@ export default {
     },
   },
   computed: {
+    // the fetched cars narrowed by the report-wide service / payment filters
+    filtered() {
+      return (this.cars || []).filter(
+        (c) =>
+          (!this.service || c.service === this.service) &&
+          (!this.payment || c.payment === this.payment)
+      );
+    },
     charts() {
       const x = [];
       const y = [];
@@ -88,7 +99,7 @@ export default {
       const oneDay = 1000 * 60 * 60 * 24;
       const diffInDays = diffInMillis / oneDay;
 
-      let times = this.cars.map((el) => Date.parse(el.date));
+      let times = this.filtered.map((el) => Date.parse(el.date));
 
       let t = new Date(e);
       let n = t;

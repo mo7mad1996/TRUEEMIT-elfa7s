@@ -33,6 +33,7 @@
     "nuxt-socket-io": "^2.0.3",
     "open": "^8.4.0",
     "puppeteer": "^21.11.0",
+    "qrcode": "^1.5.4",
     "socket.io": "^4.6.1",
     "vue": "^2.7.10",
     "vue-apexcharts": "~1.6.0",

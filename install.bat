@@ -16,7 +16,7 @@ if exist .env.pro (
 )
 
 echo Installing dependencies...
-npm install && npm run build && node remove.js && start.bat
+npm ci && npm run build && node remove.js && start.bat
 
 
 pause

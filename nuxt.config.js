@@ -1,9 +1,48 @@
 const { networkInterfaces } = require("os");
 
-const nets = networkInterfaces();
 const dev = process.env.NODE_ENV == "development";
 
-const IP = Object.values(nets)[0].find((el) => el.family == "IPv4").address;
+/**
+ * Pick the LAN IPv4 that another device on the same network (e.g. the phone
+ * scanning the QR code) can actually reach. The old code took the first
+ * interface blindly, which on many machines is a dead "Local Area Connection"
+ * holding a 169.254.* APIPA address, or a virtual switch (vEthernet / WSL /
+ * VirtualBox) — none of which a phone can open.
+ */
+function pickLanIP() {
+  const nets = networkInterfaces();
+
+  // interface names that are almost never the real LAN adapter
+  const virtualRe =
+    /(vethernet|virtualbox|vmware|hyper-?v|default switch|wsl|loopback|tailscale|zerotier|hamachi|vswitch|docker|tap-|npcap)/i;
+
+  const candidates = [];
+  for (const [name, addrs] of Object.entries(nets)) {
+    for (const net of addrs || []) {
+      if (net.family !== "IPv4") continue;
+      if (net.internal) continue; // loopback
+      if (net.address.startsWith("169.254.")) continue; // APIPA link-local
+      candidates.push({ name, address: net.address });
+    }
+  }
+
+  if (!candidates.length) return "127.0.0.1";
+
+  const score = ({ name, address }) => {
+    let s = 0;
+    if (/^192\.168\./.test(address)) s += 40; // classic home / office LAN
+    else if (/^10\./.test(address)) s += 35;
+    else if (/^172\.(1[6-9]|2[0-9]|3[0-1])\./.test(address)) s += 10; // often virtual
+    if (virtualRe.test(name)) s -= 50; // strongly avoid virtual adapters
+    if (/wi-?fi|wlan|ethernet|lan|local area/i.test(name)) s += 5;
+    return s;
+  };
+
+  candidates.sort((a, b) => score(b) - score(a));
+  return candidates[0].address;
+}
+
+const IP = pickLanIP();
 const port = 3000;
 
 module.exports = {
@@ -13,6 +52,15 @@ module.exports = {
   },
   dev,
   telemetry: false,
+
+  hooks: {
+    // @nuxtjs/tailwindcss@4 injects a v2-style `purge` key into the merged
+    // config. Tailwind v3 reads `content` (set in tailwind.config.js) and only
+    // warns about the leftover legacy key, so drop it before postcss sees it.
+    "tailwindcss:config": (tailwindConfig) => {
+      delete tailwindConfig.purge;
+    },
+  },
 
   router: {
     middleware: ["valdation", "auth"],

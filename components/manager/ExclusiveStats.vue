@@ -65,7 +65,7 @@
     <section v-for="p in view" :key="p.days">
       <h4>
         {{ p.title }} بعدد
-        <span class="tomato">{{ p.cars.length }}</span>
+        <span class="count">{{ p.cars.length }}</span>
         سياره.
       </h4>
 
@@ -94,6 +94,9 @@ export default {
     owners: { type: Array, default: () => [] },
     // cars of each period, keyed by the period length in days
     cars: { type: Object, default: () => ({}) },
+    // optional report-wide filters from the statistics page
+    service: { type: String, default: "" },
+    payment: { type: String, default: "" },
   },
   data: () => ({
     selected: "",
@@ -121,7 +124,12 @@ export default {
      * the given period.
      */
     carsOf(user, days) {
-      const cars = this.cars[days] || [];
+      let cars = this.cars[days] || [];
+
+      // report-wide service / payment filters
+      if (this.service) cars = cars.filter((car) => car.service === this.service);
+      if (this.payment) cars = cars.filter((car) => car.payment === this.payment);
+
       if (!user) return cars;
 
       // the legacy cars saved before cars had an owner
@@ -167,29 +175,85 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-h4 {
-  padding: 0 1em;
-  border-right: 5px solid #000;
+.exclusive_stats {
+  // design tokens (Seline — see DESIGN.md)
+  --card: #ffffff;
+  --border: #e8e6e5;
+  --muted: #d6d3d1;
+  --ash: #a8a29e;
+  --warm: #78716c;
+  --ink: #0c0a09;
+  --wash: #c1e1f7;
+  --cyan: #3ba6f1;
+  --cyan-edge: #3398e1;
+
+  // breathing room between the stacked report sections (was cramped)
+  display: flex;
+  flex-direction: column;
+  gap: 2.5em;
 }
 
-.tomato {
-  color: tomato;
+h4 {
+  margin: 0 0 1.25em;
+  padding-inline-start: 0.7em;
+  border-right: 3px solid var(--cyan);
+  font-weight: 500;
+  font-size: 1.25em;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+}
+
+// signature highlight span — cyan text on a soft sky-wash pill
+.count {
+  color: var(--cyan-edge);
+  background: var(--wash);
+  padding: 0.05em 0.45em;
+  border-radius: 4px;
+  font-variant-numeric: tabular-nums;
 }
 
 .total {
-  font-weight: bold;
+  font-weight: 700;
 }
 
 .cost {
-  color: #3a78d7;
+  color: var(--cyan-edge);
 }
 
 tbody tr.active,
 tbody tr.sum {
-  background: #23cb313e;
+  background: rgba(59, 166, 241, 0.1);
 }
 
 .picker {
   max-width: 320px;
+
+  .form-input {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  label {
+    font-size: 0.72em;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ash);
+  }
+
+  select {
+    padding: 9px 12px;
+    border: 1px solid var(--muted);
+    border-radius: 6px;
+    background: var(--card);
+    color: var(--ink);
+    font: inherit;
+
+    &:focus {
+      outline: none;
+      border-color: var(--cyan);
+      box-shadow: 0 0 0 2px rgba(59, 166, 241, 0.35);
+    }
+  }
 }
 </style>

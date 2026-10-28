@@ -205,6 +205,7 @@ module.exports = (router) => {
 		const cars = await Car.find(scope(req, { date: { $gt: d } })).select([
 			"cost",
 			"payment",
+			"service",
 			"date",
 			"user",
 			"createdAt",

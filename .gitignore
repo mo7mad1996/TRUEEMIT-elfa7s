@@ -6,3 +6,7 @@ server/upload/*
 !server/upload/.gitkeep
 TRUEEMIT-elfa7s-main
 secret
+
+
+nodemon.json
+CLAUDE.md
