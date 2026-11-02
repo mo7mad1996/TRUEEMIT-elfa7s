@@ -119,6 +119,14 @@ module.exports = {
     },
   },
 
+  // @nuxtjs/tailwindcss@4 injects a v2-era `purge` key into the merged
+  // config; drop it so tailwind v3 uses our `content` without warning
+  hooks: {
+    "tailwindcss:config"(tailwindConfig) {
+      delete tailwindConfig.purge;
+    },
+  },
+
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
 };

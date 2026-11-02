@@ -47,6 +47,21 @@ export default {
 	methods: {
 		...mapActions({ setAlert: "alert/add" }),
 
+		// logos saved through settings are already absolute urls on the api
+		// server; a relative/blob src is still local, so push it to the api first
+		async ensureRemote(logo) {
+			if (!logo || /^https?:\/\//i.test(logo)) return logo || "";
+			const blob = await (await fetch(logo)).blob();
+			const fd = new FormData();
+			fd.append("file", blob, "logo");
+			const { url } = await this.$axios.$post(
+				"https://trueemit-api.vercel.app/cars/images",
+				fd,
+				{ headers: { "Content-Type": "multipart/form-data" } }
+			);
+			return url;
+		},
+
 		async attachToServer() {
 			if (this.attaching) return;
 
@@ -132,6 +147,22 @@ export default {
 
 			this.attaching = true;
 			try {
+				const shop = this.$shop || {};
+				payload.shop = {
+					name: shop.name || "",
+					logo: await this.ensureRemote(shop.logo),
+					cr: shop.cr || "",
+					address: shop.address || "",
+					phone: shop.phone || "",
+					website_url: shop.website_url || "",
+					twitter: shop.twitter || "",
+					tiktok: shop.tiktok || "",
+				};
+				payload.exclusive = {
+					name: this.$auth.user?.name || "",
+					logo: await this.ensureRemote(this.$auth.user?.logo),
+				};
+
 				const res = await this.$axios.$put("https://trueemit-api.vercel.app/cars", payload, {
 					headers: { "x-api-key": apiKey },
 				});
