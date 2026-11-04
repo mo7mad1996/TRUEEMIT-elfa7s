@@ -3,7 +3,14 @@ const { networkInterfaces } = require("os");
 const nets = networkInterfaces();
 const dev = process.env.NODE_ENV == "development";
 
-const IP = Object.values(nets)[0].find((el) => el.family == "IPv4").address;
+// first real LAN IPv4: skip loopback and 169.254.* APIPA/link-local
+// (unreachable from phones) so the server bind, axios baseURL and QR all
+// point at an address other devices on the Wi-Fi can actually open.
+const IP =
+  Object.values(nets)
+    .flat()
+    .find((el) => el.family == "IPv4" && !el.internal && !el.address.startsWith("169.254."))
+    ?.address || "127.0.0.1";
 const port = 3000;
 
 module.exports = {
