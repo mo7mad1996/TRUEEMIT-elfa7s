@@ -7,3 +7,4 @@ server/upload/*
 TRUEEMIT-elfa7s-main
 secret
 nodemon.json
+.npmrc

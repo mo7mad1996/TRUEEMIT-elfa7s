@@ -61,7 +61,12 @@ module.exports = (router) => {
       });
 
     // get id from the token
-    const { id } = JWT.verify(token, "secret");
+    let id;
+    try {
+      ({ id } = JWT.verify(token, "secret"));
+    } catch (err) {
+      return res.status(401).json({ error: "Not Authorized" });
+    }
 
     // get user from id
     const user = await User.findById(id);
