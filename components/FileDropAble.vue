@@ -165,7 +165,7 @@ export default {
 							console.error(err);
 							errors.push(this.uploadErrorText(err, file));
 						}
-					})
+					}),
 				);
 			} finally {
 				this.loading = false;
@@ -200,7 +200,7 @@ export default {
 		},
 
 		async appendFile(formData = new FormData()) {
-			return this.$axios.$post(`https://trueemit-api.vercel.app/cars/images`, formData, {
+			return this.$axios.$post(`https://api.trueemit.dev/cars/images`, formData, {
 				headers: {
 					"Content-Type": "multipart/form-data",
 				},
@@ -211,7 +211,7 @@ export default {
 			if (this.deleting.includes(fileName)) return;
 			this.deleting.push(fileName);
 			try {
-				await this.$axios.$delete("https://trueemit-api.vercel.app/cars/images", {
+				await this.$axios.$delete("https://api.trueemit.dev/cars/images", {
 					data: { url: fileName },
 					headers: { "Content-Type": "application/json" },
 				});

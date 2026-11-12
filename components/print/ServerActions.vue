@@ -54,11 +54,9 @@ export default {
 			const blob = await (await fetch(logo)).blob();
 			const fd = new FormData();
 			fd.append("file", blob, "logo");
-			const { url } = await this.$axios.$post(
-				"https://trueemit-api.vercel.app/cars/images",
-				fd,
-				{ headers: { "Content-Type": "multipart/form-data" } }
-			);
+			const { url } = await this.$axios.$post("https://api.trueemit.dev/cars/images", fd, {
+				headers: { "Content-Type": "multipart/form-data" },
+			});
 			return url;
 		},
 
@@ -163,7 +161,7 @@ export default {
 					logo: await this.ensureRemote(this.$auth.user?.logo),
 				};
 
-				const res = await this.$axios.$put("https://trueemit-api.vercel.app/cars", payload, {
+				const res = await this.$axios.$put("https://api.trueemit.dev/cars", payload, {
 					headers: { "x-api-key": apiKey },
 				});
 
@@ -202,7 +200,7 @@ export default {
 
 			this.detaching = true;
 			try {
-				await this.$axios.$delete(`https://trueemit-api.vercel.app/cars/${this.serverId}`, {
+				await this.$axios.$delete(`https://api.trueemit.dev/cars/${this.serverId}`, {
 					headers: { "x-api-key": apiKey },
 				});
 

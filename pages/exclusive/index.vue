@@ -47,7 +47,7 @@ export default {
 			const apiKey = this.$auth.user.api_key;
 			if (car?.server_id && apiKey) {
 				this.$axios
-					.$delete(`https://trueemit-api.vercel.app/cars/${car.server_id}`, {
+					.$delete(`https://api.trueemit.dev/cars/${car.server_id}`, {
 						headers: { "x-api-key": apiKey },
 					})
 					.catch((err) => console.error(err));
