@@ -130,7 +130,7 @@ export default {
 
 			this.attaching = true;
 			try {
-				const res = await this.$axios.$put("https://trueemit-api.vercel.app/cars", payload, {
+				const res = await this.$axios.$put("https://api.trueemit.dev/cars", payload, {
 					headers: { "x-api-key": apiKey },
 				});
 
@@ -169,7 +169,7 @@ export default {
 
 			this.detaching = true;
 			try {
-				await this.$axios.$delete(`https://trueemit-api.vercel.app/cars/${this.serverId}`, {
+				await this.$axios.$delete(`https://api.trueemit.dev/cars/${this.serverId}`, {
 					headers: { "x-api-key": apiKey },
 				});
 
