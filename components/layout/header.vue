@@ -118,7 +118,7 @@ export default {
 				},
 			],
 			updating: false,
-			update_branch: "main-eg",
+			update_branch: "zeyadah",
 			time: {
 				full: "",
 				am_pm: "",
