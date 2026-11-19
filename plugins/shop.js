@@ -1,21 +1,18 @@
 import Vue from "vue";
 
 export default async ({ $axios, app }, inject) => {
-  function init() {
-    return $axios.$get("/trueemit/shop");
-  }
-
-  const shop = await init();
+  const init = () => $axios.$get("/trueemit/shop");
+  const response = await init();
+  const shop = response.shop;
 
   const obj = Vue.observable({
-    ...shop,
+    ...(shop || {}),
+    ready: Boolean(shop),
+    status: response.status,
     jobs: {
       manager: "مدير",
       engineer: "مهندس",
       exclusive: "شركة خاصه",
-    },
-    refresh() {
-      return init().then((newObj) => Object.assign(obj, newObj));
     },
   });
 

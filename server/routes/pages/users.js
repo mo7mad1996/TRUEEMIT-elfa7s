@@ -42,7 +42,7 @@ module.exports = (router) => {
 
       if (ok) {
         // create a token
-        const token = JWT.sign({ id: user.id }, "secret");
+        const token = JWT.sign({ id: user.id }, process.env.SECRET);
 
         // Update last login time and save it to
         await User.updateOne(user, { lastLogin: Date.now() }).then((_) =>
@@ -61,7 +61,7 @@ module.exports = (router) => {
       });
 
     // get id from the token
-    const { id } = JWT.verify(token, "secret");
+    const { id } = JWT.verify(token, process.env.SECRET);
 
     // get user from id
     const user = await User.findById(id);

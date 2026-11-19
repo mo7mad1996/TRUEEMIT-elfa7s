@@ -12,7 +12,7 @@ async function getUser(req) {
 	if (!token) return null;
 
 	try {
-		const { id } = JWT.verify(token.replace(/^Bearer\s+/i, ""), "secret");
+		const { id } = JWT.verify(token.replace(/^Bearer\s+/i, ""), process.env.SECRET);
 		return await mongoose.model("Users").findById(id).select(["name", "user_id", "job"]);
 	} catch (err) {
 		return null;

@@ -63,7 +63,7 @@ module.exports = {
   },
 
   router: {
-    middleware: ["valdation", "auth"],
+    middleware: ["shop-status", "auth"],
   },
 
   // Global page headers: https://go.nuxtjs.dev/config-head
@@ -127,8 +127,8 @@ module.exports = {
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
-    // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
-    baseURL: `http://${IP}:${dev ? 3000 : port}/api`,
+    baseURL: `http://127.0.0.1:${dev ? 3000 : port}/api`,
+    browserBaseURL: "/api",
   },
   io: {
     // module options

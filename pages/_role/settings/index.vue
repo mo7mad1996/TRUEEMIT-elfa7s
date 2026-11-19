@@ -1,129 +1,5 @@
 <template>
   <div class="container">
-    <section v-if="['manager'].includes($auth.user.job)">
-      <h3>المؤسسة</h3>
-
-      <form class="simple_form" @submit.prevent="update__shop">
-        <label
-          class="form-input flex flex-col gap-2 group cursor-pointer"
-          v-if="['manager'].includes($auth.user.job)"
-        >
-          <h3 class="m-0">
-            <font-awesome-icon icon="fa-solid fa-font-awesome" />
-            اللوجو والشعار
-          </h3>
-          <div class="d-flex">
-            <div class="relative rounded-lg border border-dashed p-1 shadow">
-              <img
-                class="h-20 bg-neutral-200 w-auto rounded-lg"
-                :src="
-                  new_logo ||
-                  shop.logo ||
-                  $auth.user.logo ||
-                  $shop.logo ||
-                  '/logo/trueemit.png'
-                "
-              />
-
-              <button
-                class="absolute top-0 left-0 rounded-full bg-red-50 text-red-700 flex items-center justify-center p-2"
-                @click.prevent="clearFile"
-                v-if="new_logo"
-                title="حذف"
-              >
-                <font-awesome-icon :icon="['fas', 'xmark']" />
-              </button>
-              <input
-                type="file"
-                ref="file"
-                class="hidden"
-                @change="preview"
-                accept="image/*"
-              />
-              <label
-                class="w-full bg-neutral-50/80 absolute bottom-0 left-0 hidden group-hover:flex items-center justify-center p-2"
-                title="تعديل"
-              >
-                <font-awesome-icon :icon="['fas', 'camera']" />
-              </label>
-            </div>
-          </div>
-        </label>
-
-        <div class="form-input">
-          <label>
-            <font-awesome-icon :icon="['fas', 'link']" />
-            رابط اللوجو
-          </label>
-          <input
-            v-model="shop.logo"
-            dir="ltr"
-            placeholder="https://example.com/logo.png"
-          />
-          <small class="text-xs text-neutral-400 px-2">
-            الصق رابط الصوره أو اختر ملف من الأعلى (الملف المرفوع يستبدل الرابط)
-          </small>
-        </div>
-
-        <div class="form-input">
-          <label>
-            <font-awesome-icon icon="fa-solid fa-store" />
-            اسم المؤسسه
-          </label>
-          <input v-model="shop.name" />
-        </div>
-
-        <div class="form-input">
-          <label>
-            <font-awesome-icon icon="fa-solid fa-phone" />
-            أرقام الهواتف
-          </label>
-          <input v-model="shop.phone" />
-        </div>
-        <div class="form-input">
-          <label>
-            <font-awesome-icon :icon="['fas', 'building-shield']" />
-            سجل تجاري
-          </label>
-          <input v-model="shop.cr" />
-        </div>
-        <div class="form-input">
-          <label>
-            <font-awesome-icon :icon="['fas', 'map-location-dot']" />
-            العنوان
-          </label>
-          <input v-model="shop.address" />
-        </div>
-        <div class="form-input">
-          <label>
-            <font-awesome-icon :icon="['fas', 'globe']" />
-            الموقع الإلكتروني
-          </label>
-          <input v-model="shop.website_url" />
-        </div>
-        <div class="form-input">
-          <label>
-            <font-awesome-icon :icon="['fab', 'twitter']" />
-            تويتر | X
-          </label>
-          <input v-model="shop.twitter" />
-        </div>
-        <div class="form-input">
-          <label>
-            <font-awesome-icon :icon="['fab', 'tiktok']" />
-            تيك توك
-          </label>
-          <input v-model="shop.tiktok" />
-        </div>
-        <button type="submit" class="btn" :disabled="shop.loading">
-          <Loader v-if="shop.loading" />
-          <span v-else>تعديل</span>
-        </button>
-      </form>
-    </section>
-
-    <hr v-if="['manager'].includes($auth.user.job)" />
-
     <section>
       <h3>المستخدم</h3>
 
@@ -423,7 +299,6 @@ export default {
     return {
       new_logo: "",
       user: { ...this.$auth.user, new_pass: "", loading: false },
-      shop: { ...this.$shop, loading: false },
       cars: { date: "", loading: false },
       pwd: { show: false, value: "", resolve: null },
     };
@@ -492,29 +367,7 @@ export default {
         this.user.loading = false;
       }
     },
-    async update__shop() {
-      try {
-        this.shop.loading = true;
-        const ok = await this.check_pass();
-        if (!ok) return this.setAlert({ text: "كلمة المرور خطأ", error: true });
-
-        // new_logo is already a base64 data url (see preview) — store it
-        // inline on the shop document, no upload needed
-        if (this.new_logo) this.shop.logo = this.new_logo;
-
-        await this.$axios.$post("/trueemit/update_client", this.shop);
-        await this.$shop.refresh();
-
-        this.setAlert({ text: "تم تعديل البيانات" });
-      } catch (err) {
-        console.error(err);
-      } finally {
-        this.shop.loading = false;
-      }
-    },
-    // read the chosen logo as a base64 data url — it is small and rarely
-    // changes, so it is kept inline on the shop/user document (and used as-is
-    // for the preview) instead of being uploaded as a file anywhere
+    // Keep the user's small logo inline as a base64 data URL.
     preview() {
       const [file] = this.$refs.file.files;
       if (!file) return;
@@ -524,11 +377,6 @@ export default {
       };
       reader.readAsDataURL(file);
     },
-    clearFile() {
-      this.new_logo = "";
-      if (this.$refs.file) this.$refs.file.value = "";
-    },
-
     async deleteCars() {
       try {
         const ok = await this.check_pass();

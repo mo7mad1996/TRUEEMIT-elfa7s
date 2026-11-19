@@ -6,40 +6,40 @@ repository.
 ## What this is
 
 A car inspection reporting app ("TRUEEMIT", package name `elfa7s`), with an Arabic RTL UI. It is one
-Nuxt 2 (Vue 2) app served by a custom Express server, and it runs on the shop's own machine against
-MongoDB. Engineers fill in inspection forms, managers review cars, clients and statistics, and a
-printed/PDF report is produced for each car.
+Nuxt 2 (Vue 2) app served by a custom Express server and MongoDB. Inspection-center details are
+loaded from TRUEEMIT's branch API at startup. Engineers fill in inspection forms, managers review
+cars, clients and statistics, and a printed/PDF report is produced for each car.
 
 ## Commands
 
 - `npm run dev`: `nodemon server`. With `NODE_ENV=development` this builds Nuxt in-process and
   serves on port 3000.
 - `npm run build`: `nuxt build` (production bundle).
-- `npm start`: `node server`. In production it also opens the browser automatically.
+- `npm start`: `node server`.
 - `install.bat`: the deployment script. It renames `.env.pro` to `.env`, runs install and build,
   runs `node remove.js` (which **deletes the source folders** `pages/`, `components/`, `.git`,
   etc.), then `start.bat`. Never run it in a dev checkout.
 
-The repo has no test suite and no linter.
-
-Required `.env` keys: `NODE_ENV`, `DB_URI`, `SECRET`.
+The repo has no test suite and no linter. Copy `.env.example` to `.env` and set `NODE_ENV`, `DB_URI`,
+`SECRET`, `SHOP_BRANCH`, and `INITIAL_ADMIN_PASSWORD` (the last is required when a valid branch has
+no manager user).
 
 `nuxt.config.js` picks the machine's real LAN IPv4 (`pickLanIP()` — skips loopback, `169.254.*`
-APIPA link-local and virtual adapters like `vEthernet`/WSL/VirtualBox), so another device on the
-same network (e.g. a phone scanning the QR in `components/layout/QrPopup.vue`) can reach it. Axios
-`baseURL` is `http://<that IP>:3000/api`, production opens the browser at `http://<that IP>:3000`,
-and the HTTP server itself listens on all interfaces.
+APIPA link-local and virtual adapters like `vEthernet`/WSL/VirtualBox) for LAN-oriented UI links.
+Browser API requests use the current origin; server-side API requests use loopback. The HTTP server
+listens on all interfaces and does not launch a local browser.
 
 ## Architecture
 
 ### Server (`server/`): everything is auto-loaded by directory scan
 
-- `server/index.js` loads `models/`, then `middlewares/`, then `routes/`.
+- `server/index.js` loads models, then awaits middleware/database setup, loads the branch inspection
+  center and ensures a manager exists, mounts routes, and finally starts Nuxt.
 - `server/models/models/*.js`: every file registers a mongoose model (`Car`, the exclusive car
-  model, `clients`, `Shop`, `Users`). Routes fetch models with `mongoose.model("Name")` instead of
-  requiring them.
-- `server/middlewares/middlewares/NN_*.js`: run in filename order. `05_nuxt.js` starts Nuxt, creates
-  the HTTP server and attaches socket.io (`server/IO`).
+  model, `clients`, `Users`). Shop details are not stored in MongoDB; they come from the remote
+  inspection-center API.
+- `server/middlewares/middlewares/NN_*.js`: run in filename order, except `05_nuxt.js`, which starts
+  after API routes are mounted. It creates the HTTP server and attaches socket.io (`server/IO`).
 - `server/routes/pages/<name>.js` is mounted at `/api/<name>`. Each file exports
   `(router, app) => router`.
 - Auth: JWT via `@nuxtjs/auth-next` local strategy (`/api/users/login`, `/api/users/user`). Only
@@ -54,9 +54,11 @@ and the HTTP server itself listens on all interfaces.
   with `limit=all`, read `res.data`, then filter and paginate on the client. `/cars/:id`,
   `/last/:days` and `/special` still return their own shapes.
 - `pdf.js` renders report HTML sent by the client into an A4 PDF with Puppeteer.
-- `trueemit.js` handles licensing and self-update. `/isvalid` checks for the `secret` file and
-  `Shop` expiry. `/update` downloads a branch zip from GitHub and reinstalls. Some endpoints
-  (`remove_all`) wipe the working directory, so be careful when touching them.
+- `server/utils/inspectionCenter.js` loads
+  `https://trueemit.dev/api/inspection-centers/by-branch/{SHOP_BRANCH}` at startup. A missing
+  branch is handled by `/not-ready`; a returned shop with no
+  manager causes creation of `user_id=admin` using `INITIAL_ADMIN_PASSWORD`. Shop data is cached
+  in memory only. `GET /api/trueemit/shop` serves that cache to the frontend.
 - Uploaded files (car images, videos, logos, computer PDFs) are stored locally: the frontend posts
   them to `/api/upload` (`server/routes/pages/upload.js`, open route, formidable), which saves them
   under `server/upload/` and returns a root-relative `{ url }` (e.g. `/abc.jpg`) — no host is baked
@@ -69,8 +71,8 @@ and the HTTP server itself listens on all interfaces.
 ### Roles
 
 `user.job` is one of `engineer`, `manager`, `exclusive`. Pages live under `pages/<job>/` and are
-guarded by the `middleware/<job>.js` files. The global router middleware is `valdation` (license
-check, with that spelling) + `auth`.
+guarded by the `middleware/<job>.js` files. The global router middleware is `shop-status` + `auth`. When no branch shop is available, all pages
+except `/not-ready` redirect to the not-ready page.
 
 - **engineer / manager** work on shared `Car` documents (`/api/cars`).
 - **exclusive** users are separate companies. Their cars (`/api/cars-exclusive`) are isolated per

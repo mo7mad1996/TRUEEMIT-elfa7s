@@ -4,11 +4,18 @@ const mongoose = require("mongoose");
 module.exports = async function connectWithRetry() {
   mongoose.set("strictQuery", true);
 
-  try {
-    const connection = await mongoose.connect(process.env.DB_URI);
-    return connection;
-  } catch (err) {
-    console.error("Connection failed. Retrying in 2 seconds...", err);
-    setTimeout(connectWithRetry, 2000);
+  if (!process.env.DB_URI) {
+    throw new Error("DB_URI is required");
   }
+
+  while (mongoose.connection.readyState !== 1) {
+    try {
+      return await mongoose.connect(process.env.DB_URI);
+    } catch (err) {
+      console.error("Connection failed. Retrying in 2 seconds...", err);
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+    }
+  }
+
+  return mongoose.connection;
 };
