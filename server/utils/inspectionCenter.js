@@ -65,10 +65,8 @@ async function createInitialManager() {
 	}
 
 	const password = process.env.INITIAL_ADMIN_PASSWORD;
-	if (!password || password.length < 12) {
-		throw new Error(
-			"Set INITIAL_ADMIN_PASSWORD to at least 12 characters before creating the first manager.",
-		);
+	if (!password) {
+		throw new Error("Set INITIAL_ADMIN_PASSWORD creating the first manager.");
 	}
 
 	const hashedPassword = await bcrypt.hash(password, 10);
@@ -79,7 +77,7 @@ async function createInitialManager() {
 		job: "manager",
 	});
 
-	console.log("Created the initial manager account with user_id \"admin\".");
+	console.log('Created the initial manager account with user_id "admin".');
 }
 
 async function initialize(fetchImpl = fetch) {
