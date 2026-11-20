@@ -43,7 +43,7 @@ function pickLanIP() {
 }
 
 const IP = pickLanIP();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 module.exports = {
 	server: {
@@ -127,7 +127,7 @@ module.exports = {
 
 	// Axios module configuration: https://go.nuxtjs.dev/config-axios
 	axios: {
-		baseURL: `/${port}/api`,
+		baseURL: dev ? `http://${IP}:${port}/api` : "/api",
 		browserBaseURL: "/api",
 	},
 	io: {
