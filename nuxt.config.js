@@ -127,7 +127,7 @@ module.exports = {
 
 	// Axios module configuration: https://go.nuxtjs.dev/config-axios
 	axios: {
-		baseURL: dev ? `http://${IP}:${port}/api` : "/api",
+		baseURL: dev ? `http://${IP}:${port}/api` : "https://trueemit-elfa7s.onrender.com/api",
 		browserBaseURL: "/api",
 	},
 	io: {
