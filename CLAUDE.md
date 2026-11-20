@@ -58,7 +58,9 @@ listens on all interfaces and does not launch a local browser.
   `https://trueemit.dev/api/inspection-centers/by-branch/{SHOP_BRANCH}` at startup. A missing
   branch is handled by `/not-ready`; a returned shop with no
   manager causes creation of `user_id=admin` using `INITIAL_ADMIN_PASSWORD`. Shop data is cached
-  in memory only. `GET /api/trueemit/shop` serves that cache to the frontend.
+  in memory only. `GET /api/trueemit/shop` serves that cache to the frontend. Managers can edit
+  shop details from settings; `PATCH /api/trueemit/shop` forwards allowed fields to the branch API
+  and updates the in-memory cache after a successful response.
 - Uploaded files (car images, videos, logos, computer PDFs) are stored locally: the frontend posts
   them to `/api/upload` (`server/routes/pages/upload.js`, open route, formidable), which saves them
   under `server/upload/` and returns a root-relative `{ url }` (e.g. `/abc.jpg`) — no host is baked

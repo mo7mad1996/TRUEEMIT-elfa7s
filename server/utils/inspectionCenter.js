@@ -4,6 +4,17 @@ const mongoose = require("mongoose");
 
 const API_URL = "https://trueemit.dev/api/inspection-centers/by-branch";
 const BRANCH_PATTERN = /^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i;
+const EDITABLE_FIELDS = [
+	"name",
+	"logo",
+	"phone",
+	"cr",
+	"address",
+	"website_url",
+	"tiktok",
+	"twitter",
+	"notes",
+];
 
 function mapInspectionCenter(item) {
 	return {
@@ -56,6 +67,56 @@ async function fetchInspectionCenter(branch, fetchImpl = fetch) {
 	}
 }
 
+async function updateInspectionCenter(fields, fetchImpl = fetch) {
+	const branch = (process.env.SHOP_BRANCH || "").trim().toLowerCase();
+	if (!BRANCH_PATTERN.test(branch)) {
+		const error = new Error("SHOP_BRANCH must be a valid subdomain.");
+		error.status = 503;
+		throw error;
+	}
+	if (!fields || typeof fields !== "object" || Array.isArray(fields)) {
+		throw new TypeError("Inspection-center update must be an object.");
+	}
+
+	const updates = {};
+	for (const field of EDITABLE_FIELDS) {
+		if (Object.prototype.hasOwnProperty.call(fields, field)) {
+			if (typeof fields[field] !== "string") {
+				throw new TypeError(`Inspection-center field "${field}" must be a string.`);
+			}
+			updates[field] = fields[field];
+		}
+	}
+	if (!Object.keys(updates).length) {
+		throw new TypeError("At least one editable inspection-center field is required.");
+	}
+	if (Object.prototype.hasOwnProperty.call(updates, "name") && !updates.name.trim()) {
+		throw new TypeError("Inspection-center name cannot be empty.");
+	}
+
+	const current = global.inspectionCenter && global.inspectionCenter.shop;
+	if (!current) {
+		const error = new Error("Inspection center is not available.");
+		error.status = 503;
+		throw error;
+	}
+
+	const response = await fetchImpl(`${API_URL}/${encodeURIComponent(branch)}`, {
+		method: "PATCH",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify(updates),
+		timeout: 10000,
+	});
+
+	if (!response.ok) {
+		throw new Error(`Inspection-center API returned HTTP ${response.status}`);
+	}
+
+	const shop = mapInspectionCenter({ ...current, ...updates });
+	global.inspectionCenter = { shop, status: "ready" };
+	return shop;
+}
+
 async function createInitialManager() {
 	const User = mongoose.model("Users");
 	if (await User.exists({ job: "manager" })) return;
@@ -90,4 +151,9 @@ async function initialize(fetchImpl = fetch) {
 	return result;
 }
 
-module.exports = { createInitialManager, fetchInspectionCenter, initialize };
+module.exports = {
+	createInitialManager,
+	fetchInspectionCenter,
+	initialize,
+	updateInspectionCenter,
+};

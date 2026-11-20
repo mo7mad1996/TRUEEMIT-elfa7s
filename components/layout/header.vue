@@ -6,7 +6,7 @@ a
 		>
 			<div class="flex items-end gap-2 flex-1">
 				<nuxt-link to="/">
-					<img :src="$auth.user?.logo || $shop.logo" class="h-16" />
+					<img :src="$auth.user?.logo || $shop.logo || '/logo/trueemit.png'" class="h-16" />
 				</nuxt-link>
 				<div class="clock">
 					<div>

@@ -222,6 +222,57 @@
       </form>
     </section>
 
+    <section v-if="$auth.user.job === 'manager'">
+      <h3>بيانات المحل</h3>
+
+      <form class="simple_form" @submit.prevent="updateShop">
+        <div class="form-input">
+          <label>اسم المحل</label>
+          <input v-model="shopEdit.name" required />
+        </div>
+        <div class="form-input">
+          <label>رابط الشعار</label>
+          <input v-model="shopEdit.logo" />
+        </div>
+        <div class="form-input">
+          <label>رقم الهاتف</label>
+          <input v-model="shopEdit.phone" />
+        </div>
+        <div class="form-input">
+          <label>السجل التجاري</label>
+          <input v-model="shopEdit.cr" />
+        </div>
+        <div class="form-input">
+          <label>العنوان</label>
+          <input v-model="shopEdit.address" />
+        </div>
+        <div class="form-input">
+          <label>الموقع الإلكتروني</label>
+          <input v-model="shopEdit.website_url" />
+        </div>
+        <div class="form-input">
+          <label>TikTok</label>
+          <input v-model="shopEdit.tiktok" />
+        </div>
+        <div class="form-input">
+          <label>Twitter</label>
+          <input v-model="shopEdit.twitter" />
+        </div>
+        <div class="form-input">
+          <label>ملاحظات</label>
+          <textarea v-model="shopEdit.notes"></textarea>
+        </div>
+
+        <button type="submit" class="btn" :disabled="shopEdit.loading">
+          <Loader v-if="shopEdit.loading" />
+          <template v-else>
+            <font-awesome-icon icon="fa-solid fa-save" />
+            <span>حفظ بيانات المحل</span>
+          </template>
+        </button>
+      </form>
+    </section>
+
     <hr v-if="['manager'].includes($auth.user.job)" />
 
     <section v-if="['manager'].includes($auth.user.job)">
@@ -299,6 +350,7 @@ export default {
     return {
       new_logo: "",
       user: { ...this.$auth.user, new_pass: "", loading: false },
+      shopEdit: { ...this.$shop, loading: false },
       cars: { date: "", loading: false },
       pwd: { show: false, value: "", resolve: null },
     };
@@ -365,6 +417,34 @@ export default {
         console.error(err.message);
       } finally {
         this.user.loading = false;
+      }
+    },
+    async updateShop() {
+      this.shopEdit.loading = true;
+      try {
+        const fields = {
+          name: this.shopEdit.name,
+          logo: this.shopEdit.logo,
+          phone: this.shopEdit.phone,
+          cr: this.shopEdit.cr,
+          address: this.shopEdit.address,
+          website_url: this.shopEdit.website_url,
+          tiktok: this.shopEdit.tiktok,
+          twitter: this.shopEdit.twitter,
+          notes: this.shopEdit.notes,
+        };
+        const response = await this.$axios.$patch("/trueemit/shop", fields);
+        Object.assign(this.$shop, response.shop);
+        Object.assign(this.shopEdit, response.shop);
+        this.setAlert({ text: "تم تعديل بيانات المحل" });
+      } catch (err) {
+        this.setAlert({
+          error: true,
+          text: err.response?.data?.error || err.message,
+        });
+        console.error(err);
+      } finally {
+        this.shopEdit.loading = false;
       }
     },
     // Keep the user's small logo inline as a base64 data URL.

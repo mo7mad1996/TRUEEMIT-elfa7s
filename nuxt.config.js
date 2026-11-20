@@ -45,6 +45,8 @@ function pickLanIP() {
 const IP = pickLanIP();
 const port = process.env.PORT || 3000;
 
+const baseURL = process.env.BASE_URL || `http://${IP}:${port}/api`;
+
 module.exports = {
 	server: {
 		port,
@@ -127,7 +129,7 @@ module.exports = {
 
 	// Axios module configuration: https://go.nuxtjs.dev/config-axios
 	axios: {
-		baseURL: dev ? `http://${IP}:${port}/api` : "https://trueemit-elfa7s.onrender.com/api",
+		baseURL: baseURL,
 		browserBaseURL: "/api",
 	},
 	io: {
