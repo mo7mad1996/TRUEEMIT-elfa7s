@@ -1,8 +1,6 @@
 <template>
-  <div class="container" :class="{ 'settings-layout': $auth.user.job === 'manager' }">
-    <aside v-if="$auth.user.job === 'manager'" class="settings-sidebar">
-      <h2 class="settings-sidebar-title">الإعدادات</h2>
-      <div class="settings-tabs" role="tablist" aria-label="الإعدادات" aria-orientation="vertical">
+  <div class="container">
+    <div v-if="$auth.user.job === 'manager'" class="settings-tabs" role="tablist" aria-label="الإعدادات">
       <button
         v-for="tab in settingsTabs"
         :id="`settings-tab-${tab.id}`"
@@ -19,8 +17,7 @@
         <font-awesome-icon :icon="tab.icon" class="settings-tab-icon" aria-hidden="true" />
         <span>{{ tab.label }}</span>
       </button>
-      </div>
-    </aside>
+    </div>
 
     <section
       v-if="$auth.user.job === 'manager'"
@@ -462,8 +459,8 @@ export default {
     onTabKeydown(event, tabId) {
       const current = this.settingsTabs.findIndex((tab) => tab.id === tabId);
       let next;
-      if (event.key === "ArrowDown" || event.key === "ArrowLeft") next = (current + 1) % this.settingsTabs.length;
-      else if (event.key === "ArrowUp" || event.key === "ArrowRight") next = (current - 1 + this.settingsTabs.length) % this.settingsTabs.length;
+      if (event.key === "ArrowLeft") next = (current + 1) % this.settingsTabs.length;
+      else if (event.key === "ArrowRight") next = (current - 1 + this.settingsTabs.length) % this.settingsTabs.length;
       else if (event.key === "Home") next = 0;
       else if (event.key === "End") next = this.settingsTabs.length - 1;
       else return;
@@ -646,54 +643,21 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.settings-layout {
-  display: grid;
-  grid-template-columns: 220px minmax(0, 1fr);
-  gap: 1.5em;
-  align-items: start;
-
-  > .settings-sidebar {
-    grid-column: 1;
-    grid-row: 1;
-  }
-
-  > section {
-    grid-column: 2;
-    grid-row: 1;
-    min-width: 0;
-    margin: 0;
-  }
-}
-
-.settings-sidebar {
-  padding: 1em;
-  background: #fafafa;
-  border-radius: 0.4em;
-  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.1);
-}
-
-.settings-sidebar-title {
-  margin: 0 0 0.8em;
-  padding: 0 0.6em 0.8em;
-  border-bottom: 1px solid #e2e8f0;
-  color: #334155;
-  font-weight: 700;
-}
-
 .settings-tabs {
   display: flex;
-  flex-direction: column;
   gap: 0.25em;
+  overflow-x: auto;
+  border-bottom: 1px solid #cbd5e1;
 
   button {
     display: flex;
     align-items: center;
     gap: 0.75em;
-    width: 100%;
+    flex: none;
     min-height: 44px;
     padding: 0.7em 1em;
     color: #475569;
-    border-radius: 0.4em;
+    border-bottom: 2px solid transparent;
     text-align: start;
 
     &:hover {
@@ -702,7 +666,7 @@ export default {
 
     &[aria-selected="true"] {
       color: #1d4ed8;
-      background: #dbeafe;
+      border-bottom-color: #1d4ed8;
       font-weight: 700;
     }
 
@@ -716,19 +680,6 @@ export default {
 .settings-tab-icon {
   width: 1em;
   flex: none;
-}
-
-@media (max-width: 700px) {
-  .settings-layout {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 1em;
-
-    > .settings-sidebar,
-    > section {
-      grid-column: 1;
-      grid-row: auto;
-    }
-  }
 }
 
 .shop-logo-button {
