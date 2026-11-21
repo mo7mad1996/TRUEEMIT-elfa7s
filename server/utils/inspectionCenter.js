@@ -13,7 +13,6 @@ const EDITABLE_FIELDS = [
   "website_url",
   "tiktok",
   "twitter",
-  "notes",
 ];
 
 function mapInspectionCenter(item) {
@@ -134,7 +133,7 @@ async function updateInspectionCenter(fields, fetchImpl = fetch) {
     body: JSON.stringify(updates),
     timeout: 10000,
   });
-  console.log(response);
+
   if (!response.ok) {
     throw new Error(`Inspection-center API returned HTTP ${response.status}`);
   }
@@ -170,10 +169,35 @@ async function createInitialManager() {
   console.log('Created the initial manager account with user_id "admin".');
 }
 
+// How often GET /api/trueemit/shop may re-check the branch API. The startup
+// fetch is cached in memory, so without this a renewed subscription would only
+// show up after a server restart.
+const REFRESH_INTERVAL = 60 * 1000;
+
+async function refreshInspectionCenter(fetchImpl = fetch) {
+  const branch = (process.env.SHOP_BRANCH || "").trim().toLowerCase();
+  const previous = global.inspectionCenter;
+  const result = await fetchInspectionCenter(branch, fetchImpl);
+
+  // A transient network/API failure must not flip a working site to
+  // "unavailable" — keep the last known state and just retry later.
+  if (result.status === "unavailable" && previous && previous.status !== "unavailable") {
+  	global.inspectionCenter = { ...previous, fetchedAt: Date.now() };
+  } else {
+  	global.inspectionCenter = { ...result, fetchedAt: Date.now() };
+  }
+
+  return global.inspectionCenter;
+}
+
+function isStale(entry) {
+  return !entry || Date.now() - (entry.fetchedAt || 0) > REFRESH_INTERVAL;
+}
+
 async function initialize(fetchImpl = fetch) {
   const branch = (process.env.SHOP_BRANCH || "").trim().toLowerCase();
   const result = await fetchInspectionCenter(branch, fetchImpl);
-  global.inspectionCenter = result;
+  global.inspectionCenter = { ...result, fetchedAt: Date.now() };
 
   if (result.status === "ready") await createInitialManager();
 
@@ -184,5 +208,7 @@ module.exports = {
   createInitialManager,
   fetchInspectionCenter,
   initialize,
+  isStale,
+  refreshInspectionCenter,
   updateInspectionCenter,
 };

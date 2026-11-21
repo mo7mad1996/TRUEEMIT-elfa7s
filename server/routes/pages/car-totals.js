@@ -18,14 +18,18 @@ function parseDate(value, endOfDay) {
 
 module.exports = (router) => {
 	router.get("/", async (req, res) => {
-		const start = parseDate(req.query.startdate, false);
-		const end = parseDate(req.query.enddate, true);
+		// Optional date range on `date`. `start`/`end` match the car-list
+		// endpoints; `startdate`/`enddate` stay accepted for older clients.
+		const startInput = req.query.start ?? req.query.startdate;
+		const endInput = req.query.end ?? req.query.enddate;
+		const start = parseDate(startInput, false);
+		const end = parseDate(endInput, true);
 
 		if (start === undefined || end === undefined) {
-			return res.status(400).json({ error: "Invalid startdate or enddate" });
+			return res.status(400).json({ error: "تاريخ البداية أو النهاية غير صالح" });
 		}
 		if (start && end && start > end) {
-			return res.status(400).json({ error: "startdate must be before enddate" });
+			return res.status(400).json({ error: "تاريخ البداية يجب أن يكون قبل تاريخ النهاية" });
 		}
 
 		const range = {};
