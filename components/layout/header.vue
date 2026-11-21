@@ -8,7 +8,7 @@ a
 				<nuxt-link to="/">
 					<img :src="$auth.user?.logo || $shop.logo || '/logo/trueemit.png'" class="h-16" />
 				</nuxt-link>
-				<div class="clock">
+				<div class="clock hidden md:!flex flex-col">
 					<div>
 						<span class="text-2xl">{{ time.full }}</span>
 						<span class="text-xs opacity-60">{{ time.am_pm }}</span>
