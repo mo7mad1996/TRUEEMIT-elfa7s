@@ -1,22 +1,60 @@
 <template>
-  <div class="container">
-    <section v-if="$auth.user.job === 'manager'">
+  <div class="container" :class="{ 'settings-layout': $auth.user.job === 'manager' }">
+    <aside v-if="$auth.user.job === 'manager'" class="settings-sidebar">
+      <h2 class="settings-sidebar-title">الإعدادات</h2>
+      <div class="settings-tabs" role="tablist" aria-label="الإعدادات" aria-orientation="vertical">
+      <button
+        v-for="tab in settingsTabs"
+        :id="`settings-tab-${tab.id}`"
+        :key="tab.id"
+        ref="settingsTabs"
+        type="button"
+        role="tab"
+        :aria-selected="activeTab === tab.id"
+        :aria-controls="`settings-panel-${tab.id}`"
+        :tabindex="activeTab === tab.id ? 0 : -1"
+        @click="activeTab = tab.id"
+        @keydown="onTabKeydown($event, tab.id)"
+      >
+        <font-awesome-icon :icon="tab.icon" class="settings-tab-icon" aria-hidden="true" />
+        <span>{{ tab.label }}</span>
+      </button>
+      </div>
+    </aside>
+
+    <section
+      v-if="$auth.user.job === 'manager'"
+      v-show="activeTab === 'shop'"
+      id="settings-panel-shop"
+      role="tabpanel"
+      aria-labelledby="settings-tab-shop"
+    >
       <h3>المؤسسة</h3>
 
       <form class="simple_form" @submit.prevent="updateShop">
         <fieldset :disabled="shopEdit.loading">
           <div class="form-input">
-            <label for="shop-logo">
+            <label>
               <font-awesome-icon icon="fa-solid fa-font-awesome" />
               اللوجو والشعار
             </label>
             <div class="d-flex">
               <div class="relative rounded-lg border border-dashed p-1 shadow">
-                <img
-                  :src="shopLogoPreview || shopEdit.logo || '/logo/trueemit.png'"
-                  alt="شعار المركز"
-                  class="h-20 bg-neutral-200 w-auto rounded-lg object-contain"
-                />
+                <button
+                  type="button"
+                  class="shop-logo-button group"
+                  aria-label="اختيار شعار المركز"
+                  @click="$refs.shopLogoInput.click()"
+                >
+                  <img
+                    :src="shopLogoPreview || shopEdit.logo || '/logo/trueemit.png'"
+                    alt="شعار المركز"
+                    class="h-20 bg-neutral-200 w-auto rounded-lg object-contain"
+                  />
+                  <span class="shop-logo-edit" aria-hidden="true">
+                    <font-awesome-icon :icon="['fas', 'camera']" />
+                  </span>
+                </button>
                 <button
                   v-if="shopLogoFile"
                   type="button"
@@ -32,9 +70,9 @@
             <input
               id="shop-logo"
               ref="shopLogoInput"
-              class="shop-logo-input mt-2"
               type="file"
               accept="image/*"
+              hidden
               @change="selectShopLogo"
             />
           </div>
@@ -88,9 +126,12 @@
       </form>
     </section>
 
-    <hr v-if="['manager'].includes($auth.user.job)" />
-
-    <section>
+    <section
+      v-show="$auth.user.job !== 'manager' || activeTab === 'user'"
+      id="settings-panel-user"
+      :role="$auth.user.job === 'manager' ? 'tabpanel' : null"
+      :aria-labelledby="$auth.user.job === 'manager' ? 'settings-tab-user' : null"
+    >
       <h3>المستخدم</h3>
 
       <form class="simple_form" @submit.prevent="update_user">
@@ -312,9 +353,13 @@
       </form>
     </section>
 
-    <hr v-if="['manager'].includes($auth.user.job)" />
-
-    <section v-if="['manager'].includes($auth.user.job)">
+    <section
+      v-if="$auth.user.job === 'manager'"
+      v-show="activeTab === 'cars'"
+      id="settings-panel-cars"
+      role="tabpanel"
+      aria-labelledby="settings-tab-cars"
+    >
       <h3>حذف السيارات القديمه</h3>
 
       <form class="simple_form" @submit.prevent="deleteCars">
@@ -387,6 +432,12 @@ import { mapActions } from "vuex";
 export default {
   data() {
     return {
+      activeTab: "shop",
+      settingsTabs: [
+        { id: "shop", label: "المؤسسة", icon: "fa-solid fa-store" },
+        { id: "user", label: "المستخدم", icon: "fa-solid fa-user" },
+        { id: "cars", label: "حذف السيارات القديمة", icon: "fa-solid fa-car" },
+      ],
       new_logo: "",
       user: { ...this.$auth.user, new_pass: "", loading: false },
       shopEdit: { ...this.$shop, loading: false },
@@ -408,6 +459,18 @@ export default {
     ...mapActions({
       setAlert: "alert/add",
     }),
+    onTabKeydown(event, tabId) {
+      const current = this.settingsTabs.findIndex((tab) => tab.id === tabId);
+      let next;
+      if (event.key === "ArrowDown" || event.key === "ArrowLeft") next = (current + 1) % this.settingsTabs.length;
+      else if (event.key === "ArrowUp" || event.key === "ArrowRight") next = (current - 1 + this.settingsTabs.length) % this.settingsTabs.length;
+      else if (event.key === "Home") next = 0;
+      else if (event.key === "End") next = this.settingsTabs.length - 1;
+      else return;
+      event.preventDefault();
+      this.activeTab = this.settingsTabs[next].id;
+      this.$nextTick(() => this.$refs.settingsTabs[next].focus());
+    },
     askPassword() {
       return new Promise((resolve) => {
         this.pwd.value = "";
@@ -583,6 +646,124 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.settings-layout {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 1.5em;
+  align-items: start;
+
+  > .settings-sidebar {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  > section {
+    grid-column: 2;
+    grid-row: 1;
+    min-width: 0;
+    margin: 0;
+  }
+}
+
+.settings-sidebar {
+  padding: 1em;
+  background: #fafafa;
+  border-radius: 0.4em;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.1);
+}
+
+.settings-sidebar-title {
+  margin: 0 0 0.8em;
+  padding: 0 0.6em 0.8em;
+  border-bottom: 1px solid #e2e8f0;
+  color: #334155;
+  font-weight: 700;
+}
+
+.settings-tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25em;
+
+  button {
+    display: flex;
+    align-items: center;
+    gap: 0.75em;
+    width: 100%;
+    min-height: 44px;
+    padding: 0.7em 1em;
+    color: #475569;
+    border-radius: 0.4em;
+    text-align: start;
+
+    &:hover {
+      background: #f1f5f9;
+    }
+
+    &[aria-selected="true"] {
+      color: #1d4ed8;
+      background: #dbeafe;
+      font-weight: 700;
+    }
+
+    &:focus-visible {
+      outline: 2px solid #1d4ed8;
+      outline-offset: -2px;
+    }
+  }
+}
+
+.settings-tab-icon {
+  width: 1em;
+  flex: none;
+}
+
+@media (max-width: 700px) {
+  .settings-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1em;
+
+    > .settings-sidebar,
+    > section {
+      grid-column: 1;
+      grid-row: auto;
+    }
+  }
+}
+
+.shop-logo-button {
+  display: block;
+  position: relative;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid #1d4ed8;
+    outline-offset: 2px;
+  }
+
+  &:hover .shop-logo-edit,
+  &:focus-visible .shop-logo-edit {
+    display: flex;
+  }
+}
+
+.shop-logo-edit {
+  display: none;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  justify-content: center;
+  padding: 0.5em;
+  background: rgba(250, 250, 250, 0.9);
+}
+
+@media (hover: none) {
+  .shop-logo-edit {
+    display: flex;
+  }
+}
+
 section {
   margin: 1em 0;
   padding: 1em;
@@ -638,20 +819,5 @@ section {
     position: absolute;
     pointer-events: none;
   }
-
-  [type="file"].shop-logo-input {
-    opacity: 1;
-    user-select: auto;
-    width: auto;
-    height: auto;
-    position: static;
-    pointer-events: auto;
-  }
-}
-
-hr {
-  margin: 1em;
-  border-radius: 4px;
-  border: 1px solid #738fa6;
 }
 </style>
