@@ -1,12 +1,7 @@
 const cors = require("cors");
 
 const totalsCors = cors({
-  origin: [
-    "http://localhost:3000",
-    "https://localhost:3000",
-    "http://trueemit.dev",
-    "https://trueemit.dev",
-  ],
+  origin: ["http://localhost:3000", "https://trueemit.dev"],
 });
 const defaultCors = cors({ origin: "*" });
 

@@ -57,10 +57,10 @@ listens on all interfaces and does not launch a local browser.
 - `server/utils/inspectionCenter.js` loads
   `https://trueemit.dev/api/inspection-centers/by-branch/{SHOP_BRANCH}` at startup. A missing
   branch is handled by `/not-ready`; a returned shop with no
-  manager causes creation of `user_id=admin` using `INITIAL_ADMIN_PASSWORD`. Shop data is cached
-  in memory only. `GET /api/trueemit/shop` serves that cache to the frontend. Managers can edit
-  shop details from settings; `PATCH /api/trueemit/shop` forwards allowed fields to the branch API
-  and updates the in-memory cache after a successful response.
+  manager causes creation of `user_id=admin` using `INITIAL_ADMIN_PASSWORD`. Shop data is not
+  cached: every `GET /api/trueemit/shop` reads the branch API, and that response is sent with
+  `Cache-Control: no-store`. Managers can edit shop details from settings; `PATCH /api/trueemit/shop`
+  forwards allowed fields to the branch API and returns the updated shop after a successful response.
   The manager's institution form requires password confirmation and accepts a logo URL or uploads
   a selected logo file to `https://api.trueemit.dev/cars/images`. It saves the resulting URL with
   the shop details and deletes replaced or removed logos through the same endpoint after the shop

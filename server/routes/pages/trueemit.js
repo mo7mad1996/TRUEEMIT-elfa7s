@@ -1,29 +1,15 @@
 const { attachUser, allow } = require("../../utils/auth");
 const {
-	isStale,
-	refreshInspectionCenter,
+	getInspectionCenter,
 	updateInspectionCenter,
 } = require("../../utils/inspectionCenter");
 
 module.exports = (router) => {
 	router.get("/shop", async (req, res) => {
-		// The startup snapshot is cached in memory; re-check the branch API at
-		// most once a minute so a renewed subscription (or a newly added branch)
-		// takes effect without a server restart.
-		if (isStale(global.inspectionCenter)) {
-			try {
-				await refreshInspectionCenter();
-			} catch (error) {
-				console.error("Unable to refresh inspection center:", error);
-			}
-		}
-
-		const inspectionCenter = global.inspectionCenter || {
-			shop: null,
-			status: "unconfigured",
-		};
-
-		return res.json(inspectionCenter);
+		// Nothing is cached: every request reads the branch API, and the response
+		// must not be stored by browsers or proxies either.
+		res.set("Cache-Control", "no-store");
+		return res.json(await getInspectionCenter());
 	});
 
 	router.patch("/shop", attachUser, allow("manager"), async (req, res) => {

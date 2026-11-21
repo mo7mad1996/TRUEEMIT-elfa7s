@@ -120,7 +120,7 @@ async function updateInspectionCenter(fields, fetchImpl = fetch) {
     throw new TypeError("Inspection-center name cannot be empty.");
   }
 
-  const current = global.inspectionCenter && global.inspectionCenter.shop;
+  const { shop: current } = await fetchInspectionCenter(branch, fetchImpl);
   if (!current) {
     const error = new Error("Inspection center is not available.");
     error.status = 503;
@@ -138,9 +138,7 @@ async function updateInspectionCenter(fields, fetchImpl = fetch) {
     throw new Error(`Inspection-center API returned HTTP ${response.status}`);
   }
 
-  const shop = mapInspectionCenter({ ...current, ...updates });
-  global.inspectionCenter = { shop, status: getInspectionCenterStatus(shop) };
-  return shop;
+  return mapInspectionCenter({ ...current, ...updates });
 }
 
 async function createInitialManager() {
@@ -169,35 +167,16 @@ async function createInitialManager() {
   console.log('Created the initial manager account with user_id "admin".');
 }
 
-// How often GET /api/trueemit/shop may re-check the branch API. The startup
-// fetch is cached in memory, so without this a renewed subscription would only
-// show up after a server restart.
-const REFRESH_INTERVAL = 60 * 1000;
-
-async function refreshInspectionCenter(fetchImpl = fetch) {
+// Fetches the branch from the API on every call and keeps nothing in memory, so
+// a renewed subscription or a newly added branch takes effect immediately.
+async function getInspectionCenter(fetchImpl = fetch) {
   const branch = (process.env.SHOP_BRANCH || "").trim().toLowerCase();
-  const previous = global.inspectionCenter;
-  const result = await fetchInspectionCenter(branch, fetchImpl);
-
-  // A transient network/API failure must not flip a working site to
-  // "unavailable" — keep the last known state and just retry later.
-  if (result.status === "unavailable" && previous && previous.status !== "unavailable") {
-  	global.inspectionCenter = { ...previous, fetchedAt: Date.now() };
-  } else {
-  	global.inspectionCenter = { ...result, fetchedAt: Date.now() };
-  }
-
-  return global.inspectionCenter;
-}
-
-function isStale(entry) {
-  return !entry || Date.now() - (entry.fetchedAt || 0) > REFRESH_INTERVAL;
+  return fetchInspectionCenter(branch, fetchImpl);
 }
 
 async function initialize(fetchImpl = fetch) {
   const branch = (process.env.SHOP_BRANCH || "").trim().toLowerCase();
   const result = await fetchInspectionCenter(branch, fetchImpl);
-  global.inspectionCenter = { ...result, fetchedAt: Date.now() };
 
   if (result.status === "ready") await createInitialManager();
 
@@ -207,8 +186,7 @@ async function initialize(fetchImpl = fetch) {
 module.exports = {
   createInitialManager,
   fetchInspectionCenter,
+  getInspectionCenter,
   initialize,
-  isStale,
-  refreshInspectionCenter,
   updateInspectionCenter,
 };
