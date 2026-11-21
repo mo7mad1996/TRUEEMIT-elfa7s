@@ -1,5 +1,95 @@
 <template>
   <div class="container">
+    <section v-if="$auth.user.job === 'manager'">
+      <h3>المؤسسة</h3>
+
+      <form class="simple_form" @submit.prevent="updateShop">
+        <fieldset :disabled="shopEdit.loading">
+          <div class="form-input">
+            <label for="shop-logo">
+              <font-awesome-icon icon="fa-solid fa-font-awesome" />
+              اللوجو والشعار
+            </label>
+            <div class="d-flex">
+              <div class="relative rounded-lg border border-dashed p-1 shadow">
+                <img
+                  :src="shopLogoPreview || shopEdit.logo || '/logo/trueemit.png'"
+                  alt="شعار المركز"
+                  class="h-20 bg-neutral-200 w-auto rounded-lg object-contain"
+                />
+                <button
+                  v-if="shopLogoFile"
+                  type="button"
+                  class="absolute top-0 left-0 rounded-full bg-red-50 text-red-700 flex items-center justify-center p-2"
+                  title="إلغاء اختيار الشعار"
+                  aria-label="إلغاء اختيار الشعار"
+                  @click="clearShopLogoFile"
+                >
+                  <font-awesome-icon :icon="['fas', 'xmark']" />
+                </button>
+              </div>
+            </div>
+            <input
+              id="shop-logo"
+              ref="shopLogoInput"
+              class="shop-logo-input mt-2"
+              type="file"
+              accept="image/*"
+              @change="selectShopLogo"
+            />
+          </div>
+          <div class="form-input">
+            <label for="shop-logo-url">
+              <font-awesome-icon :icon="['fas', 'link']" />
+              رابط اللوجو
+            </label>
+            <input id="shop-logo-url" v-model="shopEdit.logo" dir="ltr" placeholder="https://example.com/logo.png" />
+            <small class="text-xs text-neutral-500 px-2">
+              الصق رابط الصورة أو اختر ملفاً من الأعلى (الملف المرفوع يستبدل الرابط)
+            </small>
+          </div>
+          <div class="form-input">
+            <label for="shop-name"><font-awesome-icon icon="fa-solid fa-store" /> اسم المؤسسه</label>
+            <input id="shop-name" v-model="shopEdit.name" required />
+          </div>
+          <div class="form-input">
+            <label for="shop-phone"><font-awesome-icon icon="fa-solid fa-phone" /> أرقام الهواتف</label>
+            <input id="shop-phone" v-model="shopEdit.phone" />
+          </div>
+          <div class="form-input">
+            <label for="shop-cr"><font-awesome-icon :icon="['fas', 'building-shield']" /> سجل تجاري</label>
+            <input id="shop-cr" v-model="shopEdit.cr" />
+          </div>
+          <div class="form-input">
+            <label for="shop-address"><font-awesome-icon :icon="['fas', 'map-location-dot']" /> العنوان</label>
+            <input id="shop-address" v-model="shopEdit.address" />
+          </div>
+          <div class="form-input">
+            <label for="shop-website"><font-awesome-icon :icon="['fas', 'globe']" /> الموقع الإلكتروني</label>
+            <input id="shop-website" v-model="shopEdit.website_url" />
+          </div>
+          <div class="form-input">
+            <label for="shop-twitter"><font-awesome-icon :icon="['fab', 'twitter']" /> تويتر | X</label>
+            <input id="shop-twitter" v-model="shopEdit.twitter" />
+          </div>
+          <div class="form-input">
+            <label for="shop-tiktok"><font-awesome-icon :icon="['fab', 'tiktok']" /> تيك توك</label>
+            <input id="shop-tiktok" v-model="shopEdit.tiktok" />
+          </div>
+
+          <button type="submit" class="btn" :disabled="shopEdit.loading">
+            <Loader v-if="shopEdit.loading" />
+            <template v-else>
+              <font-awesome-icon icon="fa-solid fa-save" />
+              <span>حفظ بيانات المؤسسة</span>
+            </template>
+          </button>
+        </fieldset>
+      </form>
+    </section>
+
+    <hr v-if="['manager'].includes($auth.user.job)" />
+
     <section>
       <h3>المستخدم</h3>
 
@@ -222,78 +312,6 @@
       </form>
     </section>
 
-    <section v-if="$auth.user.job === 'manager'">
-      <h3>المؤسسة</h3>
-
-      <form class="simple_form" @submit.prevent="updateShop">
-        <fieldset :disabled="shopEdit.loading">
-          <div class="form-input">
-            <label for="shop-logo">اللوجو والشعار</label>
-            <img
-              v-if="shopLogoPreview || shopEdit.logo"
-              :src="shopLogoPreview || shopEdit.logo"
-              alt="شعار المركز"
-              class="mb-3 rounded-lg bg-white object-contain"
-            />
-            <input
-              id="shop-logo"
-              ref="shopLogoInput"
-              class="shop-logo-input"
-              type="file"
-              accept="image/*"
-              :disabled="shopEdit.loading"
-              @change="selectShopLogo"
-            />
-            <button
-              v-if="shopLogoFile || shopEdit.logo"
-              type="button"
-              class="mt-2 text-red-700 underline"
-              :disabled="shopEdit.loading"
-              @click="removeShopLogo"
-            >
-              حذف الشعار
-            </button>
-          </div>
-          <div class="form-input">
-            <label for="shop-name">اسم المركز</label>
-            <input id="shop-name" v-model="shopEdit.name" required />
-          </div>
-          <div class="form-input">
-            <label for="shop-phone">أرقام الهواتف</label>
-            <input id="shop-phone" v-model="shopEdit.phone" />
-          </div>
-          <div class="form-input">
-            <label for="shop-cr">السجل التجاري</label>
-            <input id="shop-cr" v-model="shopEdit.cr" />
-          </div>
-          <div class="form-input">
-            <label for="shop-address">العنوان</label>
-            <input id="shop-address" v-model="shopEdit.address" />
-          </div>
-          <div class="form-input">
-            <label for="shop-website">الموقع الإلكتروني</label>
-            <input id="shop-website" v-model="shopEdit.website_url" />
-          </div>
-          <div class="form-input">
-            <label for="shop-twitter">تويتر | X</label>
-            <input id="shop-twitter" v-model="shopEdit.twitter" />
-          </div>
-          <div class="form-input">
-            <label for="shop-tiktok">تيك توك</label>
-            <input id="shop-tiktok" v-model="shopEdit.tiktok" />
-          </div>
-
-          <button type="submit" class="btn" :disabled="shopEdit.loading">
-            <Loader v-if="shopEdit.loading" />
-            <template v-else>
-              <font-awesome-icon icon="fa-solid fa-save" />
-              <span>حفظ بيانات المؤسسة</span>
-            </template>
-          </button>
-        </fieldset>
-      </form>
-    </section>
-
     <hr v-if="['manager'].includes($auth.user.job)" />
 
     <section v-if="['manager'].includes($auth.user.job)">
@@ -412,7 +430,7 @@ export default {
     },
     async check_pass() {
       const pass = await this.askPassword();
-      if (pass === null) return false; // cancelled
+      if (pass === null) return null;
       return this.$axios.$post("/users/check_pass", {
         password: pass || "",
         _id: this.user._id,
@@ -456,18 +474,23 @@ export default {
       this.shopLogoFile = file;
       this.shopLogoPreview = URL.createObjectURL(file);
     },
-    removeShopLogo() {
+    clearShopLogoFile() {
       if (this.shopLogoPreview) URL.revokeObjectURL(this.shopLogoPreview);
       if (this.uploadedShopLogo) this.unusedShopLogos.push(this.uploadedShopLogo);
       this.shopLogoFile = null;
       this.shopLogoPreview = "";
       this.uploadedShopLogo = "";
-      this.shopEdit.logo = "";
       this.$refs.shopLogoInput.value = "";
     },
     async updateShop() {
       this.shopEdit.loading = true;
       try {
+        const ok = await this.check_pass();
+        if (ok === null) return;
+        if (!ok) {
+          this.setAlert({ text: "كلمة المرور خطأ", error: true });
+          return;
+        }
         const previousLogo = this.$shop.logo;
         if (this.shopLogoFile && !this.uploadedShopLogo) {
           const formData = new FormData();

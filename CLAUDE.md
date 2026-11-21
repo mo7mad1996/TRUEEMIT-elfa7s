@@ -61,9 +61,10 @@ listens on all interfaces and does not launch a local browser.
   in memory only. `GET /api/trueemit/shop` serves that cache to the frontend. Managers can edit
   shop details from settings; `PATCH /api/trueemit/shop` forwards allowed fields to the branch API
   and updates the in-memory cache after a successful response.
-  The manager's institution form uploads logo files to `https://api.trueemit.dev/cars/images`,
-  saves the returned URL with the shop details, and deletes replaced or removed logos through the
-  same endpoint after the shop update succeeds.
+  The manager's institution form requires password confirmation and accepts a logo URL or uploads
+  a selected logo file to `https://api.trueemit.dev/cars/images`. It saves the resulting URL with
+  the shop details and deletes replaced or removed logos through the same endpoint after the shop
+  update succeeds.
 - Uploaded files (car images, videos, logos, computer PDFs) are stored locally: the frontend posts
   them to `/api/upload` (`server/routes/pages/upload.js`, open route, formidable), which saves them
   under `server/upload/` and returns a root-relative `{ url }` (e.g. `/abc.jpg`) — no host is baked
