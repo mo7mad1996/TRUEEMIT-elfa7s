@@ -223,53 +223,74 @@
     </section>
 
     <section v-if="$auth.user.job === 'manager'">
-      <h3>بيانات المحل</h3>
+      <h3>المؤسسة</h3>
 
       <form class="simple_form" @submit.prevent="updateShop">
-        <div class="form-input">
-          <label>اسم المحل</label>
-          <input v-model="shopEdit.name" required />
-        </div>
-        <div class="form-input">
-          <label>رابط الشعار</label>
-          <input v-model="shopEdit.logo" />
-        </div>
-        <div class="form-input">
-          <label>رقم الهاتف</label>
-          <input v-model="shopEdit.phone" />
-        </div>
-        <div class="form-input">
-          <label>السجل التجاري</label>
-          <input v-model="shopEdit.cr" />
-        </div>
-        <div class="form-input">
-          <label>العنوان</label>
-          <input v-model="shopEdit.address" />
-        </div>
-        <div class="form-input">
-          <label>الموقع الإلكتروني</label>
-          <input v-model="shopEdit.website_url" />
-        </div>
-        <div class="form-input">
-          <label>TikTok</label>
-          <input v-model="shopEdit.tiktok" />
-        </div>
-        <div class="form-input">
-          <label>Twitter</label>
-          <input v-model="shopEdit.twitter" />
-        </div>
-        <div class="form-input">
-          <label>ملاحظات</label>
-          <textarea v-model="shopEdit.notes"></textarea>
-        </div>
+        <fieldset :disabled="shopEdit.loading">
+          <div class="form-input">
+            <label for="shop-logo">اللوجو والشعار</label>
+            <img
+              v-if="shopLogoPreview || shopEdit.logo"
+              :src="shopLogoPreview || shopEdit.logo"
+              alt="شعار المركز"
+              class="mb-3 rounded-lg bg-white object-contain"
+            />
+            <input
+              id="shop-logo"
+              ref="shopLogoInput"
+              class="shop-logo-input"
+              type="file"
+              accept="image/*"
+              :disabled="shopEdit.loading"
+              @change="selectShopLogo"
+            />
+            <button
+              v-if="shopLogoFile || shopEdit.logo"
+              type="button"
+              class="mt-2 text-red-700 underline"
+              :disabled="shopEdit.loading"
+              @click="removeShopLogo"
+            >
+              حذف الشعار
+            </button>
+          </div>
+          <div class="form-input">
+            <label for="shop-name">اسم المركز</label>
+            <input id="shop-name" v-model="shopEdit.name" required />
+          </div>
+          <div class="form-input">
+            <label for="shop-phone">أرقام الهواتف</label>
+            <input id="shop-phone" v-model="shopEdit.phone" />
+          </div>
+          <div class="form-input">
+            <label for="shop-cr">السجل التجاري</label>
+            <input id="shop-cr" v-model="shopEdit.cr" />
+          </div>
+          <div class="form-input">
+            <label for="shop-address">العنوان</label>
+            <input id="shop-address" v-model="shopEdit.address" />
+          </div>
+          <div class="form-input">
+            <label for="shop-website">الموقع الإلكتروني</label>
+            <input id="shop-website" v-model="shopEdit.website_url" />
+          </div>
+          <div class="form-input">
+            <label for="shop-twitter">تويتر | X</label>
+            <input id="shop-twitter" v-model="shopEdit.twitter" />
+          </div>
+          <div class="form-input">
+            <label for="shop-tiktok">تيك توك</label>
+            <input id="shop-tiktok" v-model="shopEdit.tiktok" />
+          </div>
 
-        <button type="submit" class="btn" :disabled="shopEdit.loading">
-          <Loader v-if="shopEdit.loading" />
-          <template v-else>
-            <font-awesome-icon icon="fa-solid fa-save" />
-            <span>حفظ بيانات المحل</span>
-          </template>
-        </button>
+          <button type="submit" class="btn" :disabled="shopEdit.loading">
+            <Loader v-if="shopEdit.loading" />
+            <template v-else>
+              <font-awesome-icon icon="fa-solid fa-save" />
+              <span>حفظ بيانات المؤسسة</span>
+            </template>
+          </button>
+        </fieldset>
       </form>
     </section>
 
@@ -351,6 +372,10 @@ export default {
       new_logo: "",
       user: { ...this.$auth.user, new_pass: "", loading: false },
       shopEdit: { ...this.$shop, loading: false },
+      shopLogoFile: null,
+      shopLogoPreview: "",
+      uploadedShopLogo: "",
+      unusedShopLogos: [],
       cars: { date: "", loading: false },
       pwd: { show: false, value: "", resolve: null },
     };
@@ -358,6 +383,9 @@ export default {
   head: () => ({
     title: "الإعدادات",
   }),
+  beforeDestroy() {
+    if (this.shopLogoPreview) URL.revokeObjectURL(this.shopLogoPreview);
+  },
   methods: {
     ...mapActions({
       setAlert: "alert/add",
@@ -419,24 +447,81 @@ export default {
         this.user.loading = false;
       }
     },
+    selectShopLogo(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      if (this.shopLogoPreview) URL.revokeObjectURL(this.shopLogoPreview);
+      if (this.uploadedShopLogo) this.unusedShopLogos.push(this.uploadedShopLogo);
+      this.uploadedShopLogo = "";
+      this.shopLogoFile = file;
+      this.shopLogoPreview = URL.createObjectURL(file);
+    },
+    removeShopLogo() {
+      if (this.shopLogoPreview) URL.revokeObjectURL(this.shopLogoPreview);
+      if (this.uploadedShopLogo) this.unusedShopLogos.push(this.uploadedShopLogo);
+      this.shopLogoFile = null;
+      this.shopLogoPreview = "";
+      this.uploadedShopLogo = "";
+      this.shopEdit.logo = "";
+      this.$refs.shopLogoInput.value = "";
+    },
     async updateShop() {
       this.shopEdit.loading = true;
       try {
+        const previousLogo = this.$shop.logo;
+        if (this.shopLogoFile && !this.uploadedShopLogo) {
+          const formData = new FormData();
+          formData.append("file", this.shopLogoFile, this.shopLogoFile.name);
+          const uploaded = await this.$axios.$post(
+            "https://api.trueemit.dev/cars/images",
+            formData,
+            { headers: { "Content-Type": "multipart/form-data" } }
+          );
+          if (!uploaded || typeof uploaded.url !== "string" || !uploaded.url) {
+            throw new Error("لم يُرجع الخادم رابط الشعار، حاول مرة أخرى");
+          }
+          this.uploadedShopLogo = uploaded.url;
+        }
         const fields = {
           name: this.shopEdit.name,
-          logo: this.shopEdit.logo,
+          logo: this.uploadedShopLogo || this.shopEdit.logo,
           phone: this.shopEdit.phone,
           cr: this.shopEdit.cr,
           address: this.shopEdit.address,
           website_url: this.shopEdit.website_url,
           tiktok: this.shopEdit.tiktok,
           twitter: this.shopEdit.twitter,
-          notes: this.shopEdit.notes,
         };
         const response = await this.$axios.$patch("/trueemit/shop", fields);
         Object.assign(this.$shop, response.shop);
         Object.assign(this.shopEdit, response.shop);
-        this.setAlert({ text: "تم تعديل بيانات المحل" });
+        if (this.shopLogoPreview) URL.revokeObjectURL(this.shopLogoPreview);
+        this.shopLogoPreview = "";
+        this.shopLogoFile = null;
+        this.uploadedShopLogo = "";
+        this.$refs.shopLogoInput.value = "";
+
+        const oldLogos = [...new Set([
+          ...this.unusedShopLogos,
+          previousLogo !== fields.logo ? previousLogo : "",
+        ])].filter((url) => url && url !== fields.logo);
+        this.unusedShopLogos = [];
+        const failedDeletes = [];
+        for (const url of oldLogos) {
+          try {
+            await this.$axios.$delete("https://api.trueemit.dev/cars/images", {
+              data: { url },
+              headers: { "Content-Type": "application/json" },
+            });
+          } catch (err) {
+            console.error(err);
+            failedDeletes.push(url);
+          }
+        }
+        this.unusedShopLogos = failedDeletes;
+        this.setAlert(failedDeletes.length
+          ? { text: "تم حفظ بيانات المؤسسة، لكن تعذر حذف الشعار السابق. حاول الحفظ مرة أخرى", error: true }
+          : { text: "تم تعديل بيانات المؤسسة" });
       } catch (err) {
         this.setAlert({
           error: true,
@@ -529,6 +614,15 @@ section {
     height: 0;
     position: absolute;
     pointer-events: none;
+  }
+
+  [type="file"].shop-logo-input {
+    opacity: 1;
+    user-select: auto;
+    width: auto;
+    height: auto;
+    position: static;
+    pointer-events: auto;
   }
 }
 
