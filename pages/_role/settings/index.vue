@@ -260,11 +260,11 @@
                 >
                   <li class="flex flex-col gap-2 border-r pr-4">
                     <div>
-                      {{ item.name }}
+                      {{ item?.name }}
                     </div>
 
                     <div>
-                      {{ item.name_en }}
+                      {{ item?.name_en }}
                     </div>
                   </li>
 
@@ -418,7 +418,9 @@ export default {
         this.pwd.value = "";
         this.pwd.resolve = resolve;
         this.pwd.show = true;
-        this.$nextTick(() => this.$refs.pwdInput && this.$refs.pwdInput.focus());
+        this.$nextTick(
+          () => this.$refs.pwdInput && this.$refs.pwdInput.focus(),
+        );
       });
     },
     confirmPassword() {
@@ -506,7 +508,6 @@ export default {
       this.new_logo = "";
       if (this.$refs.file) this.$refs.file.value = "";
     },
-
   },
 };
 </script>
