@@ -49,8 +49,13 @@
                 <button
                   type="button"
                   class="shop-logo-button group"
-                  aria-label="اختيار شعار المركز"
-                  @click="$refs.shopLogoInput.click()"
+                  :disabled="shopLogoDeleting"
+                  :aria-label="
+                    shopEdit.logo && !shopLogoFile
+                      ? 'حذف شعار المركز'
+                      : 'اختيار شعار المركز'
+                  "
+                  @click="handleShopLogoClick"
                 >
                   <img
                     :src="
@@ -59,8 +64,21 @@
                     alt="شعار المركز"
                     class="h-20 bg-neutral-200 w-auto rounded-lg object-contain"
                   />
+                  <!-- camera to upload when there is no logo yet, trash to
+                  delete (and immediately save) when one is already set -->
                   <span class="shop-logo-edit" aria-hidden="true">
-                    <font-awesome-icon :icon="['fas', 'camera']" />
+                    <font-awesome-icon
+                      v-if="shopLogoDeleting"
+                      :icon="['fas', 'spinner']"
+                      spin
+                    />
+                    <font-awesome-icon
+                      v-else
+                      :icon="[
+                        'fas',
+                        shopEdit.logo && !shopLogoFile ? 'trash' : 'camera',
+                      ]"
+                    />
                   </span>
                 </button>
                 <button
@@ -72,16 +90,6 @@
                   @click="clearShopLogoFile"
                 >
                   <font-awesome-icon :icon="['fas', 'xmark']" />
-                </button>
-                <button
-                  v-else-if="shopEdit.logo"
-                  type="button"
-                  class="absolute top-0 left-0 rounded-full bg-red-50 text-red-700 flex items-center justify-center p-2"
-                  title="حذف الشعار"
-                  aria-label="حذف الشعار"
-                  @click="removeShopLogo"
-                >
-                  <font-awesome-icon :icon="['fas', 'trash']" />
                 </button>
               </div>
             </div>
@@ -457,6 +465,7 @@ export default {
       shopLogoPreview: "",
       uploadedShopLogo: "",
       unusedShopLogos: [],
+      shopLogoDeleting: false,
       pwd: { show: false, value: "", resolve: null },
     };
   },
@@ -563,19 +572,78 @@ export default {
       this.uploadedShopLogo = "";
       this.$refs.shopLogoInput.value = "";
     },
-    // Clears the currently saved logo. The actual file on the image host is
-    // only removed once "حفظ بيانات المؤسسة" succeeds (see updateShop), same
-    // as a replaced logo, so a cancelled edit never deletes anything.
-    removeShopLogo() {
-      if (this.shopLogoPreview) URL.revokeObjectURL(this.shopLogoPreview);
-      if (this.uploadedShopLogo)
-        this.unusedShopLogos.push(this.uploadedShopLogo);
-      if (this.shopEdit.logo) this.unusedShopLogos.push(this.shopEdit.logo);
-      this.shopLogoFile = null;
-      this.shopLogoPreview = "";
-      this.uploadedShopLogo = "";
-      this.shopEdit.logo = "";
-      this.$refs.shopLogoInput.value = "";
+    // The logo button does one of two things depending on whether a logo is
+    // already set: open the file picker to upload one, or delete the current
+    // one (see removeShopLogo). A pending, not-yet-saved pick always opens
+    // the picker again so the user can change their selection.
+    handleShopLogoClick() {
+      if (this.shopEdit.logo && !this.shopLogoFile) return this.removeShopLogo();
+      this.$refs.shopLogoInput.click();
+    },
+    buildShopFields(overrides = {}) {
+      return {
+        name: this.shopEdit.name,
+        logo: this.shopEdit.logo,
+        phone: this.shopEdit.phone,
+        cr: this.shopEdit.cr,
+        address: this.shopEdit.address,
+        website_url: this.shopEdit.website_url,
+        tiktok: this.shopEdit.tiktok,
+        twitter: this.shopEdit.twitter,
+        ...overrides,
+      };
+    },
+    // Deletes the current logo right away and saves the shop with an empty
+    // logo immediately — unlike picking a new file, this does not wait for
+    // "حفظ بيانات المؤسسة" so the removal isn't lost if the manager never
+    // presses save.
+    async removeShopLogo() {
+      if (!this.shopEdit.logo || this.shopLogoDeleting || this.shopEdit.loading)
+        return;
+      this.shopLogoDeleting = true;
+      this.shopEdit.loading = true;
+      try {
+        const ok = await this.check_pass();
+        if (ok === null) return;
+        if (!ok) {
+          this.setAlert({ text: "كلمة المرور خطأ", error: true });
+          return;
+        }
+
+        const logoToDelete = this.shopEdit.logo;
+        const fields = this.buildShopFields({ logo: "" });
+        const response = await this.$axios.$patch("/trueemit/shop", fields);
+        Object.assign(this.$shop, response.shop);
+        Object.assign(this.shopEdit, response.shop);
+
+        if (this.shopLogoPreview) URL.revokeObjectURL(this.shopLogoPreview);
+        this.shopLogoFile = null;
+        this.shopLogoPreview = "";
+        this.uploadedShopLogo = "";
+        if (this.$refs.shopLogoInput) this.$refs.shopLogoInput.value = "";
+
+        try {
+          await this.$axios.$delete("https://api.trueemit.dev/cars/images", {
+            data: { url: logoToDelete },
+            headers: { "Content-Type": "application/json" },
+          });
+        } catch (err) {
+          // the shop record is already saved without a logo — only cleaning
+          // up the old file on the image host failed, nothing left to retry
+          console.error(err);
+        }
+
+        this.setAlert({ text: "تم حذف شعار المؤسسة" });
+      } catch (err) {
+        this.setAlert({
+          error: true,
+          text: err.response?.data?.error || err.message,
+        });
+        console.error(err);
+      } finally {
+        this.shopLogoDeleting = false;
+        this.shopEdit.loading = false;
+      }
     },
     async updateShop() {
       this.shopEdit.loading = true;
@@ -600,16 +668,9 @@ export default {
           }
           this.uploadedShopLogo = uploaded.url;
         }
-        const fields = {
-          name: this.shopEdit.name,
+        const fields = this.buildShopFields({
           logo: this.uploadedShopLogo || this.shopEdit.logo,
-          phone: this.shopEdit.phone,
-          cr: this.shopEdit.cr,
-          address: this.shopEdit.address,
-          website_url: this.shopEdit.website_url,
-          tiktok: this.shopEdit.tiktok,
-          twitter: this.shopEdit.twitter,
-        };
+        });
         const response = await this.$axios.$patch("/trueemit/shop", fields);
         Object.assign(this.$shop, response.shop);
         Object.assign(this.shopEdit, response.shop);
