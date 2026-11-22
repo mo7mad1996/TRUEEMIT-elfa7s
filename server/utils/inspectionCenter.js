@@ -102,7 +102,7 @@ async function updateInspectionCenter(fields, fetchImpl = fetch) {
 	}
 
 	const response = await fetchImpl(`${API_URL}/${encodeURIComponent(branch)}`, {
-		method: "PATCH",
+		method: "POST",
 		headers: { "Content-Type": "application/json" },
 		body: JSON.stringify(updates),
 		timeout: 10000,
