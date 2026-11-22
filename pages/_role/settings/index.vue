@@ -1,6 +1,11 @@
 <template>
   <div class="container">
-    <div v-if="$auth.user.job === 'manager'" class="settings-tabs" role="tablist" aria-label="الإعدادات">
+    <div
+      v-if="$auth.user.job === 'manager'"
+      class="settings-tabs"
+      role="tablist"
+      aria-label="الإعدادات"
+    >
       <button
         v-for="tab in settingsTabs"
         :id="`settings-tab-${tab.id}`"
@@ -14,7 +19,11 @@
         @click="activeTab = tab.id"
         @keydown="onTabKeydown($event, tab.id)"
       >
-        <font-awesome-icon :icon="tab.icon" class="settings-tab-icon" aria-hidden="true" />
+        <font-awesome-icon
+          :icon="tab.icon"
+          class="settings-tab-icon"
+          aria-hidden="true"
+        />
         <span>{{ tab.label }}</span>
       </button>
     </div>
@@ -44,7 +53,9 @@
                   @click="$refs.shopLogoInput.click()"
                 >
                   <img
-                    :src="shopLogoPreview || shopEdit.logo || '/logo/trueemit.png'"
+                    :src="
+                      shopLogoPreview || shopEdit.logo || '/logo/trueemit.png'
+                    "
                     alt="شعار المركز"
                     class="h-20 bg-neutral-200 w-auto rounded-lg object-contain"
                   />
@@ -62,6 +73,16 @@
                 >
                   <font-awesome-icon :icon="['fas', 'xmark']" />
                 </button>
+                <button
+                  v-else-if="shopEdit.logo"
+                  type="button"
+                  class="absolute top-0 left-0 rounded-full bg-red-50 text-red-700 flex items-center justify-center p-2"
+                  title="حذف الشعار"
+                  aria-label="حذف الشعار"
+                  @click="removeShopLogo"
+                >
+                  <font-awesome-icon :icon="['fas', 'trash']" />
+                </button>
               </div>
             </div>
             <input
@@ -73,7 +94,7 @@
               @change="selectShopLogo"
             />
           </div>
-          <div class="form-input">
+          <!-- <div class="form-input">
             <label for="shop-logo-url">
               <font-awesome-icon :icon="['fas', 'link']" />
               رابط اللوجو
@@ -82,33 +103,51 @@
             <small class="text-xs text-neutral-500 px-2">
               الصق رابط الصورة أو اختر ملفاً من الأعلى (الملف المرفوع يستبدل الرابط)
             </small>
-          </div>
+          </div> -->
           <div class="form-input">
-            <label for="shop-name"><font-awesome-icon icon="fa-solid fa-store" /> اسم المؤسسه</label>
+            <label for="shop-name"
+              ><font-awesome-icon icon="fa-solid fa-store" /> اسم المؤسسه</label
+            >
             <input id="shop-name" v-model="shopEdit.name" required />
           </div>
           <div class="form-input">
-            <label for="shop-phone"><font-awesome-icon icon="fa-solid fa-phone" /> أرقام الهواتف</label>
+            <label for="shop-phone"
+              ><font-awesome-icon icon="fa-solid fa-phone" /> أرقام
+              الهواتف</label
+            >
             <input id="shop-phone" v-model="shopEdit.phone" />
           </div>
           <div class="form-input">
-            <label for="shop-cr"><font-awesome-icon :icon="['fas', 'building-shield']" /> سجل تجاري</label>
+            <label for="shop-cr"
+              ><font-awesome-icon :icon="['fas', 'building-shield']" /> سجل
+              تجاري</label
+            >
             <input id="shop-cr" v-model="shopEdit.cr" />
           </div>
           <div class="form-input">
-            <label for="shop-address"><font-awesome-icon :icon="['fas', 'map-location-dot']" /> العنوان</label>
+            <label for="shop-address"
+              ><font-awesome-icon :icon="['fas', 'map-location-dot']" />
+              العنوان</label
+            >
             <input id="shop-address" v-model="shopEdit.address" />
           </div>
           <div class="form-input">
-            <label for="shop-website"><font-awesome-icon :icon="['fas', 'globe']" /> الموقع الإلكتروني</label>
+            <label for="shop-website"
+              ><font-awesome-icon :icon="['fas', 'globe']" /> الموقع
+              الإلكتروني</label
+            >
             <input id="shop-website" v-model="shopEdit.website_url" />
           </div>
           <div class="form-input">
-            <label for="shop-twitter"><font-awesome-icon :icon="['fab', 'twitter']" /> تويتر | X</label>
+            <label for="shop-twitter"
+              ><font-awesome-icon :icon="['fab', 'twitter']" /> تويتر | X</label
+            >
             <input id="shop-twitter" v-model="shopEdit.twitter" />
           </div>
           <div class="form-input">
-            <label for="shop-tiktok"><font-awesome-icon :icon="['fab', 'tiktok']" /> تيك توك</label>
+            <label for="shop-tiktok"
+              ><font-awesome-icon :icon="['fab', 'tiktok']" /> تيك توك</label
+            >
             <input id="shop-tiktok" v-model="shopEdit.tiktok" />
           </div>
 
@@ -127,7 +166,9 @@
       v-show="$auth.user.job !== 'manager' || activeTab === 'user'"
       id="settings-panel-user"
       :role="$auth.user.job === 'manager' ? 'tabpanel' : null"
-      :aria-labelledby="$auth.user.job === 'manager' ? 'settings-tab-user' : null"
+      :aria-labelledby="
+        $auth.user.job === 'manager' ? 'settings-tab-user' : null
+      "
     >
       <h3>المستخدم</h3>
 
@@ -432,8 +473,11 @@ export default {
     onTabKeydown(event, tabId) {
       const current = this.settingsTabs.findIndex((tab) => tab.id === tabId);
       let next;
-      if (event.key === "ArrowLeft") next = (current + 1) % this.settingsTabs.length;
-      else if (event.key === "ArrowRight") next = (current - 1 + this.settingsTabs.length) % this.settingsTabs.length;
+      if (event.key === "ArrowLeft")
+        next = (current + 1) % this.settingsTabs.length;
+      else if (event.key === "ArrowRight")
+        next =
+          (current - 1 + this.settingsTabs.length) % this.settingsTabs.length;
       else if (event.key === "Home") next = 0;
       else if (event.key === "End") next = this.settingsTabs.length - 1;
       else return;
@@ -446,7 +490,9 @@ export default {
         this.pwd.value = "";
         this.pwd.resolve = resolve;
         this.pwd.show = true;
-        this.$nextTick(() => this.$refs.pwdInput && this.$refs.pwdInput.focus());
+        this.$nextTick(
+          () => this.$refs.pwdInput && this.$refs.pwdInput.focus(),
+        );
       });
     },
     confirmPassword() {
@@ -502,17 +548,33 @@ export default {
       const file = event.target.files[0];
       if (!file) return;
       if (this.shopLogoPreview) URL.revokeObjectURL(this.shopLogoPreview);
-      if (this.uploadedShopLogo) this.unusedShopLogos.push(this.uploadedShopLogo);
+      if (this.uploadedShopLogo)
+        this.unusedShopLogos.push(this.uploadedShopLogo);
       this.uploadedShopLogo = "";
       this.shopLogoFile = file;
       this.shopLogoPreview = URL.createObjectURL(file);
     },
     clearShopLogoFile() {
       if (this.shopLogoPreview) URL.revokeObjectURL(this.shopLogoPreview);
-      if (this.uploadedShopLogo) this.unusedShopLogos.push(this.uploadedShopLogo);
+      if (this.uploadedShopLogo)
+        this.unusedShopLogos.push(this.uploadedShopLogo);
       this.shopLogoFile = null;
       this.shopLogoPreview = "";
       this.uploadedShopLogo = "";
+      this.$refs.shopLogoInput.value = "";
+    },
+    // Clears the currently saved logo. The actual file on the image host is
+    // only removed once "حفظ بيانات المؤسسة" succeeds (see updateShop), same
+    // as a replaced logo, so a cancelled edit never deletes anything.
+    removeShopLogo() {
+      if (this.shopLogoPreview) URL.revokeObjectURL(this.shopLogoPreview);
+      if (this.uploadedShopLogo)
+        this.unusedShopLogos.push(this.uploadedShopLogo);
+      if (this.shopEdit.logo) this.unusedShopLogos.push(this.shopEdit.logo);
+      this.shopLogoFile = null;
+      this.shopLogoPreview = "";
+      this.uploadedShopLogo = "";
+      this.shopEdit.logo = "";
       this.$refs.shopLogoInput.value = "";
     },
     async updateShop() {
@@ -531,7 +593,7 @@ export default {
           const uploaded = await this.$axios.$post(
             "https://api.trueemit.dev/cars/images",
             formData,
-            { headers: { "Content-Type": "multipart/form-data" } }
+            { headers: { "Content-Type": "multipart/form-data" } },
           );
           if (!uploaded || typeof uploaded.url !== "string" || !uploaded.url) {
             throw new Error("لم يُرجع الخادم رابط الشعار، حاول مرة أخرى");
@@ -557,10 +619,12 @@ export default {
         this.uploadedShopLogo = "";
         this.$refs.shopLogoInput.value = "";
 
-        const oldLogos = [...new Set([
-          ...this.unusedShopLogos,
-          previousLogo !== fields.logo ? previousLogo : "",
-        ])].filter((url) => url && url !== fields.logo);
+        const oldLogos = [
+          ...new Set([
+            ...this.unusedShopLogos,
+            previousLogo !== fields.logo ? previousLogo : "",
+          ]),
+        ].filter((url) => url && url !== fields.logo);
         this.unusedShopLogos = [];
         const failedDeletes = [];
         for (const url of oldLogos) {
@@ -575,9 +639,14 @@ export default {
           }
         }
         this.unusedShopLogos = failedDeletes;
-        this.setAlert(failedDeletes.length
-          ? { text: "تم حفظ بيانات المؤسسة، لكن تعذر حذف الشعار السابق. حاول الحفظ مرة أخرى", error: true }
-          : { text: "تم تعديل بيانات المؤسسة" });
+        this.setAlert(
+          failedDeletes.length
+            ? {
+                text: "تم حفظ بيانات المؤسسة، لكن تعذر حذف الشعار السابق. حاول الحفظ مرة أخرى",
+                error: true,
+              }
+            : { text: "تم تعديل بيانات المؤسسة" },
+        );
       } catch (err) {
         this.setAlert({
           error: true,
