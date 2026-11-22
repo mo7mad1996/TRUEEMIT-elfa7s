@@ -19,7 +19,7 @@ a
 
 			<div class="text-center flex-1 text-lg">
 				<h3 class="">{{ $shop.name }}</h3>
-				<p class="opacity-60 text-sm">{{ $auth.user.name }}</p>
+				<p class="opacity-60 text-sm">{{ $auth.user?.name }}</p>
 			</div>
 
 			<div class="flex flex-1 justify-end relative" v-click-outside="() => (menu = false)">

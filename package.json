@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "nodemon server",
-    "build": "nuxt build",
+    "build": "puppeteer browsers install chrome-headless-shell && nuxt build",
     "start": "node server"
   },
   "dependencies": {

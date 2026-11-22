@@ -127,6 +127,10 @@ export default {
 			this.pdfLoading = true;
 
 			try {
+				await this.waitForContent();
+				if (!this.$refs.target_pdf || !this.$refs.target_pdf.firstElementChild) {
+					throw new Error("Report content is not available");
+				}
 				const id = this.$route.params.id;
 
 				// Send only the report content (the target_pdf wrapper), rebuilt
@@ -209,6 +213,10 @@ export default {
 				URL.revokeObjectURL(url);
 			} catch (e) {
 				console.error(e);
+				this.$store.dispatch("alert/add", {
+					text: "تعذر تنزيل ملف PDF. حاول مرة أخرى أو راجع سجلات الخادم.",
+					error: true,
+				});
 			} finally {
 				this.pdfLoading = false;
 			}

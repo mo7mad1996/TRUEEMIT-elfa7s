@@ -53,19 +53,32 @@ module.exports = (router) => {
   });
 
   router.get("/user", async (req, res) => {
-    // get auth token
     const token = req.headers.authorization;
-    if (!token)
-      return res.json({
-        error: "Not Authorized",
-      });
+    if (!token) return res.status(401).json({ error: "Not Authorized" });
 
-    // get id from the token
-    const { id } = JWT.verify(token, process.env.SECRET);
+    let payload;
+    try {
+      payload = JWT.verify(token.replace(/^Bearer\s+/i, ""), process.env.SECRET);
+    } catch (error) {
+      if (error instanceof JWT.JsonWebTokenError) {
+        return res.status(401).json({ error: "Not Authorized" });
+      }
+      console.error("تعذر التحقق من رمز الدخول:", error);
+      return res.status(500).json({ error: "تعذر التحقق من رمز الدخول" });
+    }
 
-    // get user from id
-    const user = await User.findById(id);
-    res.json({ user });
+    if (!payload || !mongoose.isValidObjectId(payload.id)) {
+      return res.status(401).json({ error: "Not Authorized" });
+    }
+
+    try {
+      const user = await User.findById(payload.id);
+      if (!user) return res.status(401).json({ error: "Not Authorized" });
+      return res.json({ user });
+    } catch (error) {
+      console.error("تعذر تحميل المستخدم:", error);
+      return res.status(500).json({ error: "تعذر تحميل المستخدم" });
+    }
   });
 
   router.post("/check_id", async (req, res) => {

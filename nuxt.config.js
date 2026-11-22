@@ -45,7 +45,7 @@ function pickLanIP() {
 const IP = pickLanIP();
 const port = process.env.PORT || 3000;
 
-const baseURL = process.env.BASE_URL || `http://${IP}:${port}/api`;
+const baseURL = process.env.BASE_URL || `http://127.0.0.1:${port}/api`;
 
 module.exports = {
 	server: {
@@ -148,6 +148,12 @@ module.exports = {
 	},
 
 	auth: {
+		cookie: {
+			options: {
+				maxAge: 60 * 60 * 24 * 365,
+				sameSite: "lax",
+			},
+		},
 		redirect: {
 			login: "/login",
 			logout: "/login",
@@ -158,6 +164,7 @@ module.exports = {
 					property: "token",
 					global: true,
 					type: "",
+					maxAge: 60 * 60 * 24 * 365,
 				},
 				endpoints: {
 					login: { url: "/users/login", method: "post", propertyName: "token" },

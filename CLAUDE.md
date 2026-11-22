@@ -14,7 +14,8 @@ cars, clients and statistics, and a printed/PDF report is produced for each car.
 
 - `npm run dev`: `nodemon server`. With `NODE_ENV=development` this builds Nuxt in-process and
   serves on port 3000.
-- `npm run build`: `nuxt build` (production bundle).
+- `npm run build`: installs Puppeteer's pinned Chrome headless shell in `.cache/puppeteer`, then builds the
+  production bundle. The cache must be included in the deployed project, including on Render.
 - `npm start`: `node server`.
 - `install.bat`: the deployment script. It renames `.env.pro` to `.env`, runs install and build,
   runs `node remove.js` (which **deletes the source folders** `pages/`, `components/`, `.git`,
@@ -45,6 +46,10 @@ listens on all interfaces and does not launch a local browser.
 - Auth: JWT via `@nuxtjs/auth-next` local strategy (`/api/users/login`, `/api/users/user`). Only
   `cars-exclusive.js` enforces roles server-side, using `attachUser` + `allow(...jobs)` from
   `server/utils/auth.js`. The other routes are open.
+- Login cookies and the client-side token lifetime are one year. Existing sessions may need one
+  fresh login to replace their old 30-minute expiry. JWTs themselves currently have no server-side
+  expiry; keep `SECRET` stable across deployments and protect it. The optional `BASE_URL` override
+  must point to the server's own API at its actual listening port for server-rendered pages.
 - The car **list** endpoints `GET /api/cars` and `GET /api/cars-exclusive` are paginated and
   filterable: they return `{ data, total, page, pages, limit }` (not a bare array), built from
   `server/utils/carQuery.js` (`buildCarFilter` + `parsePaging`). Query params: `page`, `limit`,
