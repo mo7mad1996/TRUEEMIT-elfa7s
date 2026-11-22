@@ -23,7 +23,7 @@
 				</button>
 
 				<button
-					v-if="['engineer'].includes($auth.user.job)"
+					v-if="['engineer'].includes($auth.user?.job)"
 					class="btn !bg-neutral-800 hover:!bg-neutral-800 !border-neutral-800 !text-neutral-300 font-light"
 					@click="lang = lang == 'ar' ? 'en' : 'ar'"
 				>
@@ -31,7 +31,7 @@
 					<div class="transition-all" :class="{ 'text-neutral-600': lang == 'ar' }">ENGLISH</div>
 				</button>
 
-				<ServerActions v-if="car && $auth.user.job == 'exclusive'" :car="car" />
+				<ServerActions v-if="car && $auth.user?.job == 'exclusive'" :car="car" />
 			</div>
 
 			<div ref="target_pdf">
