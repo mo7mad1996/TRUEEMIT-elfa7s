@@ -49,7 +49,7 @@ function getInspectionCenterStatus(shop) {
 async function fetchInspectionCenter(branch, fetchImpl = fetch) {
   if (!branch) return { shop: null, status: "unconfigured" };
   if (!BRANCH_PATTERN.test(branch)) {
-    console.error("SHOP_BRANCH must be a valid subdomain.");
+    console.error("يجب أن يكون SHOP_BRANCH نطاقًا فرعيًا صالحًا.");
     return { shop: null, status: "invalid_branch" };
   }
 
@@ -63,7 +63,7 @@ async function fetchInspectionCenter(branch, fetchImpl = fetch) {
 
     if (response.status === 404) return { shop: null, status: "not_found" };
     if (!response.ok) {
-      throw new Error(`Inspection-center API returned HTTP ${response.status}`);
+      throw new Error(`أعاد واجهة برمجة مراكز الفحص استجابة HTTP ${response.status}`);
     }
 
     const result = await response.json();
@@ -75,13 +75,13 @@ async function fetchInspectionCenter(branch, fetchImpl = fetch) {
       !item._id ||
       !item.name
     ) {
-      throw new Error("Inspection-center API returned an invalid item");
+      throw new Error("أعادت واجهة برمجة مراكز الفحص عنصرًا غير صالح");
     }
 
     const shop = mapInspectionCenter(item);
     return { shop, status: getInspectionCenterStatus(shop) };
   } catch (error) {
-    console.error(`Unable to load inspection center for "${branch}":`, error);
+    console.error(`تعذر تحميل مركز الفحص للفرع "${branch}":`, error);
     return { shop: null, status: "unavailable" };
   }
 }
@@ -89,12 +89,12 @@ async function fetchInspectionCenter(branch, fetchImpl = fetch) {
 async function updateInspectionCenter(fields, fetchImpl = fetch) {
   const branch = (process.env.SHOP_BRANCH || "").trim().toLowerCase();
   if (!BRANCH_PATTERN.test(branch)) {
-    const error = new Error("SHOP_BRANCH must be a valid subdomain.");
+    const error = new Error("يجب أن يكون SHOP_BRANCH نطاقًا فرعيًا صالحًا.");
     error.status = 503;
     throw error;
   }
   if (!fields || typeof fields !== "object" || Array.isArray(fields)) {
-    throw new TypeError("Inspection-center update must be an object.");
+    throw new TypeError("يجب أن يكون تحديث مركز الفحص كائنًا (object).");
   }
 
   const updates = {};
@@ -102,7 +102,7 @@ async function updateInspectionCenter(fields, fetchImpl = fetch) {
     if (Object.prototype.hasOwnProperty.call(fields, field)) {
       if (typeof fields[field] !== "string") {
         throw new TypeError(
-          `Inspection-center field "${field}" must be a string.`,
+          `يجب أن يكون الحقل "${field}" في مركز الفحص نصًا (string).`,
         );
       }
       updates[field] = fields[field];
@@ -110,19 +110,19 @@ async function updateInspectionCenter(fields, fetchImpl = fetch) {
   }
   if (!Object.keys(updates).length) {
     throw new TypeError(
-      "At least one editable inspection-center field is required.",
+      "يجب توفير حقل واحد على الأقل قابل للتعديل في مركز الفحص.",
     );
   }
   if (
     Object.prototype.hasOwnProperty.call(updates, "name") &&
     !updates.name.trim()
   ) {
-    throw new TypeError("Inspection-center name cannot be empty.");
+    throw new TypeError("لا يمكن أن يكون اسم مركز الفحص فارغًا.");
   }
 
   const { shop: current } = await fetchInspectionCenter(branch, fetchImpl);
   if (!current) {
-    const error = new Error("Inspection center is not available.");
+    const error = new Error("مركز الفحص غير متاح حاليًا.");
     error.status = 503;
     throw error;
   }
@@ -135,7 +135,7 @@ async function updateInspectionCenter(fields, fetchImpl = fetch) {
   });
 
   if (!response.ok) {
-    throw new Error(`Inspection-center API returned HTTP ${response.status}`);
+    throw new Error(`أعاد واجهة برمجة مراكز الفحص استجابة HTTP ${response.status}`);
   }
 
   return mapInspectionCenter({ ...current, ...updates });
@@ -147,13 +147,13 @@ async function createInitialManager() {
 
   if (await User.exists({ user_id: "admin" })) {
     throw new Error(
-      'Cannot create the initial manager: user_id "admin" is already in use.',
+      'لا يمكن إنشاء حساب المدير الأولي: معرّف المستخدم "admin" مستخدم بالفعل.',
     );
   }
 
   const password = process.env.INITIAL_ADMIN_PASSWORD;
   if (!password) {
-    throw new Error("Set INITIAL_ADMIN_PASSWORD creating the first manager.");
+    throw new Error("يجب تعيين INITIAL_ADMIN_PASSWORD لإنشاء أول مدير.");
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -164,7 +164,7 @@ async function createInitialManager() {
     job: "manager",
   });
 
-  console.log('Created the initial manager account with user_id "admin".');
+  console.log('تم إنشاء حساب المدير الأولي بمعرّف المستخدم "admin".');
 }
 
 // Fetches the branch from the API on every call and keeps nothing in memory, so

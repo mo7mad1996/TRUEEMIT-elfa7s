@@ -18,7 +18,7 @@ module.exports = (router) => {
 			return res.json({ shop });
 		} catch (error) {
 			const status = error.status || (error instanceof TypeError ? 400 : 502);
-			if (status >= 500) console.error("Unable to update inspection center:", error);
+			if (status >= 500) console.error("تعذر تحديث مركز الفحص:", error);
 			return res.status(status).json({ error: error.message });
 		}
 	});
