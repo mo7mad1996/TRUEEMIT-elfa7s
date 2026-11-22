@@ -6,7 +6,7 @@
 				@dragenter="handleDragEnter"
 				@dragover="handleDragOver"
 				@dragleave="handleDragLeave"
-				@drop="handleDrop"
+				@drop.stop="handleDrop"
 			>
 				<div class="drop-content">
 					<div class="drop-icon">
@@ -29,7 +29,7 @@
 					<input
 						type="file"
 						@change="handleFileSelect"
-						multiple
+						:multiple="!single"
 						class="file-input"
 						:accept="accept"
 						:disabled="loading"
@@ -51,7 +51,7 @@
 			@dragenter="handleDragEnter"
 			@dragover="handleDragOver"
 			@dragleave="handleDragLeave"
-			@drop="handleDrop"
+			@drop.stop="handleDrop"
 		>
 			<div class="drag-overlay-content">
 				<div class="drag-overlay-icon">
@@ -88,7 +88,7 @@ export default {
 	name: "FileDropAble",
 	// accept / loadingText let the same uploader serve images and videos —
 	// the endpoint itself takes any file
-	props: ["id", "accept", "loadingText"],
+	props: ["id", "accept", "loadingText", "single", "videoOnly"],
 	data() {
 		return {
 			isDragOver: false,
@@ -132,13 +132,22 @@ export default {
 			const target = e.target;
 			if (target.files) {
 				const selectedFiles = Array.from(target.files);
+				target.value = "";
 				this.appendFiles(selectedFiles);
 			}
 		},
 
 		async appendFiles(files) {
 			const list = Array.from(files);
-			if (!list.length) return;
+			if (!list.length || this.loading) return;
+			if (this.single && list.length !== 1) {
+				this.setAlert({ text: "يرجى اختيار ملف فيديو واحد", error: true });
+				return;
+			}
+			if (this.videoOnly && list.some((file) => !file.type.startsWith("video/"))) {
+				this.setAlert({ text: "يرجى اختيار ملف فيديو صالح", error: true });
+				return;
+			}
 
 			this.loading = true;
 			this.$emit("loading", true);
@@ -261,7 +270,7 @@ export default {
 		window.addEventListener("drop", this.handleWindowDrop);
 	},
 
-	beforeUnmount() {
+	beforeDestroy() {
 		window.removeEventListener("dragenter", this.handleWindowDragEnter);
 		window.removeEventListener("dragover", this.handleWindowDragOver);
 		window.removeEventListener("dragleave", this.handleWindowDragLeave);

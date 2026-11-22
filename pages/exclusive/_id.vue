@@ -1,38 +1,63 @@
 <template>
 	<div v-if="car">
-		<EngineerHeader :car="car" />
-		<FirstPage :car="car" v-if="car?.service != 'محركات'" />
-		<secondPage :car="car" />
-		<Files :car="car" />
-		<Videos :car="car" />
-		<Sections :car="car" />
-
-		<div class="container sticky bottom-4 flex gap-4 justify-center">
-			<button :disabled="loading" @click="save" class="btn d-block bg-green-600">
-				<Loader v-show="loading" />
-
-				<div v-show="!loading">
-					<span v-if="!car.updated && car.saved">
-						طباعه
-						<font-awesome-icon :icon="['fas', 'print']" />
-					</span>
-
-					<span v-else>
-						حفظ
-						<font-awesome-icon :icon="['fas', 'floppy-disk']" />
-					</span>
-				</div>
-			</button>
-
-			<button
-				v-if="car.saved || !car.updated"
-				@click="$router.push('/exclusive')"
-				class="btn d-block red"
-			>
-				رجوع
-				<font-awesome-icon :icon="['fas', 'arrow-left']" />
-			</button>
+		<div
+			v-if="requiresVideo"
+			class="required-video-overlay"
+			role="dialog"
+			aria-modal="true"
+			aria-labelledby="required-video-title"
+			@keydown.tab.prevent
+		>
+			<div class="required-video-dialog">
+				<h2 id="required-video-title" class="text-xl font-bold">إضافة فيديو السيارة</h2>
+				<p>يجب رفع فيديو للسيارة قبل المتابعة.</p>
+				<FileDropAble
+					ref="requiredVideoUpload"
+					:id="car._id"
+					:single="true"
+					:video-only="true"
+					accept="video/*"
+					loading-text="جاري رفع الفيديو..."
+					@input="addRequiredVideo"
+				/>
+			</div>
 		</div>
+
+		<template v-else>
+			<EngineerHeader :car="car" />
+			<FirstPage :car="car" v-if="car?.service != 'محركات'" />
+			<secondPage :car="car" />
+			<Files :car="car" />
+			<Videos :car="car" />
+			<Sections :car="car" />
+
+			<div class="container sticky bottom-4 flex gap-4 justify-center">
+				<button :disabled="loading" @click="save" class="btn d-block bg-green-600">
+					<Loader v-show="loading" />
+
+					<div v-show="!loading">
+						<span v-if="!car.updated && car.saved">
+							طباعه
+							<font-awesome-icon :icon="['fas', 'print']" />
+						</span>
+
+						<span v-else>
+							حفظ
+							<font-awesome-icon :icon="['fas', 'floppy-disk']" />
+						</span>
+					</div>
+				</button>
+
+				<button
+					v-if="car.saved || !car.updated"
+					@click="$router.push('/exclusive')"
+					class="btn d-block red"
+				>
+					رجوع
+					<font-awesome-icon :icon="['fas', 'arrow-left']" />
+				</button>
+			</div>
+		</template>
 	</div>
 	<div v-else-if="notFound" class="container text-center pt-12 flex flex-col items-center gap-4">
 		<p class="font-bold">لم يتم العثور على السيارة</p>
@@ -67,8 +92,47 @@ export default {
 		fetching: false,
 		triedDB: false,
 	}),
+	computed: {
+		requiresVideo() {
+			return Boolean(
+				this.car &&
+					!this.car.saved &&
+					!(this.car.videos || []).some(
+						(item) => item && typeof item.video === "string" && item.video.trim(),
+					),
+			);
+		},
+	},
+	beforeRouteLeave(to, from, next) {
+		this.checkVideoBeforeLeaving(next);
+	},
+	beforeRouteUpdate(to, from, next) {
+		if (to.params.id === from.params.id) return next();
+		this.checkVideoBeforeLeaving(next);
+	},
 	methods: {
 		...mapActions({ setAlert: "alert/add" }),
+
+		checkVideoBeforeLeaving(next) {
+			if (!this.requiresVideo) return next();
+			this.setAlert({ text: "يجب رفع فيديو للسيارة قبل المغادرة", error: true });
+			next(false);
+		},
+
+		addRequiredVideo(url) {
+			if (typeof url !== "string" || !url.trim()) {
+				console.error("Video upload returned an invalid URL");
+				this.setAlert({ text: "تعذر رفع الفيديو، حاول مرة أخرى", error: true });
+				return;
+			}
+			this.$set(this.car, "videos", [...(this.car.videos || []), { video: url, description: "" }]);
+		},
+
+		confirmLeave(event) {
+			if (!this.requiresVideo) return;
+			event.preventDefault();
+			event.returnValue = "";
+		},
 
 		update() {
 			if (!skipCheck) this.car.updated = true;
@@ -76,6 +140,8 @@ export default {
 		},
 
 		save() {
+			if (this.requiresVideo)
+				return this.setAlert({ text: "يجب رفع فيديو للسيارة قبل الحفظ", error: true });
 			if (!this.car.payment || !this.car.cost) {
 				window.scrollTo({ top: 0, behavior: "smooth" });
 				return this.setAlert({ text: "تاكد من بيانات الدفع", error: true });
@@ -111,7 +177,10 @@ export default {
 					// socket
 					// this.socket.emit("save-car");
 				})
-				.catch((err) => console.error(err))
+				.catch((err) => {
+					console.error(err);
+					this.setAlert({ text: err.response?.data?.error || "تعذر حفظ السيارة", error: true });
+				})
 				.finally(() => (this.loading = false));
 		},
 
@@ -157,13 +226,26 @@ export default {
 		},
 	},
 	mounted() {
+		window.addEventListener("beforeunload", this.confirmLeave);
 		this.getCar();
 
 		// socket
 		this.socket.on("delete-car", () => this.setAlert({ text: "شخص ما حذف السيارة", error: true }));
 	},
+	beforeDestroy() {
+		window.removeEventListener("beforeunload", this.confirmLeave);
+	},
 
 	watch: {
+		requiresVideo(required) {
+			if (required) {
+				this.$nextTick(() => {
+					const uploader = this.$refs.requiredVideoUpload;
+					const input = uploader && uploader.$el.querySelector('input[type="file"]');
+					if (input) input.focus();
+				});
+			}
+		},
 		cars() {
 			this.getCar();
 		},
@@ -187,6 +269,25 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.required-video-overlay {
+	position: fixed;
+	inset: 0;
+	z-index: 100;
+	display: grid;
+	place-items: center;
+	overflow-y: auto;
+	padding: 1rem;
+	background: rgba(0, 0, 0, 0.6);
+}
+
+.required-video-dialog {
+	width: min(100%, 560px);
+	padding: 1.5rem;
+	border-radius: 0.75rem;
+	background: white;
+	text-align: center;
+}
+
 .red {
 	background: rgb(186, 38, 38);
 

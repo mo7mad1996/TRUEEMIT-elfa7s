@@ -76,6 +76,8 @@ check, with that spelling) + `auth`.
 - **exclusive** users are separate companies. Their cars (`/api/cars-exclusive`) are isolated per
   user. They have their own logo on the report and can sync reports to the external server
   (`components/print/ServerActions.vue`).
+  New exclusive drafts require a successful video upload before editing or leaving the form, and
+  the save API also rejects new cars without a video. Existing saved cars are not affected.
 - The manager can open exclusive cars under `pages/manager/exclusive/`.
 
 ### Live drafts over socket.io

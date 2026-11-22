@@ -107,10 +107,26 @@ module.exports = (router) => {
 	router.post("/remove_image", allow("exclusive", "manager"), removeFile);
 
 	router.post("/save", allow("exclusive"), async (req, res) => {
+		const { videos } = req.body || {};
+		if (
+			!Array.isArray(videos) ||
+			!videos.some(
+				(item) => item && typeof item.video === "string" && item.video.trim(),
+			)
+		) {
+			return res.status(400).json({ error: "يجب رفع فيديو للسيارة قبل الحفظ" });
+		}
+
 		// the owner always comes from the token, never from the request body
 		const car = new Car({ ...req.body, user: req.auth_user._id });
 
-		car.save().then(() => res.json(true));
+		try {
+			await car.save();
+			return res.json(true);
+		} catch (error) {
+			console.error("تعذر حفظ السيارة:", error);
+			return res.status(500).json({ error: "تعذر حفظ السيارة" });
+		}
 	});
 
 	router.post("/update", allow("exclusive", "manager"), async (req, res) => {

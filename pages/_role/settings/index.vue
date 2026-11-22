@@ -346,27 +346,6 @@
       </form>
     </section>
 
-    <hr v-if="['manager'].includes($auth.user.job)" />
-
-    <section v-if="['manager'].includes($auth.user.job)">
-      <h3>حذف السيارات القديمه</h3>
-
-      <form class="simple_form" @submit.prevent="deleteCars">
-        <div class="form-input">
-          <label>
-            <font-awesome-icon icon="fa-solid fa-lock" />
-            حذف ما قبل
-          </label>
-          <DatePicker v-model="cars.date" />
-        </div>
-
-        <button type="submit" class="btn red" :disabled="cars.loading">
-          <Loader v-if="cars.loading" />
-          <span v-else>خذف</span>
-        </button>
-      </form>
-    </section>
-
     <!-- confirm password modal -->
     <div
       v-if="pwd.show"
@@ -424,7 +403,6 @@ export default {
       new_logo: "",
       user: { ...this.$auth.user, new_pass: "", loading: false },
       shop: { ...this.$shop, loading: false },
-      cars: { date: "", loading: false },
       pwd: { show: false, value: "", resolve: null },
     };
   },
@@ -529,19 +507,6 @@ export default {
       if (this.$refs.file) this.$refs.file.value = "";
     },
 
-    async deleteCars() {
-      try {
-        const ok = await this.check_pass();
-        if (!ok) return this.setAlert({ text: "كلمة المرور خطأ", error: true });
-
-        await this.$axios.$delete("/cars/delete", { params: this.cars });
-        this.setAlert({ text: "تم حذف السيارات" });
-      } catch (err) {
-        console.error(err);
-      } finally {
-        this.cars.loading = false;
-      }
-    },
   },
 };
 </script>
