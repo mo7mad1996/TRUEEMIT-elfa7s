@@ -1,3 +1,4 @@
+const { create } = require("core-js/core/object");
 const mongoose = require("mongoose");
 
 const Car = mongoose.model("Car");
@@ -39,7 +40,7 @@ module.exports = (router) => {
     const range = {};
     if (start) range.$gte = start;
     if (end) range.$lte = end;
-    const filter = start || end ? { date: range } : {};
+    const filter = start || end ? { createdAt: range } : {};
 
     try {
       const [cars, exclusiveCars] = await Promise.all([
