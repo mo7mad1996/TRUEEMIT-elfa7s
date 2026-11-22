@@ -7,7 +7,7 @@ export default async ({ $axios, app }, inject) => {
 
   const obj = Vue.observable({
     ...(shop || {}),
-    ready: Boolean(shop),
+    ready: Boolean(shop) && response.status === "ready",
     status: response.status,
     jobs: {
       manager: "مدير",

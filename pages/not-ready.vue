@@ -5,6 +5,9 @@
       <p v-if="$shop.status === 'unavailable'">
         تعذر التحقق من بيانات الفرع حاليًا. حاول مرة أخرى لاحقًا أو تواصل معنا للمساعدة.
       </p>
+      <p v-else-if="$shop.status === 'expired'">
+        انتهت صلاحية اشتراك هذا الفرع. يرجى التواصل مع TRUEEMIT لتجديد الاشتراك.
+      </p>
       <p v-else-if="$shop.status === 'unconfigured' || $shop.status === 'invalid_branch'">
         لم يتم إعداد الفرع لهذا الموقع بعد. تواصل معنا لإضافة الفرع وإكمال التجهيز.
       </p>
