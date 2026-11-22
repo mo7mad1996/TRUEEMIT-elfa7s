@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(node \"C:\\\\Users\\\\FreeComp\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\d--trueemit-TRUEEMIT-elfa7s\\\\fc087843-2d0b-451b-b49b-709722aa285a\\\\scratchpad\\\\check.js\")",
+      "PowerShell(git -C d:\\\\trueemit\\\\TRUEEMIT-elfa7s mv components/print/Videos.vue components/print/CarVideos.vue)",
+      "PowerShell(git -C d:\\\\trueemit\\\\TRUEEMIT-elfa7s status --short)",
+      "PowerShell(Move-Item d:\\\\trueemit\\\\TRUEEMIT-elfa7s\\\\components\\\\print\\\\Videos.vue d:\\\\trueemit\\\\TRUEEMIT-elfa7s\\\\components\\\\print\\\\CarVideos.vue)"
+    ]
+  }
+}
