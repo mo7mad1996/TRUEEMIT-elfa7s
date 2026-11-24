@@ -94,6 +94,8 @@ export default {
 					pillar_r: c.body?.pillar_r || 0,
 					pillar_l: c.body?.pillar_l || 0,
 					truck_door: c.body?.truck_door || 0,
+					bumper_f: c.body?.bumper_f || 0,
+					bumper_b: c.body?.bumper_b || 0,
 					roof: c.body?.roof || 0,
 					note: c.body?.note || "",
 				},
