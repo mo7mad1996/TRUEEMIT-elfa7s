@@ -1,6 +1,7 @@
 export default (ctx, inject) => {
   // Inject $hello(msg) in Vue, context and store.
   inject("inputs", [
+    { ar: "اكصدام امامي", en: "bumper_f", lang_en: "Front Bumper" },
     { ar: "الكبوت", en: "hood", lang_en: "Hood" },
     { ar: "رفرف أمامي يمين", en: "fender_f_r", lang_en: "Front Right Fender" },
     { ar: "باب امامي يمين", en: "door_f_r", lang_en: "Front Right Door" },
@@ -10,14 +11,12 @@ export default (ctx, inject) => {
     { ar: "باب أمامي يسار", en: "door_f_l", lang_en: "Front Left Door" },
     { ar: "باب خلفي يسار", en: "door_b_l", lang_en: "Rear Left Door" },
     { ar: "رفرف خلفي يسار", en: "fender_b_l", lang_en: "Rear Left Fender" },
-    { ar: "السمكه الجانبيه يمين", en: "fish_r", lang_en: "Right Side Skirt" },
-    { ar: "السمكه الجانبيه يسار", en: "fish_l", lang_en: "Left Side Skirt" },
-    { ar: "عارضه يمين", en: "stand_r", lang_en: "Right B-pillar Support" },
-    { ar: "عارضه يسار", en: "stand_l", lang_en: "Left B-pillar Support" },
-    { ar: "عمود غمارة يمين", en: "pillar_r", lang_en: "Right Cabin Pillar" },
-    { ar: "عمود غمارة يسار", en: "pillar_l", lang_en: "Left Cabin Pillar" },
+    { ar: "العتبة يمين", en: "fish_r", lang_en: "Right Side Sill" },
+    { ar: "العتبة يسار", en: "fish_l", lang_en: "Left Side Sill" },
+    { ar: "موزة يمين", en: "stand_r", lang_en: "Right Pillar" },
+    { ar: "موزة يسار", en: "stand_l", lang_en: "Left Pillar" },
     { ar: "الشنطه", en: "trunk", lang_en: "Trunk" },
-    { ar: "باب الصندوق الخلفي", en: "truck_door", lang_en: "Tailgate" },
+    { ar: "اكصدام خلفي", en: "bumper_b", lang_en: "Rear Bumper" },
     { ar: "سقف السياره", en: "roof", lang_en: "Car Roof" },
   ]);
 };

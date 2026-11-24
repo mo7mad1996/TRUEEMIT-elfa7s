@@ -77,18 +77,29 @@
 
 <script>
 import { mapActions } from "vuex";
+import { UPLOAD_URL, MAX_SIZE } from "~/plugins/upload";
 
-// the api/proxy answers with 413 { code: "413", message: "Request Entity Too Large" }
-// when the file is bigger than the allowed body size. when the 413 comes from the
-// edge (no cors headers) axios only sees a network error, so anything bigger than
-// this is reported as "too large" too instead of a meaningless generic error.
-const TOO_LARGE_HINT = 4 * 1024 * 1024;
+// the api answers with 413 { code: "413", message: "Request Entity Too Large" }
+// when the file is bigger than the allowed size (30 MB with the presigned
+// upload, see plugins/upload.js). when the 413 comes from the edge (no cors
+// headers) only a network error is seen, so anything bigger than this is
+// reported as "too large" too instead of a meaningless generic error.
+const TOO_LARGE_HINT = MAX_SIZE;
 
 export default {
 	name: "FileDropAble",
 	// accept / loadingText let the same uploader serve images and videos —
-	// the endpoint itself takes any file
-	props: ["id", "accept", "loadingText", "single", "videoOnly"],
+	// the endpoint itself takes any file.
+	// id = the car _id, kind = "image" | "video" | "file" — together they pick
+	// the folder the file is stored in: {branch}/{id}/{kind}
+	props: {
+		id: String,
+		kind: { type: String, default: "image" },
+		accept: String,
+		loadingText: String,
+		single: Boolean,
+		videoOnly: Boolean,
+	},
 	data() {
 		return {
 			isDragOver: false,
@@ -157,15 +168,9 @@ export default {
 			try {
 				await Promise.all(
 					list.map(async (file) => {
-						// create formData
-						let formData = new FormData();
-						// file.name, not file.filename (undefined) — the api builds the
-						// blob path from it, so this is what keeps the .mp4 / .jpg extension
-						formData.append("file", file, file.name);
-
 						try {
 							// send request
-							const res = await this.appendFile(formData);
+							const res = await this.appendFile(file);
 
 							// update dom
 							this.$emit("input", res.url);
@@ -208,21 +213,16 @@ export default {
 			return ` (${(file.size / (1024 * 1024)).toFixed(1)} م.ب)`;
 		},
 
-		async appendFile(formData = new FormData()) {
-			// uploaded to the external trueemit server so the stored urls are
-			// reachable from outside the shop network (needed for the report sync)
-			return this.$axios.$post(`https://api.trueemit.dev/cars/images`, formData, {
-				headers: {
-					"Content-Type": "multipart/form-data",
-				},
-			});
+		// stored under {branch}/{car id}/{kind} on the external api (plugins/upload.js)
+		appendFile(file) {
+			return this.$upload(file, { id: this.id, kind: this.kind });
 		},
 
 		async removeFile(fileName) {
 			if (this.deleting.includes(fileName)) return;
 			this.deleting.push(fileName);
 			try {
-				await this.$axios.$delete("https://api.trueemit.dev/cars/images", {
+				await this.$axios.$delete(UPLOAD_URL, {
 					data: { url: fileName },
 					headers: { "Content-Type": "application/json" },
 				});

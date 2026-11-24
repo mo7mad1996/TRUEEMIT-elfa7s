@@ -45,6 +45,11 @@ function pickLanIP() {
 const IP = pickLanIP();
 const port = 3000;
 
+// the git branch this install belongs to. it is the self-update source
+// (components/layout/header.vue) and the root folder of every file uploaded
+// to the external api (plugins/upload.js). change it on each shop branch.
+const BRANCH = "Tntgarage";
+
 module.exports = {
   server: {
     port,
@@ -52,6 +57,11 @@ module.exports = {
   },
   dev,
   telemetry: false,
+
+  // exposed to the client as process.env.BRANCH
+  env: {
+    BRANCH,
+  },
 
   hooks: {
     // @nuxtjs/tailwindcss@4 injects a v2-style `purge` key into the merged
@@ -105,6 +115,7 @@ module.exports = {
     { src: "~/plugins/shop.js" },
     { src: "~/plugins/inputs.js" },
     { src: "~/plugins/nltobr.js" },
+    { src: "~/plugins/upload.js" },
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components

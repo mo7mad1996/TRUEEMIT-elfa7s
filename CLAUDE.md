@@ -57,14 +57,18 @@ and the HTTP server itself listens on all interfaces.
 - `trueemit.js` handles licensing and self-update. `/isvalid` checks for the `secret` file and
   `Shop` expiry. `/update` downloads a branch zip from GitHub and reinstalls. Some endpoints
   (`remove_all`) wipe the working directory, so be careful when touching them.
-- Uploaded files (car images, videos, logos, computer PDFs) are stored locally: the frontend posts
-  them to `/api/upload` (`server/routes/pages/upload.js`, open route, formidable), which saves them
-  under `server/upload/` and returns a root-relative `{ url }` (e.g. `/abc.jpg`) — no host is baked
-  in, so the browser resolves it against the current origin and the PDF render against the
-  `<base href>` it injects (`layouts/print.vue`). They are served statically from `server/upload/`
-  by `06_global_dirs.js`. The external API `https://trueemit-api.vercel.app` is used only for the
-  optional exclusive "attach report to server" sync (`components/print/ServerActions.vue`), not for
-  file storage.
+- Car files (images, videos, computer PDFs) and logos are uploaded by the frontend to the external
+  API (Cloudflare R2) through `$upload` in `plugins/upload.js`: a presigned
+  `POST https://api.trueemit.dev/cars/images/upload-url?dir=…` + direct `PUT` (≤ 30 MB), with
+  `POST /cars/images` as fallback for files ≤ 4.5 MB. `dir` is always
+  `{BRANCH}/{car _id}/{image|video|file}` or `{BRANCH}/logos`; `BRANCH` is set once in
+  `nuxt.config.js` (`env.BRANCH`, also the self-update branch) — change it per shop branch.
+  `FileDropAble` takes `:id="car._id"` and `kind`. Logos fall back to an inline base64 data URL
+  if the upload fails.
+- The older local upload route `/api/upload` (`server/routes/pages/upload.js`, formidable, saves
+  under `server/upload/`, served by `06_global_dirs.js`) still exists but the frontend no longer
+  uses it. The same external API also serves the optional exclusive "attach report to server"
+  sync (`components/print/ServerActions.vue`).
 
 ### Roles
 

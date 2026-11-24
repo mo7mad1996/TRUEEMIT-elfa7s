@@ -131,7 +131,7 @@ export default {
         },
       ],
       updating: false,
-      update_branch: "Tntgarage",
+      update_branch: process.env.BRANCH,
       time: {
         full: "",
         am_pm: "",

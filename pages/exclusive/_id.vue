@@ -14,6 +14,7 @@
 				<FileDropAble
 					ref="requiredVideoUpload"
 					:id="car._id"
+					kind="video"
 					:single="true"
 					:video-only="true"
 					accept="video/*"

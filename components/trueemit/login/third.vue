@@ -82,8 +82,7 @@ export default {
       const [file] = this.$refs.logo.files;
       if (file) this.preview = await this.toBase64(file);
     },
-    // read the file as a base64 data url so the logo can be kept inline on the
-    // shop document instead of being uploaded as a file anywhere
+    // read the file as a base64 data url (preview / offline fallback)
     toBase64(file) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -96,8 +95,18 @@ export default {
       this.submited = true;
 
       const [file] = this.$refs.logo.files;
-      // keep the logo inline as a base64 data url, falling back to the default
-      this.logo = file ? await this.toBase64(file) : "/logo/trueemit.png";
+      this.logo = file ? await this.uploadLogo(file) : "/logo/trueemit.png";
+    },
+    // upload the logo to {branch}/logos (plugins/upload.js). if the external
+    // api can't be reached, keep it inline as a base64 data url instead
+    async uploadLogo(file) {
+      try {
+        const { url } = await this.$upload(file, { logo: true });
+        if (url) return url;
+      } catch (err) {
+        console.error("logo upload failed, keeping it inline:", err);
+      }
+      return this.toBase64(file);
     },
   },
   watch: {

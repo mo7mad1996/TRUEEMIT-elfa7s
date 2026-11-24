@@ -401,6 +401,7 @@ export default {
   data() {
     return {
       new_logo: "",
+      new_logo_file: null,
       user: { ...this.$auth.user, new_pass: "", loading: false },
       shop: { ...this.$shop, loading: false },
       pwd: { show: false, value: "", resolve: null },
@@ -448,12 +449,12 @@ export default {
         const ok = await this.check_pass();
         if (!ok) return this.setAlert({ text: "كلمة المرور خطأ", error: true });
 
-        // if user has logo — new_logo is already a base64 data url (see
-        // preview), stored inline on the user document, no upload needed
+        // if user has logo — upload it to {branch}/logos and store the url
         if (["exclusive"].includes(this.$auth.user.job))
           if (this.new_logo) {
-            this.user.logo = this.new_logo;
-            this.$auth.user.logo = this.new_logo;
+            const logo = await this.uploadLogo();
+            this.user.logo = logo;
+            this.$auth.user.logo = logo;
           }
 
         // update user
@@ -478,9 +479,8 @@ export default {
         const ok = await this.check_pass();
         if (!ok) return this.setAlert({ text: "كلمة المرور خطأ", error: true });
 
-        // new_logo is already a base64 data url (see preview) — store it
-        // inline on the shop document, no upload needed
-        if (this.new_logo) this.shop.logo = this.new_logo;
+        // upload the new logo to {branch}/logos and store its url
+        if (this.new_logo) this.shop.logo = await this.uploadLogo();
 
         await this.$axios.$post("/trueemit/update_client", this.shop);
         await this.$shop.refresh();
@@ -492,12 +492,24 @@ export default {
         this.shop.loading = false;
       }
     },
-    // read the chosen logo as a base64 data url — it is small and rarely
-    // changes, so it is kept inline on the shop/user document (and used as-is
-    // for the preview) instead of being uploaded as a file anywhere
+    // upload the chosen logo to {branch}/logos (plugins/upload.js). if the
+    // external api can't be reached, fall back to keeping the base64 data url
+    // inline on the document, as before, so saving never fails over a logo
+    async uploadLogo() {
+      if (!this.new_logo_file) return this.new_logo;
+      try {
+        const { url } = await this.$upload(this.new_logo_file, { logo: true });
+        if (url) return url;
+      } catch (err) {
+        console.error("logo upload failed, keeping it inline:", err);
+      }
+      return this.new_logo;
+    },
+    // read the chosen logo as a base64 data url for the preview
     preview() {
       const [file] = this.$refs.file.files;
       if (!file) return;
+      this.new_logo_file = file;
       const reader = new FileReader();
       reader.onload = () => {
         this.new_logo = reader.result;
@@ -506,6 +518,7 @@ export default {
     },
     clearFile() {
       this.new_logo = "";
+      this.new_logo_file = null;
       if (this.$refs.file) this.$refs.file.value = "";
     },
   },
