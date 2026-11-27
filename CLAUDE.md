@@ -70,14 +70,15 @@ listens on all interfaces and does not launch a local browser.
   a selected logo file to `https://api.trueemit.dev/cars/images`. It saves the resulting URL with
   the shop details and deletes replaced or removed logos through the same endpoint after the shop
   update succeeds.
-- Uploaded files (car images, videos, logos, computer PDFs) are stored locally: the frontend posts
-  them to `/api/upload` (`server/routes/pages/upload.js`, open route, formidable), which saves them
-  under `server/upload/` and returns a root-relative `{ url }` (e.g. `/abc.jpg`) — no host is baked
-  in, so the browser resolves it against the current origin and the PDF render against the
-  `<base href>` it injects (`layouts/print.vue`). They are served statically from `server/upload/`
-  by `06_global_dirs.js`. The external API `https://trueemit-api.vercel.app` is used only for the
-  optional exclusive "attach report to server" sync (`components/print/ServerActions.vue`), not for
-  file storage.
+- Car files (images, videos, computer PDFs) and logos are uploaded from the browser to the external
+  API (Cloudflare R2) through `$upload` in `plugins/upload.js`, always with `?dir=`:
+  `{branch}/{car _id}/{image|video|file}` or `{branch}/logos`, where `{branch}` is `SHOP_BRANCH`
+  (sent by `GET /api/trueemit/shop` as `branch`, exposed as `$shop.branch`). Files ≤ 4.5 MB use
+  `POST https://api.trueemit.dev/cars/images`; bigger ones (≤ 30 MB) use the presigned
+  `POST /cars/images/upload-url` + a direct `PUT` to R2, which needs a CORS rule on the bucket.
+  `FileDropAble` takes `:id="car._id"` and `kind`. Deletes go to `DELETE /cars/images` by URL.
+  The older local route `/api/upload` (`server/routes/pages/upload.js`) is no longer used by the
+  frontend.
 
 ### Roles
 

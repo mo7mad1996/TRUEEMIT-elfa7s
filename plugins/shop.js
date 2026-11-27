@@ -9,6 +9,8 @@ export default async ({ $axios, app }, inject) => {
     ...(shop || {}),
     ready: Boolean(shop) && response.status === "ready",
     status: response.status,
+    // SHOP_BRANCH — root folder for uploads (plugins/upload.js)
+    branch: response.branch || "",
     jobs: {
       manager: "مدير",
       engineer: "مهندس",

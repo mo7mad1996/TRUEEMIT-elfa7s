@@ -4,6 +4,7 @@
 
 		<FileDropAble
 			:id="car._id"
+			kind="video"
 			accept="video/*"
 			loading-text="جاري رفع الفيديوهات..."
 			@input="addVideo"

@@ -40,6 +40,8 @@ const car = new Schema(
 			pillar_r: { type: Number, default: 0 },
 			pillar_l: { type: Number, default: 0 },
 			truck_door: { type: Number, default: 0 },
+			bumper_f: { type: Number, default: 0 },
+			bumper_b: { type: Number, default: 0 },
 			roof: { type: Number, default: 0 },
 			note: { type: String, default: "" },
 		},

@@ -9,7 +9,10 @@ module.exports = (router) => {
 		// Nothing is cached: every request reads the branch API, and the response
 		// must not be stored by browsers or proxies either.
 		res.set("Cache-Control", "no-store");
-		return res.json(await getInspectionCenter());
+		// `branch` (SHOP_BRANCH) is the root folder of every uploaded file
+		// (plugins/upload.js)
+		const branch = (process.env.SHOP_BRANCH || "").trim().toLowerCase();
+		return res.json({ ...(await getInspectionCenter()), branch });
 	});
 
 	router.patch("/shop", attachUser, allow("manager"), async (req, res) => {

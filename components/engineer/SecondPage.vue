@@ -18,6 +18,7 @@
 
       <FileDropAble
         :id="car._id"
+        kind="file"
         accept="application/pdf,.pdf"
         loading-text="جاري رفع الملف..."
         @input="setComputerPdf"

@@ -107,6 +107,8 @@ module.exports = {
 		{ src: "~/plugins/shop.js" },
 		{ src: "~/plugins/inputs.js" },
 		{ src: "~/plugins/nltobr.js" },
+		// after shop.js: reads $shop.branch
+		{ src: "~/plugins/upload.js" },
 	],
 
 	// Auto import components: https://go.nuxtjs.dev/config-components

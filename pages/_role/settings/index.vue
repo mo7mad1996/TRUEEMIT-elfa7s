@@ -459,6 +459,7 @@ export default {
         { id: "user", label: "المستخدم", icon: "fa-solid fa-user" },
       ],
       new_logo: "",
+      new_logo_file: null,
       user: { ...this.$auth.user, new_pass: "", loading: false },
       shopEdit: { ...this.$shop, loading: false },
       shopLogoFile: null,
@@ -529,12 +530,12 @@ export default {
         const ok = await this.check_pass();
         if (!ok) return this.setAlert({ text: "كلمة المرور خطأ", error: true });
 
-        // if user has logo — new_logo is already a base64 data url (see
-        // preview), stored inline on the user document, no upload needed
+        // if user has logo — upload it to {branch}/logos and store the url
         if (["exclusive"].includes(this.$auth.user.job))
           if (this.new_logo) {
-            this.user.logo = this.new_logo;
-            this.$auth.user.logo = this.new_logo;
+            const logo = await this.uploadUserLogo();
+            this.user.logo = logo;
+            this.$auth.user.logo = logo;
           }
 
         // update user
@@ -656,13 +657,8 @@ export default {
         }
         const previousLogo = this.$shop.logo;
         if (this.shopLogoFile && !this.uploadedShopLogo) {
-          const formData = new FormData();
-          formData.append("file", this.shopLogoFile, this.shopLogoFile.name);
-          const uploaded = await this.$axios.$post(
-            "https://api.trueemit.dev/cars/images",
-            formData,
-            { headers: { "Content-Type": "multipart/form-data" } },
-          );
+          // stored under {branch}/logos (plugins/upload.js)
+          const uploaded = await this.$upload(this.shopLogoFile, { logo: true });
           if (!uploaded || typeof uploaded.url !== "string" || !uploaded.url) {
             throw new Error("لم يُرجع الخادم رابط الشعار، حاول مرة أخرى");
           }
@@ -718,10 +714,24 @@ export default {
         this.shopEdit.loading = false;
       }
     },
-    // Keep the user's small logo inline as a base64 data URL.
+    // upload the exclusive user's logo to {branch}/logos (plugins/upload.js).
+    // if the external api can't be reached, keep the base64 data url inline
+    // on the user document, as before, so saving never fails over a logo
+    async uploadUserLogo() {
+      if (!this.new_logo_file) return this.new_logo;
+      try {
+        const { url } = await this.$upload(this.new_logo_file, { logo: true });
+        if (url) return url;
+      } catch (err) {
+        console.error("logo upload failed, keeping it inline:", err);
+      }
+      return this.new_logo;
+    },
+    // read the chosen user logo as a base64 data url for the preview
     preview() {
       const [file] = this.$refs.file.files;
       if (!file) return;
+      this.new_logo_file = file;
       const reader = new FileReader();
       reader.onload = () => {
         this.new_logo = reader.result;
