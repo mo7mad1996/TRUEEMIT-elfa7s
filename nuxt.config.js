@@ -48,7 +48,7 @@ const port = 3000;
 // the git branch this install belongs to. it is the self-update source
 // (components/layout/header.vue) and the root folder of every file uploaded
 // to the external api (plugins/upload.js). change it on each shop branch.
-const BRANCH = "main-eg";
+const BRANCH = "seven-motors";
 
 module.exports = {
   server: {
